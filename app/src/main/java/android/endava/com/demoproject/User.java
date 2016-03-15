@@ -4,11 +4,11 @@ package android.endava.com.demoproject;
  * Created by lbuzmacov on 3/15/2016.
  */
 public class User {
-    private int id;
+    private Long id;
     private String name;
     private String password;
 
-    public int getID (){
+    public Long getID (){
         return id;
     }
 
@@ -20,7 +20,7 @@ public class User {
         return password;
     }
 
-    public void setID (int id){
+    public void setID (Long id){
         this.id = id;
     }
 
