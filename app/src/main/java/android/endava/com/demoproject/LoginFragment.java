@@ -64,36 +64,43 @@ public class LoginFragment extends Fragment {
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mPasswordEdt.length() > 0 && mUSerNameEdt.length() > 0) {
-
-                    try {
-                        credentials = android.util.Base64.encodeToString(
-                                (mUSerNameEdt.getText().toString() + ":" + mPasswordEdt.getText().toString()).getBytes("UTF-8"),
-                                android.util.Base64.NO_WRAP
-                        );
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
-
-                    DemoProjectAPI.Factory.getInstance().auth("Basic " + credentials)
-                            .enqueue(new Callback<List<AuthResponse>>() {
-                                @Override
-                                public void onResponse(Call<List<AuthResponse>> call, Response<List<AuthResponse>> response) {
-                                    Toast.makeText(getActivity(), response.body().get(0).getToken(),
-                                            Toast.LENGTH_LONG).show();
-                                }
-
-                                @Override
-                                public void onFailure(Call<List<AuthResponse>> call, Throwable t) {
-                                    Toast.makeText(getActivity(), "FAIL",
-                                            Toast.LENGTH_LONG).show();
-                                }
-                            });
-                }
+                handleLoginRequest();
             }
         });
 
         return v;
+    }
+
+    private void handleLoginRequest() {
+        if (mPasswordEdt.length() > 0 && mUSerNameEdt.length() > 0) {
+            try {
+                credentials = android.util.Base64.encodeToString(
+                        (mUSerNameEdt.getText().toString() + ":" + mPasswordEdt.getText().toString()).getBytes("UTF-8"),
+                        android.util.Base64.NO_WRAP
+                );
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+
+            DemoProjectAPI.Factory.getInstance().auth("Basic " + credentials).enqueue(new Callback<List<AuthResponse>>() {
+                @Override
+                public void onResponse(Call<List<AuthResponse>> call, Response<List<AuthResponse>> response) {
+                    if (response.body() != null) {
+                        Toast.makeText(getActivity(), response.body().get(0).getToken(),
+                                Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getActivity(), getString(R.string.credentials_error),
+                                Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<AuthResponse>> call, Throwable t) {
+                    Toast.makeText(getActivity(), getString(R.string.get_token_error),
+                            Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 
 }

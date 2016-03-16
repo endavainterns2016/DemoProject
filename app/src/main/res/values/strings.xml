@@ -6,5 +6,7 @@
     <string name="password_hint">Password</string>
     <string name="remember_password">Remember password</string>
     <string name="remember_name">Remember username</string>
+    <string name="get_token_error">There is problem with your connection</string>
+    <string name="credentials_error">Wrong username and/or password</string>
 
 </resources>
