@@ -1,4 +1,4 @@
-package android.endava.com.demoproject;
+package android.endava.com.demoproject.Model;
 
 /**
  * Created by lbuzmacov on 3/15/2016.

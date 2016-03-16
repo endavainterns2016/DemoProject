@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
     <LinearLayout
@@ -20,13 +23,13 @@
             android:textSize="16.5sp" />
 
         <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:ems="10"
-                android:id="@+id/password_edt"
-                android:hint="@string/password_hint"
-                android:layout_gravity="center_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:id="@+id/password_edt"
+            android:hint="@string/password_hint"
+            android:layout_gravity="center_horizontal"
             android:textSize="16.5sp" />
 
         <CheckBox
@@ -48,12 +51,12 @@
             android:checked="false" />
 
         <Button
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/login"
-                android:id="@+id/button"
-                android:layout_gravity="center_horizontal"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login"
+            android:id="@+id/login_bnt"
+            android:layout_gravity="center_horizontal"
             android:textSize="12sp" />
     </LinearLayout>
 
