@@ -1,5 +1,9 @@
 [
     {
+        "merged": "C:\\Users\\icroitor\\Projects\\AndroidStudio\\DemoProject\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-mdpi-v4\\ic_launcher.png",
+        "source": "C:\\Users\\icroitor\\Projects\\AndroidStudio\\DemoProject\\app\\src\\main\\res\\mipmap-mdpi\\ic_launcher.png"
+    },
+    {
         "merged": "D:\\projects\\DemoProject\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-mdpi-v4\\ic_launcher.png",
         "source": "D:\\projects\\DemoProject\\app\\src\\main\\res\\mipmap-mdpi\\ic_launcher.png"
     }
