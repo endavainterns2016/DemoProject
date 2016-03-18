@@ -1,10 +1,12 @@
 package android.endava.com.demoproject;
 
 
-import android.endava.com.demoproject.Model.AuthResponse;
+import android.endava.com.demoproject.model.User;
+import android.endava.com.demoproject.retrofit.ServiceFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,26 +23,16 @@ import retrofit2.Response;
 
 public class LoginFragment extends Fragment {
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
     private Toolbar mToolbar;
     private EditText mPasswordEdt;
     private EditText mUSerNameEdt;
     private Button mLoginBtn;
     private String credentials;
+    private LoginOnClickListener loginOnClickListener;
+    Callback<List<User>> loginCallBack;
 
     public LoginFragment() {
         // Required empty public constructor
-    }
-
-    public static LoginFragment newInstance(String param1, String param2) {
-        LoginFragment fragment = new LoginFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -52,8 +44,13 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_login, container, false);
+        return inflater.inflate(R.layout.fragment_login, container, false);
+    }
 
+    @Override
+    public void onViewCreated(View v, Bundle savedInstanceState) {
+
+        loginOnClickListener = new LoginOnClickListener();
 
         mPasswordEdt = (EditText) v.findViewById(R.id.password_edt);
         mUSerNameEdt = (EditText) v.findViewById(R.id.login_edt);
@@ -61,46 +58,60 @@ public class LoginFragment extends Fragment {
         mToolbar = (Toolbar) v.findViewById(R.id.fragment_login_toolbar);
         mToolbar.setTitle(R.string.app_name);
 
-        mLoginBtn.setOnClickListener(new View.OnClickListener() {
+        loginCallBack = new Callback<List<User>>() {
             @Override
-            public void onClick(View v) {
-                handleLoginRequest();
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                if (response.body() != null) {
+                    Toast.makeText(getActivity(), response.body().get(0).getToken(),
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getActivity(), getString(R.string.credentials_error),
+                            Toast.LENGTH_LONG).show();
+                }
             }
-        });
 
-        return v;
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                Toast.makeText(getActivity(), getString(R.string.get_token_error),
+                        Toast.LENGTH_LONG).show();
+            }
+        };
+
+        mLoginBtn.setOnClickListener(loginOnClickListener);
+    }
+
+    private boolean credentialsAreFilled() {
+        if (TextUtils.isEmpty(mUSerNameEdt.getText().toString())) {
+            Toast.makeText(getActivity(), getString(R.string.fill_in_username),
+                    Toast.LENGTH_SHORT).show();
+            return false;
+
+        } else if (TextUtils.isEmpty(mPasswordEdt.getText().toString())) {
+            Toast.makeText(getActivity(), getString(R.string.fill_in_password),
+                    Toast.LENGTH_SHORT).show();
+            return false;
+
+        } else return true;
     }
 
     private void handleLoginRequest() {
-        if (mPasswordEdt.length() > 0 && mUSerNameEdt.length() > 0) {
-            try {
-                credentials = android.util.Base64.encodeToString(
-                        (mUSerNameEdt.getText().toString() + ":" + mPasswordEdt.getText().toString()).getBytes("UTF-8"),
-                        android.util.Base64.NO_WRAP
-                );
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-
-            DemoProjectAPI.Factory.getInstance().auth("Basic " + credentials).enqueue(new Callback<List<AuthResponse>>() {
-                @Override
-                public void onResponse(Call<List<AuthResponse>> call, Response<List<AuthResponse>> response) {
-                    if (response.body() != null) {
-                        Toast.makeText(getActivity(), response.body().get(0).getToken(),
-                                Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(getActivity(), getString(R.string.credentials_error),
-                                Toast.LENGTH_LONG).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<AuthResponse>> call, Throwable t) {
-                    Toast.makeText(getActivity(), getString(R.string.get_token_error),
-                            Toast.LENGTH_LONG).show();
-                }
-            });
+        try {
+            credentials = android.util.Base64.encodeToString(
+                    (mUSerNameEdt.getText().toString() + ":" + mPasswordEdt.getText().toString()).getBytes("UTF-8"),
+                    android.util.Base64.NO_WRAP
+            );
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
+        ServiceFactory.getInstance().auth("Basic " + credentials).enqueue(loginCallBack);
     }
 
+    public class LoginOnClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            if (credentialsAreFilled())
+                handleLoginRequest();
+        }
+    }
 }
