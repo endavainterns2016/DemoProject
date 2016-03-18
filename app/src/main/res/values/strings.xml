@@ -11,4 +11,7 @@
     <string name="fill_in_username">Please enter username</string>
     <string name="fill_in_password">Please enter password</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>
