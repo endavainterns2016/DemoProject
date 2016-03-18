@@ -86,6 +86,7 @@ public class LoginFragment extends Fragment {
                     Toast.makeText(getActivity(), response.body().get(0).getToken(),
                             Toast.LENGTH_LONG).show();
                     saveToPrefCredentials();
+                    getFragmentManager().beginTransaction().replace(R.id.root_activity_layout, new ReposListFragment()).commit();
 
                 } else {
                     Toast.makeText(getActivity(), getString(R.string.credentials_error),

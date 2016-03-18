@@ -7,8 +7,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.main_activity);
         getSupportFragmentManager().beginTransaction()
-                .replace(android.R.id.content, new LoginFragment())
+                .replace(R.id.root_activity_layout, new LoginFragment())
                 .commit();
     }
 }
