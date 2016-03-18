@@ -47,9 +47,6 @@ public class LoginFragment extends Fragment {
     private static final String PASSWORD_PREF = "password";
     private static final String USERNAME_PREF = "username";
 
-    public LoginFragment() {
-        // Required empty public constructor
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,16 +77,7 @@ public class LoginFragment extends Fragment {
         mToolbar = (Toolbar) v.findViewById(R.id.fragment_login_toolbar);
         mToolbar.setTitle(R.string.app_name);
 
-        if (rememberUsername && usernamePref.length() > 0) {
-            mUSerNameEdt.append(usernamePref);
-            usernameCheckBox.setChecked(rememberUsername);
-        }
-
-        if (rememberPassword && passwordPref.length() > 0) {
-            mPasswordEdt.append(passwordPref);
-            passwordCheckBox.setChecked(rememberPassword);
-        }
-
+        checkPrefCredentials();
 
         loginCallBack = new Callback<List<User>>() {
             @Override
@@ -97,13 +85,7 @@ public class LoginFragment extends Fragment {
                 if (response.body() != null) {
                     Toast.makeText(getActivity(), response.body().get(0).getToken(),
                             Toast.LENGTH_LONG).show();
-
-                    SharedPreferences.Editor editor = authData.edit();
-                    editor.putString(USERNAME_PREF, username);
-                    editor.putString(PASSWORD_PREF, password);
-                    editor.putBoolean(REMEMBER_USERNAME_PREF, usernameCheckBox.isChecked());
-                    editor.putBoolean(REMEMBER_PASSWORD_PREF, passwordCheckBox.isChecked());
-                    editor.commit();
+                    saveToPrefCredentials();
 
                 } else {
                     Toast.makeText(getActivity(), getString(R.string.credentials_error),
@@ -119,6 +101,27 @@ public class LoginFragment extends Fragment {
         };
 
         mLoginBtn.setOnClickListener(loginOnClickListener);
+    }
+
+    private void checkPrefCredentials() {
+        if (rememberUsername && usernamePref.length() > 0) {
+            mUSerNameEdt.append(usernamePref);
+            usernameCheckBox.setChecked(rememberUsername);
+        }
+
+        if (rememberPassword && passwordPref.length() > 0) {
+            mPasswordEdt.append(passwordPref);
+            passwordCheckBox.setChecked(rememberPassword);
+        }
+    }
+
+    private void saveToPrefCredentials() {
+        SharedPreferences.Editor editor = authData.edit();
+        editor.putString(USERNAME_PREF, username);
+        editor.putString(PASSWORD_PREF, password);
+        editor.putBoolean(REMEMBER_USERNAME_PREF, usernameCheckBox.isChecked());
+        editor.putBoolean(REMEMBER_PASSWORD_PREF, passwordCheckBox.isChecked());
+        editor.commit();
     }
 
     private boolean credentialsAreFilled() {
