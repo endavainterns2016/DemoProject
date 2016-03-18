@@ -2,6 +2,8 @@ package android.endava.com.demoproject;
 
 
 import android.content.SharedPreferences;
+import android.endava.com.demoproject.db.DataBaseHelper;
+import android.endava.com.demoproject.db.HelperFactory;
 import android.endava.com.demoproject.model.User;
 import android.endava.com.demoproject.retrofit.ServiceFactory;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
 import java.util.List;
 
 import retrofit2.Call;
@@ -31,31 +34,16 @@ public class LoginFragment extends Fragment {
     private Button mLoginBtn;
     private String credentials;
     private LoginOnClickListener loginOnClickListener;
-    Callback<List<User>> loginCallBack;
-    private CheckBox passwordCheckBox;
+    private Callback<List<User>> loginCallBack;
+    private DataBaseHelper dbHelper;
     private CheckBox usernameCheckBox;
-    public static final String AUTH_DATA = "authData";
-    private SharedPreferences authData;
-    private boolean rememberPassword;
-    private boolean rememberUsername;
-    private String usernamePref;
-    private String passwordPref;
     private String username;
     private String password;
-    private static final String REMEMBER_PASSWORD_PREF = "rememberPassword";
-    private static final String REMEMBER_USERNAME_PREF = "rememberUsername";
-    private static final String PASSWORD_PREF = "password";
-    private static final String USERNAME_PREF = "username";
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        authData = getActivity().getSharedPreferences(AUTH_DATA, 0);
-        rememberPassword = authData.getBoolean(REMEMBER_PASSWORD_PREF, false);
-        rememberUsername = authData.getBoolean(REMEMBER_USERNAME_PREF, false);
-        usernamePref = authData.getString(USERNAME_PREF, "");
-        passwordPref = authData.getString(PASSWORD_PREF, "");
     }
 
     @Override
@@ -66,10 +54,9 @@ public class LoginFragment extends Fragment {
 
     @Override
     public void onViewCreated(View v, Bundle savedInstanceState) {
-
+        dbHelper = HelperFactory.getHelper();
         loginOnClickListener = new LoginOnClickListener();
 
-        passwordCheckBox = (CheckBox) v.findViewById(R.id.password_chbx);
         usernameCheckBox = (CheckBox) v.findViewById(R.id.name_chbx);
         mPasswordEdt = (EditText) v.findViewById(R.id.password_edt);
         mUSerNameEdt = (EditText) v.findViewById(R.id.login_edt);
@@ -77,19 +64,35 @@ public class LoginFragment extends Fragment {
         mToolbar = (Toolbar) v.findViewById(R.id.fragment_login_toolbar);
         mToolbar.setTitle(R.string.app_name);
 
-        checkPrefCredentials();
+
+        User user = null;
+        try {
+            if (!dbHelper.getUserDAO().getAllUsers().isEmpty())
+                user = dbHelper.getUserDAO().getAllUsers().get(0);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        if (user != null) {
+            usernameCheckBox.setChecked(user.getShouldSaveUserName());
+            mUSerNameEdt.append(user.getUserName());
+        }
+
 
         loginCallBack = new Callback<List<User>>() {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if (response.body() != null) {
-                    Toast.makeText(getActivity(), response.body().get(0).getToken(),
-                            Toast.LENGTH_LONG).show();
-                    saveToPrefCredentials();
-
+                    try {
+                        User user = response.body().get(0);
+                        user.setUserName(username);
+                        user.setShouldSaveUserName(usernameCheckBox.isChecked());
+                        dbHelper.getAppDAO().create(user.getApp());
+                        dbHelper.getUserDAO().create(user);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 } else {
-                    Toast.makeText(getActivity(), getString(R.string.credentials_error),
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), getString(R.string.credentials_error), Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -103,26 +106,26 @@ public class LoginFragment extends Fragment {
         mLoginBtn.setOnClickListener(loginOnClickListener);
     }
 
-    private void checkPrefCredentials() {
-        if (rememberUsername && usernamePref.length() > 0) {
-            mUSerNameEdt.append(usernamePref);
-            usernameCheckBox.setChecked(rememberUsername);
-        }
+//    private void checkPrefCredentials() {
+//        if (rememberUsername && usernamePref.length() > 0) {
+//            mUSerNameEdt.append(usernamePref);
+//            usernameCheckBox.setChecked(rememberUsername);
+//        }
+//
+//        if (rememberPassword && passwordPref.length() > 0) {
+//            mPasswordEdt.append(passwordPref);
+//            passwordCheckBox.setChecked(rememberPassword);
+//        }
+//    }
 
-        if (rememberPassword && passwordPref.length() > 0) {
-            mPasswordEdt.append(passwordPref);
-            passwordCheckBox.setChecked(rememberPassword);
-        }
-    }
-
-    private void saveToPrefCredentials() {
-        SharedPreferences.Editor editor = authData.edit();
-        editor.putString(USERNAME_PREF, username);
-        editor.putString(PASSWORD_PREF, password);
-        editor.putBoolean(REMEMBER_USERNAME_PREF, usernameCheckBox.isChecked());
-        editor.putBoolean(REMEMBER_PASSWORD_PREF, passwordCheckBox.isChecked());
-        editor.commit();
-    }
+//    private void saveToPrefCredentials() {
+//        SharedPreferences.Editor editor = authData.edit();
+//        editor.putString(USERNAME_PREF, username);
+//        editor.putString(PASSWORD_PREF, password);
+//        editor.putBoolean(REMEMBER_USERNAME_PREF, usernameCheckBox.isChecked());
+//        editor.putBoolean(REMEMBER_PASSWORD_PREF, passwordCheckBox.isChecked());
+//        editor.commit();
+//    }
 
     private boolean credentialsAreFilled() {
         if (TextUtils.isEmpty(username)) {

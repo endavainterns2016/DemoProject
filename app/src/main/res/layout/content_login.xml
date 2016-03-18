@@ -1,62 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <EditText
+            android:id="@+id/login_edt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"
+            android:layout_gravity="center_horizontal"
             android:ems="10"
             android:hint="@string/name_hint"
-            android:id="@+id/login_edt"
-            android:layout_gravity="center_horizontal"
+            android:inputType="textPersonName"
             android:textSize="16.5sp" />
 
         <EditText
+            android:id="@+id/password_edt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:ems="10"
-            android:id="@+id/password_edt"
-            android:hint="@string/password_hint"
             android:layout_gravity="center_horizontal"
+            android:ems="10"
+            android:hint="@string/password_hint"
+            android:inputType="textPassword"
             android:textSize="16.5sp" />
 
         <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/remember_password"
-            android:id="@+id/password_chbx"
-            android:textSize="12sp"
-            android:layout_gravity="center_horizontal"
-            android:checked="false" />
-
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/remember_name"
             android:id="@+id/name_chbx"
-            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:checked="false" />
+            android:checked="false"
+            android:text="@string/remember_name"
+            android:textSize="12sp" />
 
         <Button
+            android:id="@+id/login_bnt"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/login"
-            android:id="@+id/login_bnt"
             android:layout_gravity="center_horizontal"
+            android:text="@string/login"
             android:textSize="12sp" />
     </LinearLayout>
 
