@@ -9,10 +9,13 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 
-public interface DemoProjectAPI {
+public interface UserAPI {
 
     @Headers("Accept: application/vnd.github.v3+json")
 
     @GET("/authorizations")
     Call<List<User>> auth(@Header("authorization") String username);
+
+    @GET("/user/repos")
+    Call<List<User>> getReposList(@Header("authorization") String token);
 }
