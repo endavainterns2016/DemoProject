@@ -1,11 +1,9 @@
 package android.endava.com.demoproject.model;
 
-/**
- * Created by lbuzmacov on 18-03-16.
- */
 public class Repo {
     private long id;
     private String name;
+    private String description;
 
     public long getId() {
         return id;
@@ -21,5 +19,13 @@ public class Repo {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
