@@ -8,6 +8,7 @@
     <string name="remember_name">Remember username</string>
     <string name="get_token_error">There is problem with your connection</string>
     <string name="credentials_error">Wrong username and/or password</string>
+    <string name="network_error">Wrong user or some network error</string>
     <string name="fill_in_username">Please enter username</string>
     <string name="fill_in_password">Please enter password</string>
     <string name="toolbar_repos_list">Repository List</string>
