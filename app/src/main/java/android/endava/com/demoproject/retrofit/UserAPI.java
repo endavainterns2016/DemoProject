@@ -1,5 +1,6 @@
 package android.endava.com.demoproject.retrofit;
 
+import android.endava.com.demoproject.model.Repo;
 import android.endava.com.demoproject.model.User;
 
 import java.util.List;
@@ -17,5 +18,5 @@ public interface UserAPI {
     Call<List<User>> auth(@Header("authorization") String username);
 
     @GET("/user/repos")
-    Call<List<User>> getReposList(@Header("authorization") String token);
+    Call<List<Repo>> getReposList(@Header("authorization") String token);
 }

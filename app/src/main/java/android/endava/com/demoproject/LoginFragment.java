@@ -1,7 +1,6 @@
 package android.endava.com.demoproject;
 
 
-import android.content.SharedPreferences;
 import android.endava.com.demoproject.db.DataBaseHelper;
 import android.endava.com.demoproject.db.HelperFactory;
 import android.endava.com.demoproject.model.User;
@@ -47,8 +46,7 @@ public class LoginFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
 
@@ -86,6 +84,7 @@ public class LoginFragment extends Fragment {
                         User user = response.body().get(0);
                         user.setUserName(username);
                         user.setShouldSaveUserName(usernameCheckBox.isChecked());
+                        user.setHashedCredentials(credentials);
                         dbHelper.getAppDAO().create(user.getApp());
                         dbHelper.getUserDAO().create(user);
                         getFragmentManager().beginTransaction().replace(R.id.root_activity_layout, new ReposListFragment()).commit();
@@ -152,7 +151,6 @@ public class LoginFragment extends Fragment {
             e.printStackTrace();
         }
         ServiceFactory.getInstance().auth("Basic " + credentials).enqueue(loginCallBack);
-
     }
 
     public class LoginOnClickListener implements View.OnClickListener {

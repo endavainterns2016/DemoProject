@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/drawer_menu_main"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/drawer_signout"
+            android:checkable="false"
+            android:title="@string/menu_signout" />
+    </group>
+</menu>
