@@ -12,5 +12,6 @@
     <string name="fill_in_username">Please enter username</string>
     <string name="fill_in_password">Please enter password</string>
     <string name="toolbar_repos_list">Repository List</string>
+    <string name="menu_signout">Logout</string>
 
 </resources>

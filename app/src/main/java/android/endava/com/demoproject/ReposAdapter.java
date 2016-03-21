@@ -39,6 +39,7 @@ public class ReposAdapter extends RecyclerView.Adapter<ReposAdapter.RepoViewHold
     public static class RepoViewHolder extends RecyclerView.ViewHolder {
 
         public TextView repoName, repoDescription;
+
         public RepoViewHolder(View view) {
             super(view);
             repoName = (TextView) view.findViewById(R.id.repo_name);

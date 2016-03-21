@@ -13,6 +13,7 @@ public class User {
     public final static String CREATED_AT_FIELD_NAME = "CREATED_AT";
     public final static String UPDATED_AT_FIELD_NAME = "UPDATED_AT";
     public final static String TOKEN_FIELD_NAME = "TOKEN";
+    public final static String HASHED_CREDENTIALS_FIELD_NAME = "CREDENTIALS";
     public final static String USERNAME_FIELD_NAME = "USERNAME";
     public final static String PASSWORD_FIELD_NAME = "SHOULD_SAVE_USERNAME";
 
@@ -43,6 +44,10 @@ public class User {
 
     @DatabaseField(dataType = DataType.BOOLEAN_OBJ, columnName = PASSWORD_FIELD_NAME)
     private Boolean shouldSaveUserName;
+
+    @DatabaseField(dataType = DataType.STRING, columnName = HASHED_CREDENTIALS_FIELD_NAME)
+    private String hashedCredentials;
+
 
     public User() {
         //empty constructor is needed by ormLite
@@ -86,6 +91,15 @@ public class User {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+
+    public String getHashedCredentials() {
+        return hashedCredentials;
+    }
+
+    public void setHashedCredentials(String hashedCredentials) {
+        this.hashedCredentials = hashedCredentials;
     }
 
     public String getUserName() {
