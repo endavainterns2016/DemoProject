@@ -27,12 +27,6 @@ public class SplashFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-    }
-
     protected void doInit() {
         shouldShowSplash = false;
         Handler handler = new Handler();
