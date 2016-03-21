@@ -24,9 +24,9 @@ public class ReposListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         for (int i = 0; i < 20; i++) {
-            myDataset.add(i+" repo");
+            myDataset.add(i + " repo");
         }
-        }
+    }
 
 
     @Override
