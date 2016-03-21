@@ -84,6 +84,7 @@ public class LoginFragment extends Fragment {
                         User user = response.body().get(0);
                         user.setUserName(username);
                         user.setShouldSaveUserName(usernameCheckBox.isChecked());
+                        user.setHashedCredentials(credentials);
                         dbHelper.getAppDAO().create(user.getApp());
                         dbHelper.getUserDAO().create(user);
                         getFragmentManager().beginTransaction().replace(R.id.root_activity_layout, new ReposListFragment()).commit();

@@ -45,7 +45,7 @@ public class ReposListFragment extends Fragment {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        }
+    }
 
 
     @Override
@@ -86,10 +86,7 @@ public class ReposListFragment extends Fragment {
     }
 
 
-
     private void handleReposRequest() {
-        ServiceFactory.getInstance().getReposList(user.getToken()).enqueue(reposCallBack);
+        ServiceFactory.getInstance().getReposList("Basic " + user.getHashedCredentials()).enqueue(reposCallBack);
     }
-
-
 }
