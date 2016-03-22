@@ -148,7 +148,7 @@ public class LoginFragment extends Fragment {
                     android.util.Base64.NO_WRAP
             );
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            Log.e("UnsupportedEncodingException ",e.toString());
         }
         ServiceFactory.getInstance().auth("Basic " + credentials).enqueue(loginCallBack);
     }
