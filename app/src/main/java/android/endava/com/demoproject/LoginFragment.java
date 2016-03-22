@@ -1,13 +1,13 @@
 package android.endava.com.demoproject;
 
 
+import android.content.Intent;
 import android.endava.com.demoproject.db.DataBaseHelper;
 import android.endava.com.demoproject.db.HelperFactory;
 import android.endava.com.demoproject.model.User;
 import android.endava.com.demoproject.retrofit.ServiceFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +27,7 @@ import retrofit2.Response;
 
 public class LoginFragment extends Fragment {
 
-    private Toolbar mToolbar;
+
     private EditText mPasswordEdt;
     private EditText mUSerNameEdt;
     private Button mLoginBtn;
@@ -59,8 +59,7 @@ public class LoginFragment extends Fragment {
         mPasswordEdt = (EditText) v.findViewById(R.id.password_edt);
         mUSerNameEdt = (EditText) v.findViewById(R.id.login_edt);
         mLoginBtn = (Button) v.findViewById(R.id.login_bnt);
-        mToolbar = (Toolbar) v.findViewById(R.id.fragment_login_toolbar);
-        mToolbar.setTitle(R.string.app_name);
+
 
 
         User user = null;
@@ -87,7 +86,9 @@ public class LoginFragment extends Fragment {
                         user.setHashedCredentials(credentials);
                         dbHelper.getAppDAO().create(user.getApp());
                         dbHelper.getUserDAO().create(user);
-                        getFragmentManager().beginTransaction().replace(R.id.root_activity_layout, new ReposListFragment()).commit();
+                        Intent intent = new Intent(getActivity(), MainActivity.class);
+                        startActivity(intent);
+                        getActivity().finish();
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
@@ -106,28 +107,8 @@ public class LoginFragment extends Fragment {
         mLoginBtn.setOnClickListener(loginOnClickListener);
     }
 
-//    private void checkPrefCredentials() {
-//        if (rememberUsername && usernamePref.length() > 0) {
-//            mUSerNameEdt.append(usernamePref);
-//            usernameCheckBox.setChecked(rememberUsername);
-//        }
-//
-//        if (rememberPassword && passwordPref.length() > 0) {
-//            mPasswordEdt.append(passwordPref);
-//            passwordCheckBox.setChecked(rememberPassword);
-//        }
-//    }
 
-//    private void saveToPrefCredentials() {
-//        SharedPreferences.Editor editor = authData.edit();
-//        editor.putString(USERNAME_PREF, username);
-//        editor.putString(PASSWORD_PREF, password);
-//        editor.putBoolean(REMEMBER_USERNAME_PREF, usernameCheckBox.isChecked());
-//        editor.putBoolean(REMEMBER_PASSWORD_PREF, passwordCheckBox.isChecked());
-//        editor.commit();
-//    }
-
-    private boolean credentialsAreFilled() {
+    private boolean credentialsAreFilled(String username, String password) {
         if (TextUtils.isEmpty(username)) {
             Toast.makeText(getActivity(), getString(R.string.fill_in_username),
                     Toast.LENGTH_SHORT).show();
@@ -141,7 +122,7 @@ public class LoginFragment extends Fragment {
         } else return true;
     }
 
-    private void handleLoginRequest() {
+    private void handleLoginRequest(String username, String password) {
         try {
             credentials = android.util.Base64.encodeToString(
                     (username + ":" + password).getBytes("UTF-8"),
@@ -159,8 +140,8 @@ public class LoginFragment extends Fragment {
         public void onClick(View v) {
             username = mUSerNameEdt.getText().toString();
             password = mPasswordEdt.getText().toString();
-            if (credentialsAreFilled())
-                handleLoginRequest();
+            if (credentialsAreFilled(username, password))
+                handleLoginRequest(username, password);
         }
     }
 }

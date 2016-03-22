@@ -43,7 +43,7 @@ public class SplashFragment extends Fragment {
     }
 
     protected void startNextActivity() {
-        Intent intent = new Intent(getActivity(), MainActivity.class);
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
         getActivity().startActivity(intent);
         getActivity().finish();
     }

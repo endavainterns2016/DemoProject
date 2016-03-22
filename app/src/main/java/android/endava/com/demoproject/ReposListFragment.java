@@ -25,7 +25,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ReposListFragment extends Fragment {
-    private Toolbar mToolbar;
+
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -33,19 +33,7 @@ public class ReposListFragment extends Fragment {
     private DataBaseHelper dbHelper;
     private User user;
     private Callback<List<Repo>> reposCallBack;
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        dbHelper = HelperFactory.getHelper();
-        try {
-            if (!dbHelper.getUserDAO().getAllUsers().isEmpty())
-                user = dbHelper.getUserDAO().getAllUsers().get(0);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+    private Toolbar mToolbar;
 
 
     @Override
@@ -55,14 +43,22 @@ public class ReposListFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        mToolbar = (Toolbar) getActivity().findViewById(R.id.main_toolbar);
+        mToolbar.setTitle(R.string.toolbar_repos_list);
+        dbHelper = HelperFactory.getHelper();
+        try {
+            if (!dbHelper.getUserDAO().getAllUsers().isEmpty())
+                user = dbHelper.getUserDAO().getAllUsers().get(0);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         mRecyclerView = (RecyclerView) view.findViewById(R.id.repos_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new ReposAdapter(reposList);
         mRecyclerView.setAdapter(mAdapter);
-        mToolbar = (Toolbar) view.findViewById(R.id.fragment_repos_toolbar);
-        mToolbar.setTitle(R.string.toolbar_repos_list);
+
 
         reposCallBack = new Callback<List<Repo>>() {
             @Override
