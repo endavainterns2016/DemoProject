@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +44,7 @@ public class ReposListFragment extends Fragment {
             if (!dbHelper.getUserDAO().getAllUsers().isEmpty())
                 user = dbHelper.getUserDAO().getAllUsers().get(0);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e("SQLException ",e.toString());
         }
     }
 

@@ -5,6 +5,7 @@ import android.endava.com.demoproject.db.HelperFactory;
 import android.endava.com.demoproject.model.User;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import java.sql.SQLException;
 
@@ -24,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
             if (!dbHelper.getUserDAO().getAllUsers().isEmpty())
                 user = dbHelper.getUserDAO().getAllUsers().get(0);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e("SQLException ",e.toString());
         }
         if (user != null) {
             getSupportFragmentManager().beginTransaction()
