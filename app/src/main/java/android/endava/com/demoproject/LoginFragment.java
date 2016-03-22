@@ -1,6 +1,10 @@
 package android.endava.com.demoproject;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.endava.com.demoproject.db.DataBaseHelper;
 import android.endava.com.demoproject.db.HelperFactory;
 import android.endava.com.demoproject.model.User;
@@ -39,12 +43,7 @@ public class LoginFragment extends Fragment {
     private CheckBox usernameCheckBox;
     private String username;
     private String password;
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    private BroadcastReceiver broadcastReceiver;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,9 +51,26 @@ public class LoginFragment extends Fragment {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unregisterReceiver(broadcastReceiver);
+    }
+
+    @Override
     public void onViewCreated(View v, Bundle savedInstanceState) {
         dbHelper = HelperFactory.getHelper();
         loginOnClickListener = new LoginOnClickListener();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("user_was_saved_to_db");
+
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                getFragmentManager().beginTransaction().replace(R.id.root_activity_layout, new ReposListFragment()).commit();
+            }
+        };
+        getActivity().registerReceiver(broadcastReceiver, filter);
 
         usernameCheckBox = (CheckBox) v.findViewById(R.id.name_chbx);
         mPasswordEdt = (EditText) v.findViewById(R.id.password_edt);
@@ -63,13 +79,12 @@ public class LoginFragment extends Fragment {
         mToolbar = (Toolbar) v.findViewById(R.id.fragment_login_toolbar);
         mToolbar.setTitle(R.string.app_name);
 
-
         User user = null;
         try {
             if (!dbHelper.getUserDAO().getAllUsers().isEmpty())
                 user = dbHelper.getUserDAO().getAllUsers().get(0);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e("SQLException ", e.toString());
         }
         if (user != null) {
             usernameCheckBox.setChecked(user.getShouldSaveUserName());
@@ -81,17 +96,16 @@ public class LoginFragment extends Fragment {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if (response.body() != null) {
-                    try {
-                        User user = response.body().get(0);
-                        user.setUserName(username);
-                        user.setShouldSaveUserName(usernameCheckBox.isChecked());
-                        user.setHashedCredentials(credentials);
-                        dbHelper.getAppDAO().create(user.getApp());
-                        dbHelper.getUserDAO().create(user);
-                        getFragmentManager().beginTransaction().replace(R.id.root_activity_layout, new ReposListFragment()).commit();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
+
+                    User user = response.body().get(0);
+                    user.setUserName(username);
+                    user.setShouldSaveUserName(usernameCheckBox.isChecked());
+                    user.setHashedCredentials(credentials);
+
+                    SaveUserToDB command = new SaveUserToDB(user);
+                    Intent intent = new Intent(getActivity(), SaveUserToDBService.class);
+                    intent.putExtra("command", command);
+                    getActivity().startService(intent);
                 } else {
                     Toast.makeText(getActivity(), getString(R.string.credentials_error), Toast.LENGTH_LONG).show();
                 }
@@ -107,28 +121,7 @@ public class LoginFragment extends Fragment {
         mLoginBtn.setOnClickListener(loginOnClickListener);
     }
 
-//    private void checkPrefCredentials() {
-//        if (rememberUsername && usernamePref.length() > 0) {
-//            mUSerNameEdt.append(usernamePref);
-//            usernameCheckBox.setChecked(rememberUsername);
-//        }
-//
-//        if (rememberPassword && passwordPref.length() > 0) {
-//            mPasswordEdt.append(passwordPref);
-//            passwordCheckBox.setChecked(rememberPassword);
-//        }
-//    }
-
-//    private void saveToPrefCredentials() {
-//        SharedPreferences.Editor editor = authData.edit();
-//        editor.putString(USERNAME_PREF, username);
-//        editor.putString(PASSWORD_PREF, password);
-//        editor.putBoolean(REMEMBER_USERNAME_PREF, usernameCheckBox.isChecked());
-//        editor.putBoolean(REMEMBER_PASSWORD_PREF, passwordCheckBox.isChecked());
-//        editor.commit();
-//    }
-
-    private boolean credentialsAreFilled() {
+    private boolean credentialsAreFilled(String username, String password) {
         if (TextUtils.isEmpty(username)) {
             Toast.makeText(getActivity(), getString(R.string.fill_in_username),
                     Toast.LENGTH_SHORT).show();
@@ -146,8 +139,7 @@ public class LoginFragment extends Fragment {
         try {
             credentials = android.util.Base64.encodeToString(
                     (username + ":" + password).getBytes("UTF-8"),
-                    android.util.Base64.NO_WRAP
-            );
+                    android.util.Base64.NO_WRAP);
         } catch (UnsupportedEncodingException e) {
             Log.e("UnsupportedEncoding ", e.toString());
         }
@@ -160,7 +152,7 @@ public class LoginFragment extends Fragment {
         public void onClick(View v) {
             username = mUSerNameEdt.getText().toString();
             password = mPasswordEdt.getText().toString();
-            if (credentialsAreFilled())
+            if (credentialsAreFilled(username, password))
                 handleLoginRequest();
         }
     }
