@@ -1,7 +1,10 @@
 package android.endava.com.demoproject;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.endava.com.demoproject.db.DataBaseHelper;
 import android.endava.com.demoproject.db.HelperFactory;
 import android.endava.com.demoproject.model.User;
@@ -9,6 +12,7 @@ import android.endava.com.demoproject.retrofit.ServiceFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,12 +42,7 @@ public class LoginFragment extends Fragment {
     private CheckBox usernameCheckBox;
     private String username;
     private String password;
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    private BroadcastReceiver broadcastReceiver;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,9 +50,28 @@ public class LoginFragment extends Fragment {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unregisterReceiver(broadcastReceiver);
+    }
+
+    @Override
     public void onViewCreated(View v, Bundle savedInstanceState) {
         dbHelper = HelperFactory.getHelper();
         loginOnClickListener = new LoginOnClickListener();
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("user_was_saved_to_db");
+
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Intent intentToMain = new Intent(getActivity(), MainActivity.class);
+                startActivity(intentToMain);
+                getActivity().finish();
+            }
+        };
+        getActivity().registerReceiver(broadcastReceiver, filter);
 
         usernameCheckBox = (CheckBox) v.findViewById(R.id.name_chbx);
         mPasswordEdt = (EditText) v.findViewById(R.id.password_edt);
@@ -67,7 +85,7 @@ public class LoginFragment extends Fragment {
             if (!dbHelper.getUserDAO().getAllUsers().isEmpty())
                 user = dbHelper.getUserDAO().getAllUsers().get(0);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.e("SQLException ", e.toString());
         }
         if (user != null) {
             usernameCheckBox.setChecked(user.getShouldSaveUserName());
@@ -79,19 +97,16 @@ public class LoginFragment extends Fragment {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if (response.body() != null) {
-                    try {
-                        User user = response.body().get(0);
-                        user.setUserName(username);
-                        user.setShouldSaveUserName(usernameCheckBox.isChecked());
-                        user.setHashedCredentials(credentials);
-                        dbHelper.getAppDAO().create(user.getApp());
-                        dbHelper.getUserDAO().create(user);
-                        Intent intent = new Intent(getActivity(), MainActivity.class);
-                        startActivity(intent);
-                        getActivity().finish();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
+
+                    User user = response.body().get(0);
+                    user.setUserName(username);
+                    user.setShouldSaveUserName(usernameCheckBox.isChecked());
+                    user.setHashedCredentials(credentials);
+
+                    SaveUserToDB command = new SaveUserToDB(user);
+                    Intent intent = new Intent(getActivity(), SaveUserToDBService.class);
+                    intent.putExtra("command", command);
+                    getActivity().startService(intent);
                 } else {
                     Toast.makeText(getActivity(), getString(R.string.credentials_error), Toast.LENGTH_LONG).show();
                 }
@@ -106,7 +121,6 @@ public class LoginFragment extends Fragment {
 
         mLoginBtn.setOnClickListener(loginOnClickListener);
     }
-
 
     private boolean credentialsAreFilled(String username, String password) {
         if (TextUtils.isEmpty(username)) {
@@ -126,10 +140,9 @@ public class LoginFragment extends Fragment {
         try {
             credentials = android.util.Base64.encodeToString(
                     (username + ":" + password).getBytes("UTF-8"),
-                    android.util.Base64.NO_WRAP
-            );
+                    android.util.Base64.NO_WRAP);
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            Log.e("UnsupportedEncoding ", e.toString());
         }
         ServiceFactory.getInstance().auth("Basic " + credentials).enqueue(loginCallBack);
     }

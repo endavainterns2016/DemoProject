@@ -27,6 +27,7 @@
         <activity
             android:name=".LoginActivity"
             android:theme="@style/AppTheme"/>
+        <service android:name=".SaveUserToDBService" />
     </application>
 
 </manifest>

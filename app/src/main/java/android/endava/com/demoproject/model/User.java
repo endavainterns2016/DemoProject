@@ -1,12 +1,15 @@
 package android.endava.com.demoproject.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "User")
-public class User {
+public class User implements Parcelable {
 
     public final static String GIT_HUB_ID_FIELD_NAME = "GIT_HUB_ID";
     public final static String APP_FIELD_NAME = "APP";
@@ -52,6 +55,49 @@ public class User {
     public User() {
         //empty constructor is needed by ormLite
     }
+
+
+    protected User(Parcel in) {
+        Id = in.readInt();
+        gitHubId = in.readLong();
+        createdAt = in.readString();
+        updatedAt = in.readString();
+        token = in.readString();
+        userName = in.readString();
+        hashedCredentials = in.readString();
+        shouldSaveUserName = (Boolean) in.readValue(null);
+        app = in.readParcelable(App.class.getClassLoader());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(Id);
+        dest.writeLong(gitHubId);
+        dest.writeString(createdAt);
+        dest.writeString(updatedAt);
+        dest.writeString(token);
+        dest.writeString(userName);
+        dest.writeString(hashedCredentials);
+        dest.writeValue(shouldSaveUserName);
+        dest.writeParcelable(app,flags);
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     public App getApp() {
         return app;
