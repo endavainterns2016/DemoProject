@@ -59,6 +59,7 @@ public class LoginFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         getActivity().unregisterReceiver(broadcastReceiver);
+        getActivity().stopService(new Intent(getActivity(), SaveUserToDBService.class));
     }
 
     @Override

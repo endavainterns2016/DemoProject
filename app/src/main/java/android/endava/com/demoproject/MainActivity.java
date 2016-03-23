@@ -15,6 +15,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import java.sql.SQLException;
 
@@ -25,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout mDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView mNavigationView;
+    private TextView user_login_nav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,12 +44,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         mNavigationView = (NavigationView) findViewById(R.id.nvView);
+        View header = mNavigationView.getHeaderView(0);
+        user_login_nav = (TextView) header.findViewById(R.id.user_login);
         mNavigationView.setNavigationItemSelectedListener(this);
         mToolbar = (Toolbar) findViewById(R.id.main_toolbar);
         mToolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.toolbar_color));
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, mToolbar, R.string.drawer_open, R.string.drawer_close);
         mDrawer.addDrawerListener(mDrawerToggle);
+        user_login_nav.setText(user.getUserName());
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.root_activity_layout, new ReposListFragment()).commit();
 
