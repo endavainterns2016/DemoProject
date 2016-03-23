@@ -43,6 +43,6 @@ public class LoginActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.root_login_activity_layout, new LoginFragment()).commit();
         }
-
     }
+
 }
