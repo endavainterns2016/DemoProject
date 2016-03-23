@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.endava.com.demoproject.db.DataBaseHelper;
 import android.endava.com.demoproject.db.HelperFactory;
 import android.endava.com.demoproject.model.User;
@@ -22,7 +23,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
-import java.sql.SQLException;
 import java.util.List;
 
 import retrofit2.Call;
@@ -43,6 +43,12 @@ public class LoginFragment extends Fragment {
     private String username;
     private String password;
     private BroadcastReceiver broadcastReceiver;
+    private boolean rememberUsername;
+    private String usernamePref;
+    private static final String USERNAME_PREF = "username";
+    private static final String REMEMBER_USERNAME_PREF = "rememberUsername";
+    public static final String AUTH_DATA = "authData";
+    private SharedPreferences authData;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -57,6 +63,9 @@ public class LoginFragment extends Fragment {
 
     @Override
     public void onViewCreated(View v, Bundle savedInstanceState) {
+        authData = getActivity().getSharedPreferences(AUTH_DATA, 0);
+        rememberUsername = authData.getBoolean(REMEMBER_USERNAME_PREF, false);
+        usernamePref = authData.getString(USERNAME_PREF, "");
         dbHelper = HelperFactory.getHelper();
         loginOnClickListener = new LoginOnClickListener();
 
@@ -77,30 +86,17 @@ public class LoginFragment extends Fragment {
         mPasswordEdt = (EditText) v.findViewById(R.id.password_edt);
         mUSerNameEdt = (EditText) v.findViewById(R.id.login_edt);
         mLoginBtn = (Button) v.findViewById(R.id.login_bnt);
-
-
-
-        User user = null;
-        try {
-            if (!dbHelper.getUserDAO().getAllUsers().isEmpty())
-                user = dbHelper.getUserDAO().getAllUsers().get(0);
-        } catch (SQLException e) {
-            Log.e("SQLException ", e.toString());
-        }
-        if (user != null) {
-            usernameCheckBox.setChecked(user.getShouldSaveUserName());
-            mUSerNameEdt.append(user.getUserName());
-        }
+        checkPrefCredentials();
 
 
         loginCallBack = new Callback<List<User>>() {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if (response.body() != null) {
+                    saveToPrefCredentials();
 
                     User user = response.body().get(0);
                     user.setUserName(username);
-                    user.setShouldSaveUserName(usernameCheckBox.isChecked());
                     user.setHashedCredentials(credentials);
 
                     SaveUserToDB command = new SaveUserToDB(user);
@@ -120,6 +116,22 @@ public class LoginFragment extends Fragment {
         };
 
         mLoginBtn.setOnClickListener(loginOnClickListener);
+    }
+
+
+    private void checkPrefCredentials() {
+        if (rememberUsername && usernamePref.length() > 0) {
+            mUSerNameEdt.append(usernamePref);
+            usernameCheckBox.setChecked(rememberUsername);
+        }
+    }
+
+
+    private void saveToPrefCredentials() {
+        SharedPreferences.Editor editor = authData.edit();
+        editor.putString(USERNAME_PREF, username);
+        editor.putBoolean(REMEMBER_USERNAME_PREF, usernameCheckBox.isChecked());
+        editor.commit();
     }
 
     private boolean credentialsAreFilled(String username, String password) {

@@ -1,6 +1,7 @@
 package android.endava.com.demoproject;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.endava.com.demoproject.db.DataBaseHelper;
 import android.endava.com.demoproject.db.HelperFactory;
 import android.endava.com.demoproject.model.User;
@@ -89,6 +90,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         try {
             dbHelper.getAppDAO().delete(user.getApp());
             dbHelper.getUserDAO().delete(user);
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish();
         } catch (SQLException e) {
             Log.e("SQLException ", e.toString());
         }
