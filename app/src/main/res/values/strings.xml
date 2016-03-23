@@ -13,5 +13,7 @@
     <string name="fill_in_password">Please enter password</string>
     <string name="toolbar_repos_list">Repository List</string>
     <string name="menu_signout">Logout</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
 
 </resources>

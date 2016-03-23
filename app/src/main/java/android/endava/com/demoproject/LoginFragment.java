@@ -11,7 +11,6 @@ import android.endava.com.demoproject.model.User;
 import android.endava.com.demoproject.retrofit.ServiceFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,7 +31,7 @@ import retrofit2.Response;
 
 public class LoginFragment extends Fragment {
 
-    private Toolbar mToolbar;
+
     private EditText mPasswordEdt;
     private EditText mUSerNameEdt;
     private Button mLoginBtn;
@@ -67,7 +66,9 @@ public class LoginFragment extends Fragment {
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                getFragmentManager().beginTransaction().replace(R.id.root_activity_layout, new ReposListFragment()).commit();
+                Intent intentToMain = new Intent(getActivity(), MainActivity.class);
+                startActivity(intentToMain);
+                getActivity().finish();
             }
         };
         getActivity().registerReceiver(broadcastReceiver, filter);
@@ -76,8 +77,8 @@ public class LoginFragment extends Fragment {
         mPasswordEdt = (EditText) v.findViewById(R.id.password_edt);
         mUSerNameEdt = (EditText) v.findViewById(R.id.login_edt);
         mLoginBtn = (Button) v.findViewById(R.id.login_bnt);
-        mToolbar = (Toolbar) v.findViewById(R.id.fragment_login_toolbar);
-        mToolbar.setTitle(R.string.app_name);
+
+
 
         User user = null;
         try {
@@ -135,7 +136,7 @@ public class LoginFragment extends Fragment {
         } else return true;
     }
 
-    private void handleLoginRequest() {
+    private void handleLoginRequest(String username, String password) {
         try {
             credentials = android.util.Base64.encodeToString(
                     (username + ":" + password).getBytes("UTF-8"),
@@ -153,7 +154,7 @@ public class LoginFragment extends Fragment {
             username = mUSerNameEdt.getText().toString();
             password = mPasswordEdt.getText().toString();
             if (credentialsAreFilled(username, password))
-                handleLoginRequest();
+                handleLoginRequest(username, password);
         }
     }
 }
