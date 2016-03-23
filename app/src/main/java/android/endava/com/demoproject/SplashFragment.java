@@ -1,6 +1,11 @@
 package android.endava.com.demoproject;
 
 import android.content.Intent;
+import android.endava.com.demoproject.cacheableObserver.Event;
+import android.endava.com.demoproject.cacheableObserver.EventContext;
+import android.endava.com.demoproject.cacheableObserver.Observer;
+import android.endava.com.demoproject.cacheableObserver.SplashRotationEvent;
+import android.endava.com.demoproject.cacheableObserver.Subject;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -8,9 +13,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.List;
 
-public class SplashFragment extends Fragment {
+
+public class SplashFragment extends Fragment implements Observer {
+    Subject subject = Subject.newInstance();
     private boolean shouldShowSplash = true;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -19,6 +29,17 @@ public class SplashFragment extends Fragment {
                 false);
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        subject.unregisterObservers(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        subject.registerObserver(this);
+    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -32,7 +53,8 @@ public class SplashFragment extends Fragment {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
-                startNextActivity();
+                SplashRotationEvent splashRotationEvent = new SplashRotationEvent();
+                subject.onNewEvent(splashRotationEvent);
             }
         }, 1000);
     }
@@ -46,5 +68,23 @@ public class SplashFragment extends Fragment {
         Intent intent = new Intent(getActivity(), LoginActivity.class);
         getActivity().startActivity(intent);
         getActivity().finish();
+    }
+
+    @Override
+    public void onEvent(Event e) {
+        startNextActivity();
+    }
+
+    @Override
+    public List<EventContext> getObserverKeys() {
+        EventContext eventContext = new EventContext("rotation", null);
+        List<EventContext> list = new ArrayList<>();
+        list.add(eventContext);
+        return list;
+    }
+
+    @Override
+    public boolean isMainObserverForKey(EventContext key) {
+        return false;
     }
 }
