@@ -18,7 +18,6 @@ public class User implements Parcelable {
     public final static String TOKEN_FIELD_NAME = "TOKEN";
     public final static String HASHED_CREDENTIALS_FIELD_NAME = "CREDENTIALS";
     public final static String USERNAME_FIELD_NAME = "USERNAME";
-    public final static String PASSWORD_FIELD_NAME = "SHOULD_SAVE_USERNAME";
 
     @DatabaseField(generatedId = true)
     private int Id;
@@ -45,9 +44,6 @@ public class User implements Parcelable {
     @DatabaseField(dataType = DataType.STRING, columnName = USERNAME_FIELD_NAME)
     private String userName;
 
-    @DatabaseField(dataType = DataType.BOOLEAN_OBJ, columnName = PASSWORD_FIELD_NAME)
-    private Boolean shouldSaveUserName;
-
     @DatabaseField(dataType = DataType.STRING, columnName = HASHED_CREDENTIALS_FIELD_NAME)
     private String hashedCredentials;
 
@@ -65,7 +61,6 @@ public class User implements Parcelable {
         token = in.readString();
         userName = in.readString();
         hashedCredentials = in.readString();
-        shouldSaveUserName = (Boolean) in.readValue(null);
         app = in.readParcelable(App.class.getClassLoader());
     }
 
@@ -83,7 +78,6 @@ public class User implements Parcelable {
         dest.writeString(token);
         dest.writeString(userName);
         dest.writeString(hashedCredentials);
-        dest.writeValue(shouldSaveUserName);
         dest.writeParcelable(app,flags);
     }
 
@@ -162,13 +156,5 @@ public class User implements Parcelable {
 
     public void setId(int id) {
         Id = id;
-    }
-
-    public Boolean getShouldSaveUserName() {
-        return shouldSaveUserName;
-    }
-
-    public void setShouldSaveUserName(Boolean shouldSaveUserName) {
-        this.shouldSaveUserName = shouldSaveUserName;
     }
 }
