@@ -1,4 +1,4 @@
-package android.endava.com.demoproject.db;
+package android.endava.com.demoproject.db.dao;
 
 import android.endava.com.demoproject.model.User;
 
@@ -11,13 +11,9 @@ import java.util.List;
 
 public class UserDAO extends BaseDaoImpl<User,Integer>{
 
-    protected UserDAO(ConnectionSource connectionSource,
-                      Class<User> dataClass) throws SQLException {
+    public UserDAO(ConnectionSource connectionSource,
+                   Class<User> dataClass) throws SQLException {
         super(connectionSource, dataClass);
-    }
-
-    public List<User> getAllUsers() throws SQLException{
-        return this.queryForAll();
     }
 }
 

@@ -4,6 +4,8 @@ package android.endava.com.demoproject.db;
 import android.content.Context;
 
 import android.database.sqlite.SQLiteDatabase;
+import android.endava.com.demoproject.db.dao.AppDAO;
+import android.endava.com.demoproject.db.dao.UserDAO;
 import android.endava.com.demoproject.model.App;
 import android.endava.com.demoproject.model.User;
 

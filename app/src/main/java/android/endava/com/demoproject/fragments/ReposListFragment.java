@@ -3,8 +3,7 @@ package android.endava.com.demoproject.fragments;
 
 import android.endava.com.demoproject.R;
 import android.endava.com.demoproject.ReposAdapter;
-import android.endava.com.demoproject.db.DataBaseHelper;
-import android.endava.com.demoproject.db.HelperFactory;
+import android.endava.com.demoproject.db.ClientDataBaseHelper;
 import android.endava.com.demoproject.model.Repo;
 import android.endava.com.demoproject.model.User;
 import android.endava.com.demoproject.retrofit.ServiceFactory;
@@ -13,13 +12,11 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +30,7 @@ public class ReposListFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private ArrayList<Repo> reposList = new ArrayList<>();
-    private DataBaseHelper dbHelper;
+    private ClientDataBaseHelper dbHelper;
     private User user;
     private Callback<List<Repo>> reposCallBack;
     private Toolbar mToolbar;
@@ -48,20 +45,14 @@ public class ReposListFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         mToolbar = (Toolbar) getActivity().findViewById(R.id.main_toolbar);
         mToolbar.setTitle(R.string.toolbar_repos_list);
-        dbHelper = HelperFactory.getHelper();
-        try {
-            if (!dbHelper.getUserDAO().getAllUsers().isEmpty())
-                user = dbHelper.getUserDAO().getAllUsers().get(0);
-        } catch (SQLException e) {
-            Log.e("SQLException ",e.toString());
-        }
+        dbHelper = ClientDataBaseHelper.getInstance();
+        user = dbHelper.getUser();
         mRecyclerView = (RecyclerView) view.findViewById(R.id.repos_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new ReposAdapter(reposList);
         mRecyclerView.setAdapter(mAdapter);
-
 
         reposCallBack = new Callback<List<Repo>>() {
             @Override
@@ -81,9 +72,13 @@ public class ReposListFragment extends Fragment {
                         Toast.LENGTH_LONG).show();
             }
         };
-        handleReposRequest();
-    }
 
+        if (null != user) {
+            handleReposRequest();
+        } else {
+            Toast.makeText(getActivity(), "User is null", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     private void handleReposRequest() {
         ServiceFactory.getInstance().getReposList("Basic " + user.getHashedCredentials()).enqueue(reposCallBack);
