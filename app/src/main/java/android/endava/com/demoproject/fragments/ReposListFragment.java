@@ -1,6 +1,8 @@
-package android.endava.com.demoproject;
+package android.endava.com.demoproject.fragments;
 
 
+import android.endava.com.demoproject.R;
+import android.endava.com.demoproject.ReposAdapter;
 import android.endava.com.demoproject.db.DataBaseHelper;
 import android.endava.com.demoproject.db.HelperFactory;
 import android.endava.com.demoproject.model.Repo;

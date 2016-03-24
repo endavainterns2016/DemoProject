@@ -1,4 +1,4 @@
-package android.endava.com.demoproject;
+package android.endava.com.demoproject.fragments;
 
 
 import android.content.BroadcastReceiver;
@@ -6,6 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.endava.com.demoproject.activities.MainActivity;
+import android.endava.com.demoproject.R;
+import android.endava.com.demoproject.SaveUserToDB;
+import android.endava.com.demoproject.SaveUserToDBService;
 import android.endava.com.demoproject.db.DataBaseHelper;
 import android.endava.com.demoproject.db.HelperFactory;
 import android.endava.com.demoproject.model.User;

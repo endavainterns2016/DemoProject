@@ -1,6 +1,8 @@
-package android.endava.com.demoproject;
+package android.endava.com.demoproject.fragments;
 
 import android.content.Intent;
+import android.endava.com.demoproject.activities.LoginActivity;
+import android.endava.com.demoproject.R;
 import android.endava.com.demoproject.cacheableObserver.Event;
 import android.endava.com.demoproject.cacheableObserver.EventContext;
 import android.endava.com.demoproject.cacheableObserver.Observer;

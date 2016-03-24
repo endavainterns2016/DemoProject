@@ -1,5 +1,7 @@
-package android.endava.com.demoproject;
+package android.endava.com.demoproject.activities;
 
+import android.endava.com.demoproject.R;
+import android.endava.com.demoproject.fragments.SplashFragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
