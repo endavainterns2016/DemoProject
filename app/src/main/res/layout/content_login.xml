@@ -37,10 +37,13 @@
 
         <Button
             android:id="@+id/login_bnt"
-            style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="36dp"
             android:layout_gravity="center_horizontal"
             android:text="@string/login"
-            android:textSize="12sp" />
+            android:textColor="@color/toolbar_color"
+            android:background="@drawable/button_states"
+            android:textSize="14sp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp" />
     </LinearLayout>

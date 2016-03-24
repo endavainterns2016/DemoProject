@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">DemoProject</string>
     <string name="action_settings">Settings</string>
-    <string name="login">Login</string>
+    <string name="login">LOGIN</string>
     <string name="name_hint">Username</string>
     <string name="password_hint">Password</string>
     <string name="remember_password">Remember password</string>
