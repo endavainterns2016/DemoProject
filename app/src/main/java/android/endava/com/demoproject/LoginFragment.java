@@ -132,7 +132,7 @@ public class LoginFragment extends Fragment {
         SharedPreferences.Editor editor = authData.edit();
         editor.putString(USERNAME_PREF, username);
         editor.putBoolean(REMEMBER_USERNAME_PREF, usernameCheckBox.isChecked());
-        editor.commit();
+        editor.apply();
     }
 
     private boolean credentialsAreFilled(String username, String password) {
