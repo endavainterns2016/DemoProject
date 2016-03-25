@@ -3,6 +3,7 @@ package android.endava.com.demoproject.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.endava.com.demoproject.R;
+import android.endava.com.demoproject.RoundedTransformation;
 import android.endava.com.demoproject.db.ClientDataBaseHelper;
 import android.endava.com.demoproject.fragments.ReposListFragment;
 import android.endava.com.demoproject.model.User;
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, mToolbar, R.string.drawer_open, R.string.drawer_close);
         mDrawer.addDrawerListener(mDrawerToggle);
         user_login_nav.setText(user.getUserName());
-        Picasso.with(this).load(user.getAvatarUrl()).placeholder(R.drawable.nav_drawer_background).into(avatarImageView);
+        Picasso.with(this).load(user.getAvatarUrl()).resize(80, 80).transform(new RoundedTransformation(getResources(), 40)).placeholder(R.drawable.nav_drawer_background).into(avatarImageView);
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.root_activity_layout, new ReposListFragment()).commit();
