@@ -12,6 +12,7 @@ import android.endava.com.demoproject.retrofit.ServiceFactory;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,7 +20,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnMenuTabClickListener;
@@ -44,6 +44,7 @@ public class ReposListFragment extends Fragment {
     private MainActivity mActivity;
     private BottomBar mBottomBar;
     private OnMenuTabClickListener onMenuTabClickListener;
+    private SnackBarOnClickListener snackBarOnClickListener;
 
     @Override
     public void onAttach(Context context) {
@@ -61,7 +62,7 @@ public class ReposListFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(final View view, Bundle savedInstanceState) {
         mToolbar = mActivity.getActivityToolbar();
         mToolbar.setTitle(R.string.toolbar_repos_list);
         dbHelper = ClientDataBaseHelper.getInstance();
@@ -96,21 +97,27 @@ public class ReposListFragment extends Fragment {
                     }
                     mAdapter.notifyDataSetChanged();
                 } else {
-                    Toast.makeText(mActivity, getString(R.string.network_error), Toast.LENGTH_LONG).show();
+                    Snackbar snackbar = Snackbar
+                            .make(view, getString(R.string.network_error), Snackbar.LENGTH_LONG);
+                    snackbar.show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Repo>> call, Throwable t) {
-                Toast.makeText(mActivity, getString(R.string.get_token_error),
-                        Toast.LENGTH_LONG).show();
+                Snackbar snackbar = Snackbar
+                        .make(view, getString(R.string.get_token_error), Snackbar.LENGTH_LONG)
+                        .setAction(getString(R.string.try_again), snackBarOnClickListener);
+                snackbar.show();
             }
         };
 
         if (null != user) {
             handleReposRequest();
         } else {
-            Toast.makeText(mActivity, "User is null", Toast.LENGTH_SHORT).show();
+            Snackbar snackbar = Snackbar
+                    .make(view, getString(R.string.user_is_null), Snackbar.LENGTH_LONG);
+            snackbar.show();
         }
     }
 
@@ -122,5 +129,14 @@ public class ReposListFragment extends Fragment {
 
     private void handleReposRequest() {
         ServiceFactory.getInstance().getReposList("Basic " + user.getHashedCredentials()).enqueue(reposCallBack);
+    }
+
+
+    public class SnackBarOnClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            handleReposRequest();
+        }
     }
 }
