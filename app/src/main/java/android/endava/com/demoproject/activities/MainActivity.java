@@ -3,8 +3,7 @@ package android.endava.com.demoproject.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.endava.com.demoproject.R;
-import android.endava.com.demoproject.db.DataBaseHelper;
-import android.endava.com.demoproject.db.HelperFactory;
+import android.endava.com.demoproject.db.ClientDataBaseHelper;
 import android.endava.com.demoproject.fragments.ReposListFragment;
 import android.endava.com.demoproject.model.User;
 import android.os.Bundle;
@@ -15,39 +14,36 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.sql.SQLException;
+import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private DataBaseHelper dbHelper;
     private User user;
     private Toolbar mToolbar;
     private DrawerLayout mDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView mNavigationView;
     private TextView user_login_nav;
+    private ImageView avatarImageView;
+
+    private ClientDataBaseHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        dbHelper = HelperFactory.getHelper();
-        user = null;
-        try {
-            if (!dbHelper.getUserDAO().getAllUsers().isEmpty())
-                user = dbHelper.getUserDAO().getAllUsers().get(0);
-        } catch (SQLException e) {
-            Log.e("SQLException ", e.toString());
-        }
+        dbHelper = ClientDataBaseHelper.getInstance();
+        user = dbHelper.getUser();
 
         mNavigationView = (NavigationView) findViewById(R.id.nvView);
         View header = mNavigationView.getHeaderView(0);
         user_login_nav = (TextView) header.findViewById(R.id.user_login);
+        avatarImageView = (ImageView) header.findViewById(R.id.avatar);
         mNavigationView.setNavigationItemSelectedListener(this);
         mToolbar = (Toolbar) findViewById(R.id.main_toolbar);
         mToolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.toolbar_color));
@@ -55,10 +51,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, mToolbar, R.string.drawer_open, R.string.drawer_close);
         mDrawer.addDrawerListener(mDrawerToggle);
         user_login_nav.setText(user.getUserName());
+        Picasso.with(this).load(user.getAvatarUrl()).placeholder(R.drawable.nav_drawer_background).into(avatarImageView);
+
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.root_activity_layout, new ReposListFragment()).commit();
-
     }
+
 
 
     @Override
@@ -70,6 +68,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         mDrawer.closeDrawers();
         return true;
+    }
+
+    public Toolbar getActivityToolbar() {
+        return mToolbar;
     }
 
     public void logOutDialogShow() {
@@ -95,15 +97,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void logOutUser() {
-        try {
-            dbHelper.getAppDAO().delete(user.getApp());
-            dbHelper.getUserDAO().delete(user);
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-        } catch (SQLException e) {
-            Log.e("SQLException ", e.toString());
-        }
+        dbHelper.deleteUser(user);
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override

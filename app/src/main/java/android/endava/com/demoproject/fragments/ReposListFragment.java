@@ -1,8 +1,10 @@
 package android.endava.com.demoproject.fragments;
 
 
+import android.content.Context;
 import android.endava.com.demoproject.R;
 import android.endava.com.demoproject.ReposAdapter;
+import android.endava.com.demoproject.activities.MainActivity;
 import android.endava.com.demoproject.db.ClientDataBaseHelper;
 import android.endava.com.demoproject.model.Repo;
 import android.endava.com.demoproject.model.User;
@@ -34,6 +36,15 @@ public class ReposListFragment extends Fragment {
     private User user;
     private Callback<List<Repo>> reposCallBack;
     private Toolbar mToolbar;
+    private MainActivity mActivity;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof MainActivity) {
+            mActivity = (MainActivity) context;
+        }
+    }
 
 
     @Override
@@ -43,13 +54,13 @@ public class ReposListFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        mToolbar = (Toolbar) getActivity().findViewById(R.id.main_toolbar);
+        mToolbar = mActivity.getActivityToolbar();
         mToolbar.setTitle(R.string.toolbar_repos_list);
         dbHelper = ClientDataBaseHelper.getInstance();
         user = dbHelper.getUser();
         mRecyclerView = (RecyclerView) view.findViewById(R.id.repos_recycler_view);
         mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager = new LinearLayoutManager(mActivity);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new ReposAdapter(reposList);
         mRecyclerView.setAdapter(mAdapter);
@@ -62,13 +73,13 @@ public class ReposListFragment extends Fragment {
                     reposList.addAll(response.body());
                     mAdapter.notifyDataSetChanged();
                 } else {
-                    Toast.makeText(getActivity(), getString(R.string.network_error), Toast.LENGTH_LONG).show();
+                    Toast.makeText(mActivity, getString(R.string.network_error), Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Repo>> call, Throwable t) {
-                Toast.makeText(getActivity(), getString(R.string.get_token_error),
+                Toast.makeText(mActivity, getString(R.string.get_token_error),
                         Toast.LENGTH_LONG).show();
             }
         };
@@ -76,7 +87,7 @@ public class ReposListFragment extends Fragment {
         if (null != user) {
             handleReposRequest();
         } else {
-            Toast.makeText(getActivity(), "User is null", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, "User is null", Toast.LENGTH_SHORT).show();
         }
     }
 
