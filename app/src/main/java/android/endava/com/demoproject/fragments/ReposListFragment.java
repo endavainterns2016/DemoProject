@@ -33,7 +33,6 @@ import retrofit2.Response;
 
 public class ReposListFragment extends Fragment {
 
-    private View v;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -57,8 +56,8 @@ public class ReposListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.fragment_repos_list, container, false);
-        return v;
+        return inflater.inflate(R.layout.fragment_repos_list, container, false);
+
     }
 
     @Override
@@ -67,7 +66,7 @@ public class ReposListFragment extends Fragment {
         mToolbar.setTitle(R.string.toolbar_repos_list);
         dbHelper = ClientDataBaseHelper.getInstance();
         user = dbHelper.getUser();
-        mBottomBar = BottomBar.attachShy((CoordinatorLayout) v, savedInstanceState);
+        mBottomBar = BottomBar.attachShy((CoordinatorLayout) view, savedInstanceState);
         mBottomBar.noNavBarGoodness();
         onMenuTabClickListener = new OnMenuTabClickListener() {
             @Override
