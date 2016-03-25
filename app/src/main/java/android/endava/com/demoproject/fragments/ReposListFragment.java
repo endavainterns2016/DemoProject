@@ -66,8 +66,7 @@ public class ReposListFragment extends Fragment {
         mToolbar.setTitle(R.string.toolbar_repos_list);
         dbHelper = ClientDataBaseHelper.getInstance();
         user = dbHelper.getUser();
-        mBottomBar = BottomBar.attachShy((CoordinatorLayout) view, savedInstanceState);
-        mBottomBar.noNavBarGoodness();
+        mBottomBar = BottomBar.attachShy((CoordinatorLayout) view, null, savedInstanceState);
         onMenuTabClickListener = new OnMenuTabClickListener() {
             @Override
             public void onMenuTabSelected(@IdRes int menuItemId) {
