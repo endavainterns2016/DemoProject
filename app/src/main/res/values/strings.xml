@@ -6,7 +6,7 @@
     <string name="password_hint">Password</string>
     <string name="remember_password">Remember password</string>
     <string name="remember_name">Remember username</string>
-    <string name="get_token_error">There is problem with your connection</string>
+    <string name="get_token_error">There is a problem with your network</string>
     <string name="credentials_error">Wrong username and/or password</string>
     <string name="network_error">Wrong user or some network error</string>
     <string name="fill_in_username">Please enter username</string>
@@ -19,9 +19,12 @@
     <string name="alert_delete_cancel">Cancel</string>
     <string name="logout_message">Are you sure you want to logout?</string>
     <string name="get_avatar_error">Get avatar error</string>
+    <string name="user_is_null">Invalid user</string>
 
     <string name="bottom_bar_menu_sync">Synchronise</string>
     <string name="bottom_bar_menu_like">Like</string>
     <string name="bottom_bar_menu_repo_list">Repository</string>
+
+    <string name="try_again">Try again</string>
 
 </resources>

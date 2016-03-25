@@ -15,6 +15,7 @@ import android.endava.com.demoproject.model.Avatar;
 import android.endava.com.demoproject.model.User;
 import android.endava.com.demoproject.retrofit.ServiceFactory;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -24,7 +25,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -39,6 +39,7 @@ public class LoginFragment extends Fragment {
     public static final String AUTH_DATA = "authData";
     private static final String USERNAME_PREF = "username";
     private static final String REMEMBER_USERNAME_PREF = "rememberUsername";
+    private View v;
     private EditText mPasswordEdt;
     private EditText mUSerNameEdt;
     private Button mLoginBtn;
@@ -55,6 +56,7 @@ public class LoginFragment extends Fragment {
     private LoginActivity mActivity;
     private Callback<Avatar> avatarCallBack;
     private User user;
+    private Snackbar connectionFailedSnackBar;
 
     @Override
     public void onAttach(Context context) {
@@ -66,7 +68,8 @@ public class LoginFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_login, container, false);
+        v = inflater.inflate(R.layout.fragment_login, container, false);
+        return v;
     }
 
     @Override
@@ -77,7 +80,7 @@ public class LoginFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View v, Bundle savedInstanceState) {
+    public void onViewCreated(final View v, Bundle savedInstanceState) {
         authData = mActivity.getSharedPreferences(AUTH_DATA, 0);
         rememberUsername = authData.getBoolean(REMEMBER_USERNAME_PREF, false);
         usernamePref = authData.getString(USERNAME_PREF, "");
@@ -95,7 +98,6 @@ public class LoginFragment extends Fragment {
             }
         };
         mActivity.registerReceiver(broadcastReceiver, filter);
-
         usernameCheckBox = (CheckBox) v.findViewById(R.id.name_chbx);
         mPasswordEdt = (EditText) v.findViewById(R.id.password_edt);
         mUSerNameEdt = (EditText) v.findViewById(R.id.login_edt);
@@ -103,7 +105,6 @@ public class LoginFragment extends Fragment {
         mLoginBtn.setOnClickListener(loginOnClickListener);
 
         checkPrefCredentials();
-
 
         loginCallBack = new Callback<List<User>>() {
             @Override
@@ -118,14 +119,16 @@ public class LoginFragment extends Fragment {
                     handleAvatarRequest();
 
                 } else {
-                    Toast.makeText(mActivity, getString(R.string.credentials_error), Toast.LENGTH_LONG).show();
+                    Snackbar snackbar = Snackbar
+                            .make(v, getString(R.string.credentials_error), Snackbar.LENGTH_SHORT);
+                    snackbar.show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
-                Toast.makeText(mActivity, getString(R.string.get_token_error),
-                        Toast.LENGTH_LONG).show();
+                Snackbar snackbar = getSnackBar();
+                snackbar.show();
             }
         };
 
@@ -138,18 +141,25 @@ public class LoginFragment extends Fragment {
                     Intent intent = new Intent(mActivity, SaveUserToDBService.class);
                     intent.putExtra("command", command);
                     mActivity.startService(intent);
-
                 } else {
-                    Toast.makeText(mActivity, R.string.network_error, Toast.LENGTH_LONG).show();
+                    Snackbar snackbar = getSnackBar();
+                    snackbar.show();
                 }
             }
 
             @Override
             public void onFailure(Call<Avatar> call, Throwable t) {
-                Toast.makeText(mActivity, R.string.get_avatar_error, Toast.LENGTH_LONG).show();
+                Snackbar snackbar = getSnackBar();
+                snackbar.show();
             }
         };
 
+    }
+
+    private Snackbar getSnackBar() {
+        return Snackbar
+                .make(v, getString(R.string.get_token_error), Snackbar.LENGTH_LONG)
+                .setAction(getString(R.string.try_again), loginOnClickListener);
     }
 
 
@@ -170,13 +180,14 @@ public class LoginFragment extends Fragment {
 
     private boolean credentialsAreFilled(String username, String password) {
         if (TextUtils.isEmpty(username)) {
-            Toast.makeText(mActivity, getString(R.string.fill_in_username),
-                    Toast.LENGTH_SHORT).show();
+            Snackbar snackbar = Snackbar
+                    .make(v, getString(R.string.fill_in_username), Snackbar.LENGTH_SHORT);
+            snackbar.show();
             return false;
-
         } else if (TextUtils.isEmpty(password)) {
-            Toast.makeText(mActivity, getString(R.string.fill_in_password),
-                    Toast.LENGTH_SHORT).show();
+            Snackbar snackbar = Snackbar
+                    .make(v, getString(R.string.fill_in_password), Snackbar.LENGTH_SHORT);
+            snackbar.show();
             return false;
 
         } else return true;
