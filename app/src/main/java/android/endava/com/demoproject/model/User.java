@@ -18,6 +18,7 @@ public class User implements Parcelable {
     public final static String TOKEN_FIELD_NAME = "TOKEN";
     public final static String HASHED_CREDENTIALS_FIELD_NAME = "CREDENTIALS";
     public final static String USERNAME_FIELD_NAME = "USERNAME";
+    public static final String AVATAR_URL_FIELD_NAME = "AVATAR_URL";
 
     @DatabaseField(generatedId = true)
     private int Id;
@@ -47,6 +48,9 @@ public class User implements Parcelable {
     @DatabaseField(dataType = DataType.STRING, columnName = HASHED_CREDENTIALS_FIELD_NAME)
     private String hashedCredentials;
 
+    @DatabaseField(dataType = DataType.STRING, columnName = AVATAR_URL_FIELD_NAME)
+    private String avatarUrl;
+
 
     public User() {
         //empty constructor is needed by ormLite
@@ -61,8 +65,11 @@ public class User implements Parcelable {
         token = in.readString();
         userName = in.readString();
         hashedCredentials = in.readString();
+        avatarUrl = in.readString();
         app = in.readParcelable(App.class.getClassLoader());
     }
+
+
 
     @Override
     public int describeContents() {
@@ -78,6 +85,7 @@ public class User implements Parcelable {
         dest.writeString(token);
         dest.writeString(userName);
         dest.writeString(hashedCredentials);
+        dest.writeString(avatarUrl);
         dest.writeParcelable(app,flags);
     }
 
@@ -92,6 +100,15 @@ public class User implements Parcelable {
             return new User[size];
         }
     };
+
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
 
     public App getApp() {
         return app;

@@ -1,8 +1,10 @@
 package android.endava.com.demoproject.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.endava.com.demoproject.activities.LoginActivity;
 import android.endava.com.demoproject.R;
+import android.endava.com.demoproject.activities.SplashActivity;
 import android.endava.com.demoproject.cacheableObserver.Event;
 import android.endava.com.demoproject.cacheableObserver.EventContext;
 import android.endava.com.demoproject.cacheableObserver.Observer;
@@ -22,6 +24,15 @@ import java.util.List;
 public class SplashFragment extends Fragment implements Observer {
     Subject subject = Subject.newInstance();
     private boolean shouldShowSplash = true;
+    private SplashActivity mActivity;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof SplashActivity) {
+            mActivity = (SplashActivity) context;
+        }
+    }
 
 
     @Override
@@ -67,9 +78,9 @@ public class SplashFragment extends Fragment implements Observer {
     }
 
     protected void startNextActivity() {
-        Intent intent = new Intent(getActivity(), LoginActivity.class);
-        getActivity().startActivity(intent);
-        getActivity().finish();
+        Intent intent = new Intent(mActivity, LoginActivity.class);
+        mActivity.startActivity(intent);
+        mActivity.finish();
     }
 
     @Override

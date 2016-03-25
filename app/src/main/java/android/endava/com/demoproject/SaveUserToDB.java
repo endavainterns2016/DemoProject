@@ -1,18 +1,15 @@
 package android.endava.com.demoproject;
 
 
-import android.endava.com.demoproject.db.DataBaseHelper;
-import android.endava.com.demoproject.db.HelperFactory;
+import android.endava.com.demoproject.db.ClientDataBaseHelper;
 import android.endava.com.demoproject.model.User;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.sql.SQLException;
-
 public class SaveUserToDB implements Command, Parcelable {
 
     User user;
-    DataBaseHelper dbHelper = HelperFactory.getHelper();
+    ClientDataBaseHelper dbHelper = ClientDataBaseHelper.getInstance();
 
     public SaveUserToDB(User user) {
         this.user = user;
@@ -20,12 +17,7 @@ public class SaveUserToDB implements Command, Parcelable {
 
     @Override
     public void execute() {
-        try {
-            dbHelper.getAppDAO().create(user.getApp());
-            dbHelper.getUserDAO().create(user);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+            dbHelper.createUser(user);
     }
 
     @Override

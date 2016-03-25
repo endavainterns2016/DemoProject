@@ -6,12 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.endava.com.demoproject.activities.MainActivity;
 import android.endava.com.demoproject.R;
 import android.endava.com.demoproject.SaveUserToDB;
 import android.endava.com.demoproject.SaveUserToDBService;
-import android.endava.com.demoproject.db.DataBaseHelper;
-import android.endava.com.demoproject.db.HelperFactory;
+import android.endava.com.demoproject.activities.LoginActivity;
+import android.endava.com.demoproject.activities.MainActivity;
+import android.endava.com.demoproject.model.Avatar;
 import android.endava.com.demoproject.model.User;
 import android.endava.com.demoproject.retrofit.ServiceFactory;
 import android.os.Bundle;
@@ -36,23 +36,33 @@ import retrofit2.Response;
 public class LoginFragment extends Fragment {
 
 
+    public static final String AUTH_DATA = "authData";
+    private static final String USERNAME_PREF = "username";
+    private static final String REMEMBER_USERNAME_PREF = "rememberUsername";
     private EditText mPasswordEdt;
     private EditText mUSerNameEdt;
     private Button mLoginBtn;
     private String credentials;
     private LoginOnClickListener loginOnClickListener;
     private Callback<List<User>> loginCallBack;
-    private DataBaseHelper dbHelper;
     private CheckBox usernameCheckBox;
     private String username;
     private String password;
     private BroadcastReceiver broadcastReceiver;
     private boolean rememberUsername;
     private String usernamePref;
-    private static final String USERNAME_PREF = "username";
-    private static final String REMEMBER_USERNAME_PREF = "rememberUsername";
-    public static final String AUTH_DATA = "authData";
     private SharedPreferences authData;
+    private LoginActivity mActivity;
+    private Callback<Avatar> avatarCallBack;
+    private User user;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof LoginActivity) {
+            mActivity = (LoginActivity) context;
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -62,16 +72,15 @@ public class LoginFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getActivity().unregisterReceiver(broadcastReceiver);
-        getActivity().stopService(new Intent(getActivity(), SaveUserToDBService.class));
+        mActivity.unregisterReceiver(broadcastReceiver);
+        mActivity.stopService(new Intent(mActivity, SaveUserToDBService.class));
     }
 
     @Override
     public void onViewCreated(View v, Bundle savedInstanceState) {
-        authData = getActivity().getSharedPreferences(AUTH_DATA, 0);
+        authData = mActivity.getSharedPreferences(AUTH_DATA, 0);
         rememberUsername = authData.getBoolean(REMEMBER_USERNAME_PREF, false);
         usernamePref = authData.getString(USERNAME_PREF, "");
-        dbHelper = HelperFactory.getHelper();
         loginOnClickListener = new LoginOnClickListener();
 
         IntentFilter filter = new IntentFilter();
@@ -80,17 +89,19 @@ public class LoginFragment extends Fragment {
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Intent intentToMain = new Intent(getActivity(), MainActivity.class);
+                Intent intentToMain = new Intent(mActivity, MainActivity.class);
                 startActivity(intentToMain);
-                getActivity().finish();
+                mActivity.finish();
             }
         };
-        getActivity().registerReceiver(broadcastReceiver, filter);
+        mActivity.registerReceiver(broadcastReceiver, filter);
 
         usernameCheckBox = (CheckBox) v.findViewById(R.id.name_chbx);
         mPasswordEdt = (EditText) v.findViewById(R.id.password_edt);
         mUSerNameEdt = (EditText) v.findViewById(R.id.login_edt);
         mLoginBtn = (Button) v.findViewById(R.id.login_bnt);
+        mLoginBtn.setOnClickListener(loginOnClickListener);
+
         checkPrefCredentials();
 
 
@@ -100,27 +111,45 @@ public class LoginFragment extends Fragment {
                 if (response.body() != null) {
                     saveToPrefCredentials();
 
-                    User user = response.body().get(0);
+                    user = response.body().get(0);
                     user.setUserName(username);
                     user.setHashedCredentials(credentials);
 
-                    SaveUserToDB command = new SaveUserToDB(user);
-                    Intent intent = new Intent(getActivity(), SaveUserToDBService.class);
-                    intent.putExtra("command", command);
-                    getActivity().startService(intent);
+                    handleAvatarRequest();
+
                 } else {
-                    Toast.makeText(getActivity(), getString(R.string.credentials_error), Toast.LENGTH_LONG).show();
+                    Toast.makeText(mActivity, getString(R.string.credentials_error), Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
-                Toast.makeText(getActivity(), getString(R.string.get_token_error),
+                Toast.makeText(mActivity, getString(R.string.get_token_error),
                         Toast.LENGTH_LONG).show();
             }
         };
 
-        mLoginBtn.setOnClickListener(loginOnClickListener);
+        avatarCallBack = new Callback<Avatar>() {
+            @Override
+            public void onResponse(Call<Avatar> call, Response<Avatar> response) {
+                if (response.body() != null) {
+                    user.setAvatarUrl(response.body().getAvatarUrl());
+                    SaveUserToDB command = new SaveUserToDB(user);
+                    Intent intent = new Intent(mActivity, SaveUserToDBService.class);
+                    intent.putExtra("command", command);
+                    mActivity.startService(intent);
+
+                } else {
+                    Toast.makeText(mActivity, R.string.network_error, Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Avatar> call, Throwable t) {
+                Toast.makeText(mActivity, R.string.get_avatar_error, Toast.LENGTH_LONG).show();
+            }
+        };
+
     }
 
 
@@ -141,16 +170,21 @@ public class LoginFragment extends Fragment {
 
     private boolean credentialsAreFilled(String username, String password) {
         if (TextUtils.isEmpty(username)) {
-            Toast.makeText(getActivity(), getString(R.string.fill_in_username),
+            Toast.makeText(mActivity, getString(R.string.fill_in_username),
                     Toast.LENGTH_SHORT).show();
             return false;
 
         } else if (TextUtils.isEmpty(password)) {
-            Toast.makeText(getActivity(), getString(R.string.fill_in_password),
+            Toast.makeText(mActivity, getString(R.string.fill_in_password),
                     Toast.LENGTH_SHORT).show();
             return false;
 
         } else return true;
+    }
+
+
+    private void handleAvatarRequest() {
+        ServiceFactory.getInstance().getUserAvatar("Basic " + user.getHashedCredentials()).enqueue(avatarCallBack);
     }
 
     private void handleLoginRequest(String username, String password) {
