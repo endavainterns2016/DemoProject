@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "android.endava.com.demoproject"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -29,4 +29,5 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.0.0'
     compile 'com.j256.ormlite:ormlite-android:4.48'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.roughike:bottom-bar:1.2.3'
 }

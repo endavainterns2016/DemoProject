@@ -10,6 +10,8 @@ import android.endava.com.demoproject.model.Repo;
 import android.endava.com.demoproject.model.User;
 import android.endava.com.demoproject.retrofit.ServiceFactory;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +20,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.OnMenuTabClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +42,8 @@ public class ReposListFragment extends Fragment {
     private Callback<List<Repo>> reposCallBack;
     private Toolbar mToolbar;
     private MainActivity mActivity;
+    private BottomBar mBottomBar;
+    private OnMenuTabClickListener onMenuTabClickListener;
 
     @Override
     public void onAttach(Context context) {
@@ -50,6 +57,7 @@ public class ReposListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_repos_list, container, false);
+
     }
 
     @Override
@@ -58,6 +66,19 @@ public class ReposListFragment extends Fragment {
         mToolbar.setTitle(R.string.toolbar_repos_list);
         dbHelper = ClientDataBaseHelper.getInstance();
         user = dbHelper.getUser();
+        mBottomBar = BottomBar.attachShy((CoordinatorLayout) view, null, savedInstanceState);
+        onMenuTabClickListener = new OnMenuTabClickListener() {
+            @Override
+            public void onMenuTabSelected(@IdRes int menuItemId) {
+                //do smth
+            }
+
+            @Override
+            public void onMenuTabReSelected(@IdRes int menuItemId) {
+                //redo smth
+            }
+        };
+        mBottomBar.setItemsFromMenu(R.menu.repos_list_fragment_bottom_bar, onMenuTabClickListener);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.repos_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(mActivity);
@@ -70,7 +91,9 @@ public class ReposListFragment extends Fragment {
             public void onResponse(Call<List<Repo>> call, Response<List<Repo>> response) {
                 if (response.body() != null) {
                     reposList.clear();
-                    reposList.addAll(response.body());
+                    for (int i = 0; i < 50; i++) {
+                        reposList.addAll(response.body());
+                    }
                     mAdapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(mActivity, getString(R.string.network_error), Toast.LENGTH_LONG).show();
@@ -89,6 +112,12 @@ public class ReposListFragment extends Fragment {
         } else {
             Toast.makeText(mActivity, "User is null", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mBottomBar.onSaveInstanceState(outState);
     }
 
     private void handleReposRequest() {
