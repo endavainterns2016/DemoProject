@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -79,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         AlertDialog.Builder logOutDialog = new AlertDialog.Builder(this);
         logOutDialog.setTitle(R.string.menu_signout);
         logOutDialog.setCancelable(true);
+        logOutDialog.setIcon(R.drawable.ic_power_settings_new_black_24dp);
         logOutDialog.setMessage(R.string.logout_message);
 
         logOutDialog.setPositiveButton(R.string.alert_delete_ok, new DialogInterface.OnClickListener() {
