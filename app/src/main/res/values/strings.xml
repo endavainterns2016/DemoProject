@@ -20,4 +20,8 @@
     <string name="logout_message">Are you sure you want to logout?</string>
     <string name="get_avatar_error">Get avatar error</string>
 
+    <string name="bottom_bar_menu_sync">Synchronise</string>
+    <string name="bottom_bar_menu_like">Like</string>
+    <string name="bottom_bar_menu_repo_list">Repository</string>
+
 </resources>
