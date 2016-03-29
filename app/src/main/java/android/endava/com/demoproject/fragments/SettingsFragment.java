@@ -11,10 +11,6 @@ import android.view.View;
 
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static String AUTO_SYNC_NUMBER_PICKER_KEY = "auto_sync_number_picker_key";
-    private NumberPickerPreference numberPickerPreference;
-    private SharedPreferences prefs;
-    private Integer value;
-    private String summary;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,10 +44,10 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     }
 
     public void setUpSettingsView() {
-        numberPickerPreference = (NumberPickerPreference) findPreference(AUTO_SYNC_NUMBER_PICKER_KEY);
-        prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        value = prefs.getInt(AUTO_SYNC_NUMBER_PICKER_KEY, 1);
-        summary = String.format(getString(R.string.settings_auto_sync_timer_value), value);
+        NumberPickerPreference numberPickerPreference = (NumberPickerPreference) findPreference(AUTO_SYNC_NUMBER_PICKER_KEY);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        Integer value = prefs.getInt(AUTO_SYNC_NUMBER_PICKER_KEY, 1);
+        String summary = String.format(getString(R.string.settings_auto_sync_timer_value), value);
         numberPickerPreference.setSummary(summary);
     }
 }
