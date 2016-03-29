@@ -65,6 +65,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.drawer_signout:
                 logOutDialogShow();
                 break;
+            case R.id.drawer_settings:
+                Intent intentToMain = new Intent(this, SettingsActivity.class);
+                startActivity(intentToMain);
+                break;
         }
         mDrawer.closeDrawers();
         return true;

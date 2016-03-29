@@ -86,6 +86,7 @@ public class ReposListFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new ReposAdapter(reposList);
         mRecyclerView.setAdapter(mAdapter);
+        snackBarOnClickListener = new SnackBarOnClickListener();
 
         reposCallBack = new Callback<List<Repo>>() {
             @Override
