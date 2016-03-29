@@ -15,8 +15,8 @@ import java.util.HashMap;
 
 public class SettingsActivity extends PreferenceActivity {
 
-    private HashMap<String,AppCompatDelegate> delegateMap = new HashMap<>();
     private static String DELEGATE_KEY = "delegate";
+    private HashMap<String, AppCompatDelegate> delegateMap = new HashMap<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,7 @@ public class SettingsActivity extends PreferenceActivity {
             AppCompatDelegate mDelegate = AppCompatDelegate.create(this, null);
             delegateMap.put(DELEGATE_KEY, mDelegate);
             return mDelegate;
-        }else{
+        } else {
             return delegateMap.get(DELEGATE_KEY);
         }
     }
