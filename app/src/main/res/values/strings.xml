@@ -28,4 +28,9 @@
 
     <string name="try_again">Try again</string>
 
+    <string name="settings_enable_auto_sync">Auto synchronization</string>
+    <string name="settings_auto_sync_timer">Synchronization</string>
+    <string name="settings_auto_sync_timer_value">Every %d minutes</string>
+
+
 </resources>

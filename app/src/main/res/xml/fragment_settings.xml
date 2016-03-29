@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:id="@+id/enable_auto_sync_check_box"
+            android:key="enable_auto_sync"
+            android:title="@string/settings_enable_auto_sync" />
+
+        <android.endava.com.demoproject.dialogs.NumberPickerPreference
+            android:key="auto_sync_number_picker_key"
+            android:id="@+id/number_picker"
+            android:negativeButtonText="@string/alert_delete_cancel"
+            android:positiveButtonText="@string/alert_delete_ok"
+            android:dependency="enable_auto_sync"
+            android:title="@string/settings_auto_sync_timer" />
+</PreferenceScreen>
