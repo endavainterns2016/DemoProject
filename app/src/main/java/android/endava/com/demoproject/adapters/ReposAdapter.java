@@ -1,5 +1,6 @@
-package android.endava.com.demoproject;
+package android.endava.com.demoproject.adapters;
 
+import android.endava.com.demoproject.R;
 import android.endava.com.demoproject.model.Repo;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

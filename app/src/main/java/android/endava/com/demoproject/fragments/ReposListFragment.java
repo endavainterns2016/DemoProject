@@ -4,7 +4,7 @@ package android.endava.com.demoproject.fragments;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.endava.com.demoproject.R;
-import android.endava.com.demoproject.ReposAdapter;
+import android.endava.com.demoproject.adapters.ReposAdapter;
 import android.endava.com.demoproject.activities.MainActivity;
 import android.endava.com.demoproject.asyncLoader.UserLoadingTask;
 import android.endava.com.demoproject.constants.LoaderConstants;
