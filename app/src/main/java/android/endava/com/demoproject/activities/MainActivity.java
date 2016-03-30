@@ -1,15 +1,19 @@
 package android.endava.com.demoproject.activities;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.endava.com.demoproject.R;
 import android.endava.com.demoproject.RoundedTransformation;
+import android.endava.com.demoproject.asyncLoader.UserLoadingTask;
 import android.endava.com.demoproject.db.ClientDataBaseHelper;
 import android.endava.com.demoproject.fragments.ReposListFragment;
 import android.endava.com.demoproject.model.User;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -22,16 +26,17 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,LoaderManager.LoaderCallbacks<User> {
     private User user;
     private Toolbar mToolbar;
     private DrawerLayout mDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView mNavigationView;
-    private TextView user_login_nav;
-    private ImageView avatarImageView;
+    private ProgressDialog progressDialog;
 
     private ClientDataBaseHelper dbHelper;
+    private TextView user_login_nav;
+    private ImageView avatarImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +44,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.main_activity);
 
         dbHelper = ClientDataBaseHelper.getInstance();
-        user = dbHelper.getUser();
+        progressDialog = ProgressDialog.show(this, "", getString(R.string.progress_dialog_loading));
+        getSupportLoaderManager().restartLoader(LoaderIDs.USER_LOADING_TASK_ID, savedInstanceState, this);
 
         mNavigationView = (NavigationView) findViewById(R.id.nvView);
         View header = mNavigationView.getHeaderView(0);
@@ -51,8 +57,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, mToolbar, R.string.drawer_open, R.string.drawer_close);
         mDrawer.addDrawerListener(mDrawerToggle);
-        user_login_nav.setText(user.getUserName());
-        Picasso.with(this).load(user.getAvatarUrl()).resize(80, 80).transform(new RoundedTransformation(getResources(), 40)).placeholder(R.drawable.nav_drawer_background).into(avatarImageView);
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.root_activity_layout, new ReposListFragment()).commit();
@@ -123,4 +127,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    @Override
+    public Loader onCreateLoader(int id, Bundle args) {
+        return new UserLoadingTask(MainActivity.this);
+    }
+
+    @Override
+    public void onLoadFinished(Loader loader, User result) {
+        user = result;
+        user_login_nav.setText(result.getUserName());
+        Picasso.with(this).load(result.getAvatarUrl()).resize(80, 80).transform(new RoundedTransformation(getResources(), 40)).placeholder(R.drawable.nav_drawer_background).into(avatarImageView);
+        progressDialog.dismiss();
+    }
+
+    @Override
+    public void onLoaderReset(Loader loader) {
+
+    }
 }
