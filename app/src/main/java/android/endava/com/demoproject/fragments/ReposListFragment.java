@@ -1,11 +1,13 @@
 package android.endava.com.demoproject.fragments;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.endava.com.demoproject.R;
 import android.endava.com.demoproject.ReposAdapter;
 import android.endava.com.demoproject.activities.MainActivity;
-import android.endava.com.demoproject.db.ClientDataBaseHelper;
+import android.endava.com.demoproject.asyncLoader.UserLoadingTask;
+import android.endava.com.demoproject.constants.LoaderConstants;
 import android.endava.com.demoproject.model.Repo;
 import android.endava.com.demoproject.model.User;
 import android.endava.com.demoproject.retrofit.ServiceFactory;
@@ -14,6 +16,8 @@ import android.support.annotation.IdRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -31,20 +35,17 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ReposListFragment extends Fragment {
+public class ReposListFragment extends Fragment implements LoaderManager.LoaderCallbacks<User>, OnMenuTabClickListener {
 
-    private RecyclerView mRecyclerView;
+
     private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
     private ArrayList<Repo> reposList = new ArrayList<>();
-    private ClientDataBaseHelper dbHelper;
     private User user;
     private Callback<List<Repo>> reposCallBack;
-    private Toolbar mToolbar;
     private MainActivity mActivity;
     private BottomBar mBottomBar;
-    private OnMenuTabClickListener onMenuTabClickListener;
     private SnackBarOnClickListener snackBarOnClickListener;
+    private ProgressDialog progressDialog;
 
     @Override
     public void onAttach(Context context) {
@@ -54,6 +55,10 @@ public class ReposListFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -62,27 +67,22 @@ public class ReposListFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(final View view, Bundle savedInstanceState) {
-        mToolbar = mActivity.getActivityToolbar();
-        mToolbar.setTitle(R.string.toolbar_repos_list);
-        dbHelper = ClientDataBaseHelper.getInstance();
-        user = dbHelper.getUser();
-        mBottomBar = BottomBar.attachShy((CoordinatorLayout) view, null, savedInstanceState);
-        onMenuTabClickListener = new OnMenuTabClickListener() {
-            @Override
-            public void onMenuTabSelected(@IdRes int menuItemId) {
-                //do smth
-            }
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
-            @Override
-            public void onMenuTabReSelected(@IdRes int menuItemId) {
-                //redo smth
-            }
-        };
-        mBottomBar.setItemsFromMenu(R.menu.repos_list_fragment_bottom_bar, onMenuTabClickListener);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.repos_recycler_view);
+        getLoaderManager().restartLoader(LoaderConstants.USER_LOADING_TASK_ID, null, this);
+
+    }
+
+    @Override
+    public void onViewCreated(final View view, Bundle savedInstanceState) {
+        Toolbar mToolbar = mActivity.getActivityToolbar();
+        mToolbar.setTitle(R.string.toolbar_repos_list);
+        mBottomBar = BottomBar.attachShy((CoordinatorLayout) view, null, savedInstanceState);
+        mBottomBar.setItemsFromMenu(R.menu.repos_list_fragment_bottom_bar, this);
+        RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.repos_recycler_view);
         mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(mActivity);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mActivity);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new ReposAdapter(reposList);
         mRecyclerView.setAdapter(mAdapter);
@@ -112,14 +112,6 @@ public class ReposListFragment extends Fragment {
                 snackbar.show();
             }
         };
-
-        if (null != user) {
-            handleReposRequest();
-        } else {
-            Snackbar snackbar = Snackbar
-                    .make(view, getString(R.string.user_is_null), Snackbar.LENGTH_LONG);
-            snackbar.show();
-        }
     }
 
     @Override
@@ -130,6 +122,35 @@ public class ReposListFragment extends Fragment {
 
     private void handleReposRequest() {
         ServiceFactory.getInstance().getReposList("Basic " + user.getHashedCredentials()).enqueue(reposCallBack);
+    }
+
+    @Override
+    public Loader<User> onCreateLoader(final int id, final Bundle args) {
+        progressDialog = ProgressDialog.show(getContext(), "", getString(R.string.progress_dialog_loading));
+        return new UserLoadingTask(mActivity);
+    }
+
+    @Override
+    public void onLoadFinished(final Loader<User> loader, final User result) {
+        if (result != null) {
+            user = result;
+            handleReposRequest();
+        }
+        progressDialog.dismiss();
+    }
+
+    @Override
+    public void onLoaderReset(final Loader<User> loader) {
+    }
+
+    @Override
+    public void onMenuTabSelected(@IdRes int menuItemId) {
+        // do smth
+    }
+
+    @Override
+    public void onMenuTabReSelected(@IdRes int menuItemId) {
+        // do smth
     }
 
 

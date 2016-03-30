@@ -8,8 +8,8 @@ import android.os.Parcelable;
 
 public class SaveUserToDB implements Command, Parcelable {
 
-    User user;
-    ClientDataBaseHelper dbHelper = ClientDataBaseHelper.getInstance();
+    private User user;
+    private ClientDataBaseHelper dbHelper = ClientDataBaseHelper.getInstance();
 
     public SaveUserToDB(User user) {
         this.user = user;
