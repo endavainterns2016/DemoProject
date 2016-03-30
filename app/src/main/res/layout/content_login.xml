@@ -1,30 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+
+    android:layout_height="match_parent">
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_gravity="center">
 
-        <EditText
-            android:id="@+id/login_edt"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/welcome_back"
+            android:textColor="@color/colorPrimary"
+            android:textSize="28sp"
+            android:textStyle="italic"
+            android:layout_gravity="center_horizontal" />
+
+        <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp">
+        <EditText android:id="@+id/login_edt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:ems="10"
-            android:hint="@string/name_hint"
-            android:inputType="textPersonName"
-            android:textSize="16.5sp" />
+            android:inputType="textEmailAddress"
+            android:hint="@string/email_hint" />
+    </android.support.design.widget.TextInputLayout>
 
-        <EditText
-            android:id="@+id/password_edt"
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp">
+        <EditText android:id="@+id/password_edt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:ems="10"
-            android:hint="@string/password_hint"
             android:inputType="textPassword"
-            android:textSize="16.5sp" />
+            android:hint="@string/password_hint" />
+    </android.support.design.widget.TextInputLayout>
 
         <CheckBox
             android:id="@+id/name_chbx"
@@ -33,11 +53,12 @@
             android:layout_gravity="center_horizontal"
             android:checked="false"
             android:text="@string/remember_name"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:layout_marginBottom="16dp" />
 
         <Button
             android:id="@+id/login_bnt"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="36dp"
             android:layout_gravity="center_horizontal"
             android:text="@string/login"
@@ -46,4 +67,7 @@
             android:textSize="14sp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp" />
+
     </LinearLayout>
+
+</FrameLayout>
