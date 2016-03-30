@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.endava.com.demoproject.R;
 import android.endava.com.demoproject.RoundedTransformation;
 import android.endava.com.demoproject.asyncLoader.UserLoadingTask;
+import android.endava.com.demoproject.constants.LoaderConstants;
 import android.endava.com.demoproject.db.ClientDataBaseHelper;
 import android.endava.com.demoproject.fragments.ReposListFragment;
 import android.endava.com.demoproject.model.User;
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         dbHelper = ClientDataBaseHelper.getInstance();
         progressDialog = ProgressDialog.show(this, "", getString(R.string.progress_dialog_loading));
-        getSupportLoaderManager().restartLoader(LoaderIDs.USER_LOADING_TASK_ID, savedInstanceState, this);
+        getSupportLoaderManager().restartLoader(LoaderConstants.USER_LOADING_TASK_ID, savedInstanceState, this);
 
         mNavigationView = (NavigationView) findViewById(R.id.nvView);
         View header = mNavigationView.getHeaderView(0);

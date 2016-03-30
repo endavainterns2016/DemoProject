@@ -7,6 +7,7 @@ import android.endava.com.demoproject.R;
 import android.endava.com.demoproject.ReposAdapter;
 import android.endava.com.demoproject.activities.MainActivity;
 import android.endava.com.demoproject.asyncLoader.UserLoadingTask;
+import android.endava.com.demoproject.constants.LoaderConstants;
 import android.endava.com.demoproject.model.Repo;
 import android.endava.com.demoproject.model.User;
 import android.endava.com.demoproject.retrofit.ServiceFactory;
@@ -69,7 +70,7 @@ public class ReposListFragment extends Fragment implements LoaderManager.LoaderC
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        getLoaderManager().restartLoader(LoaderIDs.USER_LOADING_TASK_ID, null, this);
+        getLoaderManager().restartLoader(LoaderConstants.USER_LOADING_TASK_ID, null, this);
 
     }
 

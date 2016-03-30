@@ -6,8 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.endava.com.demoproject.R;
-import android.endava.com.demoproject.asyncLoader.LoaderIDs;
 import android.endava.com.demoproject.asyncLoader.UserLoadingTask;
+import android.endava.com.demoproject.constants.LoaderConstants;
 import android.endava.com.demoproject.db.HelperFactory;
 import android.endava.com.demoproject.fragments.LoginFragment;
 import android.endava.com.demoproject.model.User;
@@ -43,7 +43,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         LoginActivity.this.registerReceiver(broadcastReceiver, filter);
 
         progressDialog = ProgressDialog.show(this, "", getString(R.string.progress_dialog_loading));
-        getSupportLoaderManager().restartLoader(LoaderIDs.USER_LOADING_TASK_ID, savedInstanceState, this);
+        getSupportLoaderManager().restartLoader(LoaderConstants.USER_LOADING_TASK_ID, savedInstanceState, this);
     }
 
     private void doLogin(User user) {
