@@ -1,24 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="16dp"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
-    android:paddingRight="16dp">
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/repo_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
         android:text="NAME"
-        android:paddingBottom="5dp" />
+        android:textColor="@color/text"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="8dp" />
+
+    <TextView
+        android:id="@+id/repo_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/repo_name"
+        android:text="Description"
+        android:textColor="@color/secondary_text"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp" />
 
     <TextView
         android:id="@+id/repo_descrition"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/repo_name"
         android:text="Description"
-        android:layout_below="@+id/repo_name" />
+        android:textColor="@color/secondary_text"
+        android:paddingBottom="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp" />
 
-</RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/colorPrimaryLight" />
+
+</LinearLayout>

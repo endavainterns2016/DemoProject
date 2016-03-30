@@ -29,6 +29,7 @@ public class ReposAdapter extends RecyclerView.Adapter<ReposAdapter.RepoViewHold
     public void onBindViewHolder(RepoViewHolder holder, int position) {
         holder.repoName.setText(reposList.get(position).getName());
         holder.repoDescription.setText(reposList.get(position).getDescription());
+        holder.repoId.setText(String.valueOf(reposList.get(position).getId()));
 
     }
 
@@ -39,12 +40,13 @@ public class ReposAdapter extends RecyclerView.Adapter<ReposAdapter.RepoViewHold
 
     public static class RepoViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView repoName, repoDescription;
+        public TextView repoName, repoDescription, repoId;
 
         public RepoViewHolder(View view) {
             super(view);
             repoName = (TextView) view.findViewById(R.id.repo_name);
             repoDescription = (TextView) view.findViewById(R.id.repo_descrition);
+            repoId = (TextView) view.findViewById(R.id.repo_id);
         }
     }
 }
