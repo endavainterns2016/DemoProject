@@ -18,10 +18,11 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-public class LoginActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<User>{
+public class LoginActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<User> {
 
     private ProgressDialog progressDialog;
     private User user;
+    private BroadcastReceiver broadcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,16 +35,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
         IntentFilter filter = new IntentFilter();
         filter.addAction("load_finished");
-        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 doLogin(user);
             }
         };
         LoginActivity.this.registerReceiver(broadcastReceiver, filter);
-
         progressDialog = ProgressDialog.show(this, "", getString(R.string.progress_dialog_loading));
         getSupportLoaderManager().restartLoader(LoaderConstants.USER_LOADING_TASK_ID, savedInstanceState, this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LoginActivity.this.unregisterReceiver(broadcastReceiver);
     }
 
     private void doLogin(User user) {

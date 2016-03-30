@@ -2,9 +2,9 @@
     <string name="app_name">DemoProject</string>
     <string name="action_settings">Settings</string>
     <string name="login">LOGIN</string>
-    <string name="name_hint">Username</string>
+    <string name="email_hint">Email</string>
     <string name="password_hint">Password</string>
-    <string name="remember_password">Remember password</string>
+    <string name="welcome_back">Welcome back!</string>
     <string name="remember_name">Remember username</string>
     <string name="get_token_error">There is a problem with your network</string>
     <string name="credentials_error">Wrong username and/or password</string>
