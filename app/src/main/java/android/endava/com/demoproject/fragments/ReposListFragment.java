@@ -137,7 +137,10 @@ public class ReposListFragment extends Fragment implements LoaderManager.LoaderC
         Log.d("recycleView", "clicked on" + position);
         RepoDetailsFragment mRepoDetailsFragment = new RepoDetailsFragment();
         mRepoDetailsFragment.setRepo(reposList.get(position));
-        getFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.root_activity_layout, mRepoDetailsFragment).addToBackStack(null).commit();
+        getFragmentManager().beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .replace(R.id.root_activity_layout, mRepoDetailsFragment)
+                .addToBackStack(null).commit();
     }
 
     private void handleReposRequest() {
