@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (mDrawer.isDrawerOpen(mNavigationView)) {
             mDrawer.closeDrawers();
         } else {
-            moveTaskToBack(true);
+            super.onBackPressed();
         }
     }
 
