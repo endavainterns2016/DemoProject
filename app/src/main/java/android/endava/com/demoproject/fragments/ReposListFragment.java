@@ -4,8 +4,8 @@ package android.endava.com.demoproject.fragments;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.endava.com.demoproject.R;
-import android.endava.com.demoproject.adapters.ReposAdapter;
 import android.endava.com.demoproject.activities.MainActivity;
+import android.endava.com.demoproject.adapters.ReposAdapter;
 import android.endava.com.demoproject.asyncLoader.UserLoadingTask;
 import android.endava.com.demoproject.constants.LoaderConstants;
 import android.endava.com.demoproject.model.Repo;
@@ -16,11 +16,13 @@ import android.support.annotation.IdRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,10 +37,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ReposListFragment extends Fragment implements LoaderManager.LoaderCallbacks<User>, OnMenuTabClickListener {
+public class ReposListFragment extends Fragment implements LoaderManager.LoaderCallbacks<User>, OnMenuTabClickListener, ReposAdapter.OnItemClickListener{
 
 
-    private RecyclerView.Adapter mAdapter;
+    private ReposAdapter mAdapter;
     private ArrayList<Repo> reposList = new ArrayList<>();
     private User user;
     private Callback<List<Repo>> reposCallBack;
@@ -85,6 +87,7 @@ public class ReposListFragment extends Fragment implements LoaderManager.LoaderC
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mActivity);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new ReposAdapter(reposList);
+        mAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
         snackBarOnClickListener = new SnackBarOnClickListener();
 
@@ -118,6 +121,15 @@ public class ReposListFragment extends Fragment implements LoaderManager.LoaderC
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mBottomBar.onSaveInstanceState(outState);
+    }
+
+// click on RecycleView row
+    @Override
+    public void onItemClick(View view, int position) {
+        Log.d("recycleView", "clicked on" + position);
+        RepoDetailsFragment mRepoDetailsFragment = new RepoDetailsFragment();
+        mRepoDetailsFragment.setRepo(reposList.get(position));
+        getFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).replace(R.id.root_activity_layout, mRepoDetailsFragment).addToBackStack(null).commit();
     }
 
     private void handleReposRequest() {

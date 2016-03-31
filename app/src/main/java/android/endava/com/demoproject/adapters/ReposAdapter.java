@@ -12,9 +12,17 @@ import java.util.ArrayList;
 
 public class ReposAdapter extends RecyclerView.Adapter<ReposAdapter.RepoViewHolder> {
     private ArrayList<Repo> reposList;
+    private static OnItemClickListener listener;
 
     public ReposAdapter(ArrayList<Repo> reposList) {
         this.reposList = reposList;
+    }
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        ReposAdapter.listener = listener;
     }
 
     @Override
@@ -42,11 +50,18 @@ public class ReposAdapter extends RecyclerView.Adapter<ReposAdapter.RepoViewHold
 
         public TextView repoName, repoDescription, repoId;
 
-        public RepoViewHolder(View view) {
+        public RepoViewHolder(final View view) {
             super(view);
             repoName = (TextView) view.findViewById(R.id.repo_name);
             repoDescription = (TextView) view.findViewById(R.id.repo_descrition);
             repoId = (TextView) view.findViewById(R.id.repo_id);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null)
+                        listener.onItemClick(view, getLayoutPosition());
+                }
+            });
         }
     }
 }
