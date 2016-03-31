@@ -37,4 +37,15 @@
     <string name="repo_size">%f Megabytes</string>
     <string name="unknown_language">unknown</string>
 
+    <string name="description_name">Name:</string>
+    <string name="description_id">ID:</string>
+    <string name="description">Description:</string>
+    <string name="description_home_URL">Home URL:</string>
+    <string name="description_defaultbranch">Default branch:</string>
+    <string name="description_code_language">Code language:</string>
+    <string name="description_size">Size:</string>
+    <string name="description_last_push">Last push at:</string>
+    <string name="description_open_issues">Open issues:</string>
+    <string name="description_none">None</string>
+
 </resources>
