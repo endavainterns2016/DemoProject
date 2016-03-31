@@ -19,6 +19,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -37,7 +38,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ReposListFragment extends Fragment implements LoaderManager.LoaderCallbacks<User>, OnMenuTabClickListener, ReposAdapter.OnItemClickListener{
+public class ReposListFragment extends Fragment implements LoaderManager.LoaderCallbacks<User>, OnMenuTabClickListener, ReposAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
 
 
     private ReposAdapter mAdapter;
@@ -48,6 +49,7 @@ public class ReposListFragment extends Fragment implements LoaderManager.LoaderC
     private BottomBar mBottomBar;
     private SnackBarOnClickListener snackBarOnClickListener;
     private ProgressDialog progressDialog;
+    private SwipeRefreshLayout mRefreshLayout;
 
     @Override
     public void onAttach(Context context) {
@@ -86,6 +88,9 @@ public class ReposListFragment extends Fragment implements LoaderManager.LoaderC
         mRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mActivity);
         mRecyclerView.setLayoutManager(mLayoutManager);
+        mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
+        mRefreshLayout.setOnRefreshListener(this);
+        mRefreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary);
         mAdapter = new ReposAdapter(reposList);
         mAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
@@ -99,11 +104,13 @@ public class ReposListFragment extends Fragment implements LoaderManager.LoaderC
                     for (int i = 0; i < 50; i++) {
                         reposList.addAll(response.body());
                     }
+                    finishRefreshing();
                     mAdapter.notifyDataSetChanged();
                 } else {
                     Snackbar snackbar = Snackbar
                             .make(view, getString(R.string.network_error), Snackbar.LENGTH_LONG);
                     snackbar.show();
+                    finishRefreshing();
                 }
             }
 
@@ -113,6 +120,7 @@ public class ReposListFragment extends Fragment implements LoaderManager.LoaderC
                         .make(view, getString(R.string.get_token_error), Snackbar.LENGTH_LONG)
                         .setAction(getString(R.string.try_again), snackBarOnClickListener);
                 snackbar.show();
+                finishRefreshing();
             }
         };
     }
@@ -123,7 +131,7 @@ public class ReposListFragment extends Fragment implements LoaderManager.LoaderC
         mBottomBar.onSaveInstanceState(outState);
     }
 
-// click on RecycleView row
+    // click on RecycleView row
     @Override
     public void onItemClick(View view, int position) {
         Log.d("recycleView", "clicked on" + position);
@@ -165,11 +173,22 @@ public class ReposListFragment extends Fragment implements LoaderManager.LoaderC
         // do smth
     }
 
+    @Override
+    public void onRefresh() {
+        handleReposRequest();
+    }
+
+    private void finishRefreshing() {
+        if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.setRefreshing(false);
+        }
+    }
 
     public class SnackBarOnClickListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
+            mRefreshLayout.setRefreshing(true);
             handleReposRequest();
         }
     }
