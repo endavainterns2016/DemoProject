@@ -47,6 +47,10 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         NumberPickerPreference numberPickerPreference = (NumberPickerPreference) findPreference(AUTO_SYNC_NUMBER_PICKER_KEY);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         Integer value = prefs.getInt(AUTO_SYNC_NUMBER_PICKER_KEY, 1);
+        if (prefs.getInt(AUTO_SYNC_NUMBER_PICKER_KEY, 1) == 1) {
+            prefs.edit().putInt(AUTO_SYNC_NUMBER_PICKER_KEY, value)
+                    .apply();
+        }
         String summary = String.format(getString(R.string.settings_auto_sync_timer_value), value);
         numberPickerPreference.setSummary(summary);
     }
