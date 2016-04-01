@@ -10,7 +10,8 @@ import android.preference.PreferenceManager;
 import android.view.View;
 
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private static String AUTO_SYNC_NUMBER_PICKER_KEY = "auto_sync_number_picker_key";
+    public static String AUTO_SYNC_NUMBER_PICKER_KEY = "auto_sync_number_picker_key";
+    public static Integer AUTO_SYNC_DEFAULT_VALUE = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,8 +47,8 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     public void setUpSettingsView() {
         NumberPickerPreference numberPickerPreference = (NumberPickerPreference) findPreference(AUTO_SYNC_NUMBER_PICKER_KEY);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        Integer value = prefs.getInt(AUTO_SYNC_NUMBER_PICKER_KEY, 1);
-        if (prefs.getInt(AUTO_SYNC_NUMBER_PICKER_KEY, 1) == 1) {
+        Integer value = prefs.getInt(AUTO_SYNC_NUMBER_PICKER_KEY, AUTO_SYNC_DEFAULT_VALUE);
+        if (prefs.getInt(AUTO_SYNC_NUMBER_PICKER_KEY, AUTO_SYNC_DEFAULT_VALUE) == 1) {
             prefs.edit().putInt(AUTO_SYNC_NUMBER_PICKER_KEY, value)
                     .apply();
         }
