@@ -1,7 +1,8 @@
-package android.endava.com.demoproject;
+package android.endava.com.demoproject.services;
 
 import android.app.Service;
 import android.content.Intent;
+import android.endava.com.demoproject.SaveUserToDB;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 

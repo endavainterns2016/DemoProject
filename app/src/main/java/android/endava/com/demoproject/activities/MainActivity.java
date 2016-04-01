@@ -79,6 +79,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     public Toolbar getActivityToolbar() {
         return mToolbar;
     }

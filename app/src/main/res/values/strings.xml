@@ -36,6 +36,8 @@
     <string name="toolbar_repos_details">Repository details</string>
     <string name="repo_size">%f Megabytes</string>
     <string name="unknown_language">unknown</string>
+    <string name="notification_error_title">Network Error</string>
+    <string name="notification_error_text">Click to open repository list.</string>
 
     <string name="description_name">Name:</string>
     <string name="description_id">ID:</string>
