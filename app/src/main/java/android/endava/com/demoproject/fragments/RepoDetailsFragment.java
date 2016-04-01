@@ -27,6 +27,7 @@ public class RepoDetailsFragment extends Fragment {
     private TextView openIssuesTextView;
     private Repo mRepo;
 
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

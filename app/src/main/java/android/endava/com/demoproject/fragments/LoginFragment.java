@@ -8,7 +8,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.endava.com.demoproject.R;
 import android.endava.com.demoproject.SaveUserToDB;
-import android.endava.com.demoproject.SaveUserToDBService;
+import android.endava.com.demoproject.services.SaveUserToDBService;
 import android.endava.com.demoproject.activities.LoginActivity;
 import android.endava.com.demoproject.activities.MainActivity;
 import android.endava.com.demoproject.model.Avatar;
