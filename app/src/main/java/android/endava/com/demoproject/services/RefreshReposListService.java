@@ -37,13 +37,13 @@ public class RefreshReposListService extends Service {
     }
 
     public void startRefreshHandler() {
-        mHandler.postDelayed(refreshTask, 3000);
+        mHandler.postDelayed(refreshTask, refreshPeriod);
     }
     private Runnable refreshTask = new Runnable() {
         public void run() {
             Log.d("refreshService", "in service refreshed");
             sendBroadcast(new Intent("refreshReposList"));
-            mHandler.postDelayed(this, 3000);
+            mHandler.postDelayed(this, refreshPeriod);
         }
     };
 }

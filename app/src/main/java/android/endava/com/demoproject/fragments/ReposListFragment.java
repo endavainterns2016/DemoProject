@@ -48,7 +48,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ReposListFragment extends Fragment implements LoaderManager.LoaderCallbacks<User>, OnMenuTabClickListener, ReposAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class ReposListFragment extends Fragment implements LoaderManager.LoaderCallbacks<User>, OnMenuTabClickListener, ReposAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
 
     private ReposAdapter mAdapter;
@@ -61,6 +61,7 @@ public class ReposListFragment extends Fragment implements LoaderManager.LoaderC
     private ProgressDialog progressDialog;
     private SwipeRefreshLayout mRefreshLayout;
     private BroadcastReceiver mBroadcastReceiver;
+    private BroadcastReceiver networkBroadcastReceiver;
     private SharedPreferences mSharedPreferences;
     private boolean enableAutoSync;
     private int autoSyncInterval;
@@ -82,12 +83,14 @@ public class ReposListFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public void onPause() {
         super.onPause();
+        mSharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
         appIsMinimized = true;
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        mSharedPreferences.registerOnSharedPreferenceChangeListener(this);
         appIsMinimized = false;
         mAdapter.notifyDataSetChanged();
     }
@@ -144,9 +147,11 @@ public class ReposListFragment extends Fragment implements LoaderManager.LoaderC
                     }
 
                     if (!appIsMinimized) {
-                        Log.d("refreshService", "reposCallBack onresponse");
+                        Log.d("refreshService", "reposCallBack onresponse not minimized");
                         finishRefreshing();
                         mAdapter.notifyDataSetChanged();
+                    } else {
+                        Log.d("refreshService", "reposCallBack onresponse minimized");
                     }
                 } else {
                     if (!appIsMinimized) {
@@ -195,8 +200,23 @@ public class ReposListFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        networkBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                onRefresh();
+            }
+        };
+
+        mActivity.registerReceiver(networkBroadcastReceiver, new IntentFilter("refreshReposListOnConnectionRestore"));
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
+        mActivity.unregisterReceiver(networkBroadcastReceiver);
         if (enableAutoSync) {
             mActivity.unregisterReceiver(mBroadcastReceiver);
             mActivity.stopService(new Intent(mActivity, RefreshReposListService.class));
@@ -278,6 +298,34 @@ public class ReposListFragment extends Fragment implements LoaderManager.LoaderC
     private void finishRefreshing() {
         if (mRefreshLayout.isRefreshing()) {
             mRefreshLayout.setRefreshing(false);
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity);
+
+        if (key.equals("enable_auto_sync")) {
+            enableAutoSync = mSharedPreferences.getBoolean("enable_auto_sync", false);
+            if (enableAutoSync) {
+                mActivity.registerReceiver(mBroadcastReceiver, new IntentFilter("refreshReposList"));
+                if (!isMyServiceRunning(RefreshReposListService.class)) {
+                    Intent intent = new Intent(mActivity, RefreshReposListService.class);
+                    intent.putExtra("autoSyncInterval", autoSyncInterval);
+                    mActivity.startService(intent);
+                }
+            } else {
+                mActivity.unregisterReceiver(mBroadcastReceiver);
+                mActivity.stopService(new Intent(mActivity, RefreshReposListService.class));
+            }
+        }
+
+        if (key.equals("auto_sync_number_picker_key")) {
+            autoSyncInterval = ((mSharedPreferences.getInt("auto_sync_number_picker_key", 1)) * 60 * 1000);
+            mActivity.stopService(new Intent(mActivity, RefreshReposListService.class));
+                Intent intent = new Intent(mActivity, RefreshReposListService.class);
+                intent.putExtra("autoSyncInterval", autoSyncInterval);
+                mActivity.startService(intent);
         }
     }
 
