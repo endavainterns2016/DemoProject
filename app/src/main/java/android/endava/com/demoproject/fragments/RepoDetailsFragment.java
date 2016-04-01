@@ -4,6 +4,7 @@ package android.endava.com.demoproject.fragments;
 import android.content.Context;
 import android.endava.com.demoproject.R;
 import android.endava.com.demoproject.activities.MainActivity;
+import android.endava.com.demoproject.formatter.DateFormats;
 import android.endava.com.demoproject.model.Repo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -57,18 +58,20 @@ public class RepoDetailsFragment extends Fragment {
         lastPushTextView = (TextView) view.findViewById(R.id.lastPush);
         openIssuesTextView = (TextView) view.findViewById(R.id.openIssues);
 
-        idTextView.setText(String.format("%d", mRepo.getId()));
+        idTextView.setText(String.valueOf(mRepo.getId()));
         nameTextView.setText(mRepo.getName());
-        descriptionTextView.setText(mRepo.getDescription());
+        if (!mRepo.getDescription().equals("")) {
+            descriptionTextView.setText(mRepo.getDescription());
+        }
         homeUrlTextView.setText(mRepo.getHomeUrl());
         defaultBranchTextView.setText(mRepo.getDefaultBranch());
-        if(mRepo.getCodeLanguage() != null) {
+        if (mRepo.getCodeLanguage() != null) {
             codeLanguageTextView.setText(mRepo.getCodeLanguage());
-        }else {
+        } else {
             codeLanguageTextView.setText(R.string.unknown_language);
         }
         sizeTextView.setText(String.format(getString(R.string.repo_size), (mRepo.getSize() / 1024)));
-        lastPushTextView.setText(mRepo.getLastPush());
+        lastPushTextView.setText(DateFormats.formatISO(mRepo.getLastPush()));
         openIssuesTextView.setText(String.format("%d", mRepo.getOpenIssues()));
     }
 
