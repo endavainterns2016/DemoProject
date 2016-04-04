@@ -8,6 +8,7 @@ import android.endava.com.demoproject.RoundedTransformation;
 import android.endava.com.demoproject.asyncLoader.UserLoadingTask;
 import android.endava.com.demoproject.constants.LoaderConstants;
 import android.endava.com.demoproject.db.ClientDataBaseHelper;
+import android.endava.com.demoproject.db.HelperFactory;
 import android.endava.com.demoproject.fragments.ReposListFragment;
 import android.endava.com.demoproject.model.User;
 import android.os.Bundle;
@@ -33,8 +34,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout mDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView mNavigationView;
-    private ProgressDialog progressDialog;
-
     private ClientDataBaseHelper dbHelper;
     private TextView user_login_nav;
     private ImageView avatarImageView;
@@ -44,8 +43,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
+        HelperFactory.setHelper(getApplicationContext());
         dbHelper = ClientDataBaseHelper.getInstance();
-        progressDialog = ProgressDialog.show(this, "", getString(R.string.progress_dialog_loading));
         getSupportLoaderManager().restartLoader(LoaderConstants.USER_LOADING_TASK_ID, savedInstanceState, this);
 
         mNavigationView = (NavigationView) findViewById(R.id.nvView);
@@ -143,7 +142,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         user = result;
         user_login_nav.setText(result.getUserName());
         Picasso.with(this).load(result.getAvatarUrl()).resize(80, 80).transform(new RoundedTransformation(getResources(), 40)).placeholder(R.drawable.nav_drawer_background).into(avatarImageView);
-        progressDialog.dismiss();
     }
 
     @Override

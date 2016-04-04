@@ -114,6 +114,7 @@ public class ReposListFragment extends Fragment implements LoaderManager.LoaderC
         mToolbar.setTitle(R.string.toolbar_repos_list);
         mBottomBar = BottomBar.attachShy((CoordinatorLayout) view, null, savedInstanceState);
         mBottomBar.setItemsFromMenu(R.menu.repos_list_fragment_bottom_bar, this);
+        mBottomBar.setActiveTabColor(getResources().getColor(R.color.colorAccent));
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.repos_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mActivity);
@@ -326,9 +327,9 @@ public class ReposListFragment extends Fragment implements LoaderManager.LoaderC
         if (key.equals("auto_sync_number_picker_key")) {
             autoSyncInterval = ((mSharedPreferences.getInt("auto_sync_number_picker_key", 1)) * 60 * 1000);
             mActivity.stopService(new Intent(mActivity, RefreshReposListService.class));
-                Intent intent = new Intent(mActivity, RefreshReposListService.class);
-                intent.putExtra("autoSyncInterval", autoSyncInterval);
-                mActivity.startService(intent);
+            Intent intent = new Intent(mActivity, RefreshReposListService.class);
+            intent.putExtra("autoSyncInterval", autoSyncInterval);
+            mActivity.startService(intent);
         }
     }
 
