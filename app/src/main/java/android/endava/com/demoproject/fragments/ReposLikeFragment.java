@@ -107,7 +107,7 @@ public class ReposLikeFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         Toolbar mToolbar = mActivity.getActivityToolbar();
-        mToolbar.setTitle(R.string.toolbar_repos_list);
+        mToolbar.setTitle(R.string.toolbar_repos_like_list);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.repos_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mActivity);
