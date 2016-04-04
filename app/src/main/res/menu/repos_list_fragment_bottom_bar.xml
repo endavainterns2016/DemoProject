@@ -2,12 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/repo"
         android:title="@string/bottom_bar_menu_repo_list"
         android:icon="@drawable/ic_description_black_24dp"/>
     <item
+        android:id="@+id/sync"
         android:title="@string/bottom_bar_menu_sync"
         android:icon="@drawable/ic_cloud_black_24dp"/>
     <item
+        android:id="@+id/like"
         android:title="@string/bottom_bar_menu_like"
         android:icon="@drawable/ic_favorite_border_black_24dp"/>
 </menu>
