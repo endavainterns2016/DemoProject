@@ -8,9 +8,13 @@ import android.endava.com.demoproject.RoundedTransformation;
 import android.endava.com.demoproject.asyncLoader.UserLoadingTask;
 import android.endava.com.demoproject.constants.LoaderConstants;
 import android.endava.com.demoproject.db.ClientDataBaseHelper;
+import android.endava.com.demoproject.db.HelperFactory;
+import android.endava.com.demoproject.fragments.ReposLikeFragment;
 import android.endava.com.demoproject.fragments.ReposListFragment;
+import android.endava.com.demoproject.fragments.ReposSyncFragment;
 import android.endava.com.demoproject.model.User;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
@@ -25,16 +29,20 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.OnMenuTabClickListener;
 import com.squareup.picasso.Picasso;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,LoaderManager.LoaderCallbacks<User> {
+public class MainActivity extends AppCompatActivity implements OnMenuTabClickListener,
+        NavigationView.OnNavigationItemSelectedListener,
+        LoaderManager.LoaderCallbacks<User> {
+
+    private BottomBar mBottomBar;
     private User user;
     private Toolbar mToolbar;
     private DrawerLayout mDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView mNavigationView;
-    private ProgressDialog progressDialog;
-
     private ClientDataBaseHelper dbHelper;
     private TextView user_login_nav;
     private ImageView avatarImageView;
@@ -44,10 +52,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
+        HelperFactory.setHelper(getApplicationContext());
         dbHelper = ClientDataBaseHelper.getInstance();
-        progressDialog = ProgressDialog.show(this, "", getString(R.string.progress_dialog_loading));
         getSupportLoaderManager().restartLoader(LoaderConstants.USER_LOADING_TASK_ID, savedInstanceState, this);
 
+        mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.root_activity_coordinator_layout), savedInstanceState);
+        mBottomBar.noNavBarGoodness();
+        mBottomBar.setItemsFromMenu(R.menu.repos_list_fragment_bottom_bar, this);
+        mBottomBar.setActiveTabColor(getResources().getColor(R.color.colorAccent));
         mNavigationView = (NavigationView) findViewById(R.id.nvView);
         View header = mNavigationView.getHeaderView(0);
         user_login_nav = (TextView) header.findViewById(R.id.user_login);
@@ -125,6 +137,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mBottomBar.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onBackPressed() {
         if (mDrawer.isDrawerOpen(mNavigationView)) {
             mDrawer.closeDrawers();
@@ -143,11 +161,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         user = result;
         user_login_nav.setText(result.getUserName());
         Picasso.with(this).load(result.getAvatarUrl()).resize(80, 80).transform(new RoundedTransformation(getResources(), 40)).placeholder(R.drawable.nav_drawer_background).into(avatarImageView);
-        progressDialog.dismiss();
     }
 
     @Override
     public void onLoaderReset(Loader loader) {
+
+    }
+
+    @Override
+    public void onMenuTabSelected(int menuItemId) {
+        switch (menuItemId) {
+            case R.id.repo:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.root_activity_layout, new ReposListFragment())
+                        .commit();
+                break;
+            case R.id.sync:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.root_activity_layout, new ReposSyncFragment())
+                        .commit();
+                break;
+            case R.id.like:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.root_activity_layout, new ReposLikeFragment())
+                        .commit();
+                break;
+        }
+    }
+
+    @Override
+    public void onMenuTabReSelected(int menuItemId) {
 
     }
 }

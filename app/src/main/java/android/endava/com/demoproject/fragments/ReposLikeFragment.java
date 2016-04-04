@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.endava.com.demoproject.R;
 import android.endava.com.demoproject.activities.MainActivity;
 import android.endava.com.demoproject.adapters.ReposAdapter;
+import android.endava.com.demoproject.adapters.ReposLikeAdapter;
 import android.endava.com.demoproject.asyncLoader.UserLoadingTask;
 import android.endava.com.demoproject.constants.LoaderConstants;
 import android.endava.com.demoproject.model.Repo;
@@ -21,8 +22,6 @@ import android.endava.com.demoproject.retrofit.ServiceFactory;
 import android.endava.com.demoproject.services.RefreshReposListService;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.IdRes;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -38,9 +37,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.OnMenuTabClickListener;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,10 +44,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ReposListFragment extends Fragment implements LoaderManager.LoaderCallbacks<User>, ReposAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, SharedPreferences.OnSharedPreferenceChangeListener {
+public class ReposLikeFragment extends Fragment implements LoaderManager.LoaderCallbacks<User>, ReposAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
 
-    private ReposAdapter mAdapter;
+    private ReposLikeAdapter mAdapter;
     private ArrayList<Repo> reposList = new ArrayList<>();
     private User user;
     private Callback<List<Repo>> reposCallBack;
@@ -119,8 +115,7 @@ public class ReposListFragment extends Fragment implements LoaderManager.LoaderC
         mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
         mRefreshLayout.setOnRefreshListener(this);
         mRefreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary);
-        mAdapter = new ReposAdapter(reposList);
-        mAdapter.setOnItemClickListener(this);
+        mAdapter = new ReposLikeAdapter(reposList);
         mRecyclerView.setAdapter(mAdapter);
         snackBarOnClickListener = new SnackBarOnClickListener();
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity);
