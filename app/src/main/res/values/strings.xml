@@ -12,8 +12,8 @@
     <string name="fill_in_username">Please enter username</string>
     <string name="fill_in_password">Please enter password</string>
     <string name="toolbar_repos_list">Repository List</string>
-    <string name="toolbar_repos_sync">Repository Synchronization Log</string>
-    <string name="toolbar_repos_like_list">Repository Like List</string>
+    <string name="toolbar_repos_sync">Synchronization Log</string>
+    <string name="toolbar_repos_like_list">Like List</string>
     <string name="menu_signout">Logout</string>
     <string name="menu_settings">Settings</string>
     <string name="drawer_open">Open navigation drawer</string>
@@ -52,4 +52,6 @@
     <string name="description_open_issues">Open issues:</string>
     <string name="description_none">None</string>
 
+    <string name="mihail_likes_it">Mihail Bohnearschi likes this app</string>
+    <string name="ivan_likes_it">Ivan Croitor likes this app</string>
 </resources>

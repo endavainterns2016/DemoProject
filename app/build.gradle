@@ -30,4 +30,5 @@ dependencies {
     compile 'com.j256.ormlite:ormlite-android:4.48'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.roughike:bottom-bar:1.2.3'
+    compile 'com.makeramen:roundedimageview:2.2.1'
 }
