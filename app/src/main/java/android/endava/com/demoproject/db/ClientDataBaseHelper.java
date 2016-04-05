@@ -3,23 +3,19 @@ package android.endava.com.demoproject.db;
 import android.endava.com.demoproject.model.User;
 import android.util.Log;
 
-import java.util.HashMap;
-
 
 public class ClientDataBaseHelper {
-    public static final String HELPER_TAG = "HELPER";
     public static final Integer FIRST_ITEM = 0;
 
-    private static HashMap<String, ClientDataBaseHelper> helperMap = new HashMap<>();
+    private static ClientDataBaseHelper helper;
     private DataBaseHelper dbHelper = HelperFactory.getHelper();
 
     public static ClientDataBaseHelper getInstance() {
-        if (!helperMap.containsKey(HELPER_TAG)) {
-            ClientDataBaseHelper helper = new ClientDataBaseHelper();
-            helperMap.put(HELPER_TAG, helper);
+        if (helper == null) {
+            helper = new ClientDataBaseHelper();
             return helper;
         } else {
-            return helperMap.get(HELPER_TAG);
+            return helper;
         }
     }
 
@@ -42,10 +38,10 @@ public class ClientDataBaseHelper {
 
     public void deleteUser(User user) {
         try {
-        dbHelper.getUserDAO().delete(user);
-    } catch (Exception e) {
-        Log.e(getClass().getSimpleName(), e.toString());
-    }
+            dbHelper.getUserDAO().delete(user);
+        } catch (Exception e) {
+            Log.e(getClass().getSimpleName(), e.toString());
+        }
     }
 
     public void updateUser(User user) {
