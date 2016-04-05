@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 
-public class HelperFactory {
+public class HelperProvider {
 
     private static DataBaseHelper databaseHelper;
 

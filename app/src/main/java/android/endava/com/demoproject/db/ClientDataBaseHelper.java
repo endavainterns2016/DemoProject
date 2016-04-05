@@ -8,7 +8,7 @@ public class ClientDataBaseHelper {
     public static final Integer FIRST_ITEM = 0;
 
     private static ClientDataBaseHelper helper;
-    private DataBaseHelper dbHelper = HelperFactory.getHelper();
+    private DataBaseHelper dbHelper = HelperProvider.getHelper();
 
     public static ClientDataBaseHelper getInstance() {
         if (helper == null) {

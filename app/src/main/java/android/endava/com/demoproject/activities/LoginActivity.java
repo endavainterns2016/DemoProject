@@ -1,7 +1,7 @@
 package android.endava.com.demoproject.activities;
 
 import android.endava.com.demoproject.R;
-import android.endava.com.demoproject.db.HelperFactory;
+import android.endava.com.demoproject.db.HelperProvider;
 import android.endava.com.demoproject.fragments.LoginFragment;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -17,7 +17,7 @@ public class LoginActivity extends AppCompatActivity {
         Toolbar mToolbar = (Toolbar) findViewById(R.id.login_toolbar);
         mToolbar.setTitle(R.string.app_name);
         mToolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.toolbar_color));
-        HelperFactory.setHelper(getApplicationContext());
+        HelperProvider.setHelper(getApplicationContext());
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.root_login_activity_layout, new LoginFragment(), "login_fragment_tag")
                 .commit();

@@ -1,6 +1,5 @@
 package android.endava.com.demoproject.activities;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.endava.com.demoproject.R;
@@ -8,7 +7,7 @@ import android.endava.com.demoproject.RoundedTransformation;
 import android.endava.com.demoproject.asyncLoader.UserLoadingTask;
 import android.endava.com.demoproject.constants.LoaderConstants;
 import android.endava.com.demoproject.db.ClientDataBaseHelper;
-import android.endava.com.demoproject.db.HelperFactory;
+import android.endava.com.demoproject.db.HelperProvider;
 import android.endava.com.demoproject.fragments.ReposLikeFragment;
 import android.endava.com.demoproject.fragments.ReposListFragment;
 import android.endava.com.demoproject.fragments.ReposSyncFragment;
@@ -52,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements OnMenuTabClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        HelperFactory.setHelper(getApplicationContext());
+        HelperProvider.setHelper(getApplicationContext());
         dbHelper = ClientDataBaseHelper.getInstance();
         getSupportLoaderManager().restartLoader(LoaderConstants.USER_LOADING_TASK_ID, savedInstanceState, this);
 
