@@ -56,7 +56,6 @@ public class LoginFragment extends Fragment {
     private LoginActivity mActivity;
     private Callback<Avatar> avatarCallBack;
     private User user;
-    private Snackbar connectionFailedSnackBar;
 
     @Override
     public void onAttach(Context context) {
