@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.2"
 
     defaultConfig {
-        applicationId "android.endava.com.demoproject"
+        applicationId "endava.com.demoproject"
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 1
@@ -31,4 +31,5 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.roughike:bottom-bar:1.2.3'
     compile 'com.makeramen:roundedimageview:2.2.1'
+    compile 'com.jakewharton:butterknife:7.0.1'
 }
