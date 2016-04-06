@@ -5,9 +5,6 @@ import android.util.Log;
 
 import endava.com.demoproject.db.HelperProvider;
 
-/**
- * Created by lbuzmacov on 06-04-16.
- */
 public class DemoProjectApplication extends Application {
     @Override
     public void onCreate() {
