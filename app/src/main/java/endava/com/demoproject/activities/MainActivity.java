@@ -2,16 +2,6 @@ package endava.com.demoproject.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import endava.com.demoproject.R;
-import endava.com.demoproject.RoundedTransformation;
-import endava.com.demoproject.asyncLoader.UserLoadingTask;
-import endava.com.demoproject.constants.LoaderConstants;
-import endava.com.demoproject.db.ClientDataBaseHelper;
-import endava.com.demoproject.db.HelperProvider;
-import endava.com.demoproject.fragments.ReposLikeFragment;
-import endava.com.demoproject.fragments.ReposListFragment;
-import endava.com.demoproject.fragments.ReposSyncFragment;
-import endava.com.demoproject.model.User;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
@@ -32,6 +22,16 @@ import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnMenuTabClickListener;
 import com.squareup.picasso.Picasso;
 
+import endava.com.demoproject.R;
+import endava.com.demoproject.RoundedTransformation;
+import endava.com.demoproject.asyncLoader.UserLoadingTask;
+import endava.com.demoproject.constants.LoaderConstants;
+import endava.com.demoproject.db.ClientDataBaseHelper;
+import endava.com.demoproject.fragments.ReposLikeFragment;
+import endava.com.demoproject.fragments.ReposListFragment;
+import endava.com.demoproject.fragments.ReposSyncFragment;
+import endava.com.demoproject.model.User;
+
 public class MainActivity extends AppCompatActivity implements OnMenuTabClickListener,
         NavigationView.OnNavigationItemSelectedListener,
         LoaderManager.LoaderCallbacks<User> {
@@ -50,8 +50,6 @@ public class MainActivity extends AppCompatActivity implements OnMenuTabClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-
-        HelperProvider.setHelper(getApplicationContext());
         dbHelper = ClientDataBaseHelper.getInstance();
         getSupportLoaderManager().restartLoader(LoaderConstants.USER_LOADING_TASK_ID, savedInstanceState, this);
 

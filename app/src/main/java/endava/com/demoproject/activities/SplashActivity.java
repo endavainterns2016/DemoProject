@@ -1,11 +1,11 @@
 package endava.com.demoproject.activities;
 
-import endava.com.demoproject.R;
-import endava.com.demoproject.db.HelperProvider;
-import endava.com.demoproject.fragments.SplashFragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+
+import endava.com.demoproject.R;
+import endava.com.demoproject.fragments.SplashFragment;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -14,7 +14,6 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_activity);
         Fragment fragment;
-        HelperProvider.setHelper(getApplicationContext());
         if (savedInstanceState != null) {
             fragment = getSupportFragmentManager().findFragmentByTag("splash_fragment_tag");
         } else {
