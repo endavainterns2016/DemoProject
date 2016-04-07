@@ -18,9 +18,10 @@ import java.sql.SQLException;
 public class DataBaseHelper extends OrmLiteSqliteOpenHelper {
 
     private static final String DATABASE_NAME = "demoProject.db";
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 11;
 
     private UserDAO userDAO = null;
+
     private AppDAO appDAO = null;
 
     public DataBaseHelper(Context context) {

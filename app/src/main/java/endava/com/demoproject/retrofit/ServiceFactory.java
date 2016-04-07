@@ -8,7 +8,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ServiceFactory {
     private static HashMap<String,UserAPI> serviceMap = new HashMap<>();
     public static final String DEMO_PROJECT_API_TAG = "UserAPI";
-
     private static final String BASE_URL = "https://api.github.com";
 
     public static UserAPI getInstance() {

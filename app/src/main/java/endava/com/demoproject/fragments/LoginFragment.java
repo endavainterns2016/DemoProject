@@ -2,7 +2,7 @@ package endava.com.demoproject.fragments;
 
 
 import android.os.Bundle;
-import android.support.annotation.BinderThread;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +15,10 @@ import android.widget.ProgressBar;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import endava.com.demoproject.R;
-import endava.com.demoproject.presenter.LoginPresenter;
 import endava.com.demoproject.presenter.LoginPresenterImpl;
 import endava.com.demoproject.view.LoginView;
 
-public class LoginFragment extends Fragment implements LoginView {
+public class LoginFragment extends Fragment implements LoginView, View.OnClickListener {
 
     @Bind(R.id.password_edt)
     EditText mPasswordEdt;
@@ -36,19 +35,31 @@ public class LoginFragment extends Fragment implements LoginView {
     @Bind(R.id.progressBar)
     ProgressBar progressBar;
 
+    private LoginPresenterImpl presenter;
+    private View view;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_login, container, false);
-        LoginPresenter presenter = new LoginPresenterImpl(this);
+        view = inflater.inflate(R.layout.fragment_login, container, false);
         ButterKnife.bind(this, view);
+        presenter = new LoginPresenterImpl(this);
+        presenter.populateView();
+        mLoginBtn.setOnClickListener(this);
         return view;
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        presenter.onDestroy();
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void populateView(String userName, boolean shouldSave) {
+        mUSerNameEdt.append(userName);
+        usernameCheckBox.setChecked(shouldSave);
     }
 
     @Override
@@ -59,16 +70,49 @@ public class LoginFragment extends Fragment implements LoginView {
 
     @Override
     public void hideProgress() {
-
+        progressBar.setVisibility(View.INVISIBLE);
+        mLoginBtn.setEnabled(true);
     }
 
     @Override
     public void setUsernameError() {
-
+        Snackbar snackbar = Snackbar
+                .make(view, getString(R.string.fill_in_username), Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 
     @Override
     public void setPasswordError() {
+        Snackbar snackbar = Snackbar
+                .make(view, getString(R.string.fill_in_password), Snackbar.LENGTH_LONG);
+        snackbar.show();
+    }
 
+    @Override
+    public void setCredentialsError() {
+        Snackbar snackbar = Snackbar
+                .make(view, getString(R.string.credentials_error), Snackbar.LENGTH_SHORT);
+        snackbar.show();
+    }
+
+    @Override
+    public void setConnectionError() {
+        Snackbar snackbar = Snackbar
+                .make(view, getString(R.string.get_token_error), Snackbar.LENGTH_LONG)
+                .setAction(getString(R.string.try_again), this);
+        snackbar.show();
+        hideProgress();
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (presenter.validateCredentials(mUSerNameEdt.getText().toString(), mPasswordEdt.getText().toString())) {
+            if (usernameCheckBox.isChecked()) {
+                presenter.rememberUserName();
+            }else{
+                presenter.forgetUserName();
+            }
+            presenter.doLogin();
+        }
     }
 }
