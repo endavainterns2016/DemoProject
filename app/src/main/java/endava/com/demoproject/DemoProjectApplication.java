@@ -8,9 +8,6 @@ import endava.com.demoproject.dagger.ApplicationModule;
 import endava.com.demoproject.dagger.DaggerApplicationComponent;
 import endava.com.demoproject.db.HelperProvider;
 
-/**
- * Created by lbuzmacov on 06-04-16.
- */
 public class DemoProjectApplication extends Application {
 
     private static ApplicationComponent applicationComponent;
