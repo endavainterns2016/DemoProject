@@ -20,11 +20,9 @@ public class LoginPresenterImpl implements LoginPresenter {
         loginView.showProgress();
         boolean result = true;
         if (userName.length() == 0) {
-            loginView.hideProgress();
             loginView.setUsernameError();
             result = false;
         } else if (password.length() == 0) {
-            loginView.hideProgress();
             loginView.setPasswordError();
             result = false;
         } else {

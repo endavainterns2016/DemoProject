@@ -79,6 +79,7 @@ public class LoginFragment extends Fragment implements LoginView, View.OnClickLi
         Snackbar snackbar = Snackbar
                 .make(view, getString(R.string.fill_in_username), Snackbar.LENGTH_LONG);
         snackbar.show();
+        hideProgress();
     }
 
     @Override
@@ -86,6 +87,7 @@ public class LoginFragment extends Fragment implements LoginView, View.OnClickLi
         Snackbar snackbar = Snackbar
                 .make(view, getString(R.string.fill_in_password), Snackbar.LENGTH_LONG);
         snackbar.show();
+        hideProgress();
     }
 
     @Override
