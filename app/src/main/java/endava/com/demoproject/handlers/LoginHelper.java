@@ -23,11 +23,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginRequestHandler implements Callback<List<User>> {
+public class LoginHelper implements Callback<List<User>> {
     public static final String AUTH_DATA = "authData";
     private static final String USERNAME_PREF = "username";
     private static final String REMEMBER_USERNAME_PREF = "rememberUsername";
-    public static LoginRequestHandler handler;
+    public static LoginHelper handler;
     private Activity activity;
     private LoginView loginView;
     private String credentials;
@@ -37,11 +37,11 @@ public class LoginRequestHandler implements Callback<List<User>> {
     private SharedPreferences authData;
 
     public static void initLoginRequestHandler(Activity activity) {
-        handler = new LoginRequestHandler();
+        handler = new LoginHelper();
         handler.setActivity(activity);
     }
 
-    public static LoginRequestHandler getInstance(LoginView loginView) {
+    public static LoginHelper getInstance(LoginView loginView) {
         if (handler == null) {
             try {
                 throw new Exception("You should init your handler in your current activity before getting instance of it");
@@ -81,10 +81,11 @@ public class LoginRequestHandler implements Callback<List<User>> {
         editor.apply();
     }
 
-    public void forgetUserName(){
+    public void forgetUserName() {
         SharedPreferences settings = activity.getSharedPreferences(AUTH_DATA, Context.MODE_PRIVATE);
         settings.edit().clear().apply();
     }
+
     @Override
     public void onResponse(Call<List<User>> call, Response<List<User>> response) {
         if (response.body() != null) {
@@ -137,12 +138,14 @@ public class LoginRequestHandler implements Callback<List<User>> {
         activity.registerReceiver(broadcastReceiver, filter);
     }
 
-    public void unregisterReceiver(){
-        activity.unregisterReceiver(broadcastReceiver);
+    public void unregisterReceiver() {
+        if (broadcastReceiver != null) {
+            activity.unregisterReceiver(broadcastReceiver);
+        }
     }
 
-    public void populateView(){
+    public void populateView() {
         authData = activity.getSharedPreferences(AUTH_DATA, 0);
-        loginView.populateView(authData.getString(USERNAME_PREF, ""),authData.getBoolean(REMEMBER_USERNAME_PREF, false));
+        loginView.populateView(authData.getString(USERNAME_PREF, ""), authData.getBoolean(REMEMBER_USERNAME_PREF, false));
     }
 }

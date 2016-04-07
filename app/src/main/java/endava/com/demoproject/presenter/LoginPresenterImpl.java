@@ -1,18 +1,18 @@
 package endava.com.demoproject.presenter;
 
 
-import endava.com.demoproject.handlers.LoginRequestHandler;
+import endava.com.demoproject.handlers.LoginHelper;
 import endava.com.demoproject.view.LoginView;
 
 public class LoginPresenterImpl implements LoginPresenter {
-    private LoginRequestHandler handler;
+    private LoginHelper handler;
     private LoginView loginView;
     private String userName;
     private String password;
 
     public LoginPresenterImpl(LoginView loginView) {
         this.loginView = loginView;
-        handler = LoginRequestHandler.getInstance(loginView);
+        handler = LoginHelper.getInstance(loginView);
     }
 
     @Override
