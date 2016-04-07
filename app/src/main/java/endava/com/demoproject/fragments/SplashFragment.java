@@ -4,17 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import endava.com.demoproject.R;
-import endava.com.demoproject.activities.LoginActivity;
-import endava.com.demoproject.activities.MainActivity;
-import endava.com.demoproject.activities.SplashActivity;
-import endava.com.demoproject.asyncLoader.UserLoadingTask;
-import endava.com.demoproject.cacheableObserver.SplashRotationEvent;
-import endava.com.demoproject.cacheableObserver.Subject;
-import endava.com.demoproject.constants.LoaderConstants;
-import endava.com.demoproject.model.User;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -22,12 +12,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import endava.com.demoproject.R;
+import endava.com.demoproject.activities.LoginActivity;
+import endava.com.demoproject.activities.MainActivity;
+import endava.com.demoproject.activities.SplashActivity;
+import endava.com.demoproject.asyncLoader.UserLoadingTask;
+import endava.com.demoproject.cacheableObserver.Subject;
+import endava.com.demoproject.constants.LoaderConstants;
+import endava.com.demoproject.model.User;
+import endava.com.demoproject.presenter.SplashPresenter;
+import endava.com.demoproject.presenter.SplashPresenterImpl;
+import endava.com.demoproject.view.SplashView;
 
-public class SplashFragment extends Fragment implements LoaderManager.LoaderCallbacks<User> {
+
+public class SplashFragment extends Fragment implements SplashView, LoaderManager.LoaderCallbacks<User> {
     private Subject subject = Subject.newInstance();
     private SplashActivity mActivity;
     private User user;
     private BroadcastReceiver broadcastReceiver;
+
+    private SplashPresenter presenter;
 
     @Override
     public void onAttach(Context context) {
@@ -35,6 +39,13 @@ public class SplashFragment extends Fragment implements LoaderManager.LoaderCall
         if (context instanceof SplashActivity) {
             mActivity = (SplashActivity) context;
         }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        presenter = new SplashPresenterImpl(this);
+        presenter.onCreate();
     }
 
     @Override
@@ -62,17 +73,6 @@ public class SplashFragment extends Fragment implements LoaderManager.LoaderCall
         };
         mActivity.registerReceiver(broadcastReceiver, filter);
         mActivity.getSupportLoaderManager().restartLoader(LoaderConstants.USER_LOADING_TASK_ID, savedInstanceState, this);
-        doInit();
-    }
-
-    protected void doInit() {
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                SplashRotationEvent splashRotationEvent = new SplashRotationEvent();
-                subject.onNewEvent(splashRotationEvent);
-            }
-        }, 2000);
     }
 
     private void doLogin(User user) {
