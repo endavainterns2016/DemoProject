@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.util.Log;
 
 import javax.inject.Inject;
 
@@ -44,6 +45,7 @@ public class SplashPresenter implements LoaderManager.LoaderCallbacks<User>{
     public void onDestroy() {
         context.unregisterReceiver(broadcastReceiver);
         splashFragment = null;
+        Log.d("splashdebug", "onDestroy SplashPresenter");
     }
 
 
