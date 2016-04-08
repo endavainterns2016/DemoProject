@@ -3,6 +3,7 @@ package endava.com.demoproject.cacheableObserver;
 import android.os.Parcel;
 
 
+
 public class SplashRotationEvent implements Event {
     @Override
     public Object getData() {

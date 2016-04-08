@@ -9,7 +9,7 @@ import android.support.v7.widget.Toolbar;
 import dagger.Module;
 import endava.com.demoproject.R;
 import endava.com.demoproject.fragments.LoginFragment;
-import endava.com.demoproject.handlers.LoginHelper;
+import endava.com.demoproject.helpers.LoginHelper;
 
 
 @Module

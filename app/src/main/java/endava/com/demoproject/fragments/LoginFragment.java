@@ -44,7 +44,7 @@ public class LoginFragment extends Fragment implements LoginView, View.OnClickLi
         view = inflater.inflate(R.layout.fragment_login, container, false);
         ButterKnife.bind(this, view);
         presenter = new LoginPresenterImpl(this);
-        presenter.populateView();
+        presenter.getSharedPreferences();
         mLoginBtn.setOnClickListener(this);
         return view;
     }

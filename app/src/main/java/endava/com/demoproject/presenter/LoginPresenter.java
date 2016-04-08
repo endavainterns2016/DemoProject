@@ -2,7 +2,7 @@ package endava.com.demoproject.presenter;
 
 public interface LoginPresenter {
 
-    void populateView();
+    void getSharedPreferences();
 
     boolean validateCredentials(String username, String password);
 

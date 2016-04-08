@@ -1,10 +1,11 @@
 package endava.com.demoproject.presenter;
 
 
-import endava.com.demoproject.handlers.LoginHelper;
+import endava.com.demoproject.helpers.LoginHelper;
+import endava.com.demoproject.helpers.LoginHelperResponse;
 import endava.com.demoproject.view.LoginView;
 
-public class LoginPresenterImpl implements LoginPresenter {
+public class LoginPresenterImpl implements LoginPresenter, LoginHelperResponse {
     private LoginHelper handler;
     private LoginView loginView;
     private String userName;
@@ -12,7 +13,7 @@ public class LoginPresenterImpl implements LoginPresenter {
 
     public LoginPresenterImpl(LoginView loginView) {
         this.loginView = loginView;
-        handler = LoginHelper.getInstance(loginView);
+        handler = LoginHelper.getInstance(this);
     }
 
     @Override
@@ -48,8 +49,27 @@ public class LoginPresenterImpl implements LoginPresenter {
     }
 
     @Override
-    public void populateView() {
-        handler.populateView();
+    public void setCredentialsError() {
+        loginView.setCredentialsError();
+    }
+
+    @Override
+    public void setConnectionError() {
+        loginView.setConnectionError();
+    }
+
+    @Override
+    public void hideProgress() {
+        loginView.hideProgress();
+    }
+
+    @Override
+    public void populateView(String username, boolean shouldSave) {
+        loginView.populateView(username, shouldSave);
+    }
+    @Override
+    public void getSharedPreferences() {
+        handler.getSharedPreferences();
     }
 
     @Override

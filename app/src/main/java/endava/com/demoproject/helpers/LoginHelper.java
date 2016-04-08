@@ -1,4 +1,4 @@
-package endava.com.demoproject.handlers;
+package endava.com.demoproject.helpers;
 
 
 import android.app.Activity;
@@ -18,7 +18,6 @@ import endava.com.demoproject.model.Avatar;
 import endava.com.demoproject.model.User;
 import endava.com.demoproject.retrofit.ServiceFactory;
 import endava.com.demoproject.services.SaveUserToDBService;
-import endava.com.demoproject.view.LoginView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -29,19 +28,19 @@ public class LoginHelper implements Callback<List<User>> {
     private static final String REMEMBER_USERNAME_PREF = "rememberUsername";
     public static LoginHelper handler;
     private Activity activity;
-    private LoginView loginView;
     private String credentials;
     private Callback<Avatar> avatarCallback;
     private User user;
     private BroadcastReceiver broadcastReceiver;
     private SharedPreferences authData;
+    private LoginHelperResponse helperResponse;
 
     public static void initLoginRequestHandler(Activity activity) {
         handler = new LoginHelper();
         handler.setActivity(activity);
     }
 
-    public static LoginHelper getInstance(LoginView loginView) {
+    public static LoginHelper getInstance(LoginHelperResponse loginHelperResponse) {
         if (handler == null) {
             try {
                 throw new Exception("You should init your handler in your current activity before getting instance of it");
@@ -49,12 +48,8 @@ public class LoginHelper implements Callback<List<User>> {
                 Log.e("Custom exeption", e.toString());
             }
         }
-        handler.setLoginView(loginView);
+        handler.helperResponse = loginHelperResponse;
         return handler;
-    }
-
-    public void setLoginView(LoginView loginView) {
-        this.loginView = loginView;
     }
 
     public void setActivity(Activity activity) {
@@ -95,13 +90,13 @@ public class LoginHelper implements Callback<List<User>> {
             initBroadcastReceiver();
             ServiceFactory.getInstance().getUserAvatar("Basic " + user.getHashedCredentials()).enqueue(avatarCallback);
         } else {
-            loginView.setCredentialsError();
+            helperResponse.setCredentialsError();
         }
     }
 
     @Override
     public void onFailure(Call<List<User>> call, Throwable t) {
-        loginView.setConnectionError();
+        helperResponse.setConnectionError();
     }
 
     public void initAvatarCallBack() {
@@ -117,7 +112,7 @@ public class LoginHelper implements Callback<List<User>> {
 
             @Override
             public void onFailure(Call<Avatar> call, Throwable t) {
-                loginView.setConnectionError();
+                helperResponse.setConnectionError();
             }
         };
     }
@@ -130,7 +125,7 @@ public class LoginHelper implements Callback<List<User>> {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Intent intentToMain = new Intent(activity, MainActivity.class);
-                loginView.hideProgress();
+                helperResponse.hideProgress();
                 activity.startActivity(intentToMain);
                 activity.finish();
             }
@@ -144,8 +139,8 @@ public class LoginHelper implements Callback<List<User>> {
         }
     }
 
-    public void populateView() {
+    public void getSharedPreferences() {
         authData = activity.getSharedPreferences(AUTH_DATA, 0);
-        loginView.populateView(authData.getString(USERNAME_PREF, ""), authData.getBoolean(REMEMBER_USERNAME_PREF, false));
+        helperResponse.populateView(authData.getString(USERNAME_PREF, ""), authData.getBoolean(REMEMBER_USERNAME_PREF, false));
     }
 }
