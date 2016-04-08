@@ -15,7 +15,7 @@ import android.widget.ProgressBar;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import endava.com.demoproject.R;
-import endava.com.demoproject.presenter.LoginPresenterImpl;
+import endava.com.demoproject.presenter.LoginPresenter;
 import endava.com.demoproject.view.LoginView;
 
 public class LoginFragment extends Fragment implements LoginView, View.OnClickListener {
@@ -35,7 +35,7 @@ public class LoginFragment extends Fragment implements LoginView, View.OnClickLi
     @Bind(R.id.progressBar)
     ProgressBar progressBar;
 
-    private LoginPresenterImpl presenter;
+    private LoginPresenter presenter;
     private View view;
 
 
@@ -43,7 +43,7 @@ public class LoginFragment extends Fragment implements LoginView, View.OnClickLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_login, container, false);
         ButterKnife.bind(this, view);
-        presenter = new LoginPresenterImpl(this);
+        presenter = new LoginPresenter(this);
         presenter.getSharedPreferences();
         mLoginBtn.setOnClickListener(this);
         return view;
