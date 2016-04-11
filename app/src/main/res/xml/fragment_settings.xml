@@ -10,7 +10,7 @@
             android:key="enable_auto_sync"
             android:title="@string/settings_enable_auto_sync" />
 
-        <android.endava.com.demoproject.dialogs.NumberPickerPreference
+        <endava.com.demoproject.dialogs.NumberPickerPreference
             android:key="auto_sync_number_picker_key"
             android:id="@+id/number_picker"
             android:negativeButtonText="@string/alert_delete_cancel"
