@@ -9,7 +9,7 @@ import endava.com.demoproject.activities.LoginActivity;
 import endava.com.demoproject.activities.MainActivity;
 import endava.com.demoproject.activities.SplashActivity;
 import endava.com.demoproject.asyncLoader.UserLoadingTask;
-import endava.com.demoproject.cacheableObserver.SplashRotationEvent;
+import endava.com.demoproject.events.SplashRotationEvent;
 import endava.com.demoproject.cacheableObserver.Subject;
 import endava.com.demoproject.constants.LoaderConstants;
 import endava.com.demoproject.model.User;

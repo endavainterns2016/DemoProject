@@ -3,13 +3,10 @@ package endava.com.demoproject.helpers;
 
 public interface LoginHelperResponse {
 
-    void setCredentialsError();
+    void registerObserver();
+
+    void setError(String error);
 
     void setConnectionError();
-
-    void hideProgress();
-
-    void populateView(String username, boolean shouldSave);
-
 
 }

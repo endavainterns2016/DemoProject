@@ -2,18 +2,14 @@ package endava.com.demoproject.helpers;
 
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import endava.com.demoproject.R;
 import endava.com.demoproject.SaveUserToDB;
-import endava.com.demoproject.activities.MainActivity;
 import endava.com.demoproject.model.Avatar;
 import endava.com.demoproject.model.User;
 import endava.com.demoproject.retrofit.ServiceFactory;
@@ -23,16 +19,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LoginHelper implements Callback<List<User>> {
-    public static final String AUTH_DATA = "authData";
-    private static final String USERNAME_PREF = "username";
-    private static final String REMEMBER_USERNAME_PREF = "rememberUsername";
     public static LoginHelper handler;
     private Activity activity;
     private String credentials;
     private Callback<Avatar> avatarCallback;
     private User user;
-    private BroadcastReceiver broadcastReceiver;
-    private SharedPreferences authData;
     private LoginHelperResponse helperResponse;
 
     public static void initLoginRequestHandler(Activity activity) {
@@ -40,13 +31,9 @@ public class LoginHelper implements Callback<List<User>> {
         handler.setActivity(activity);
     }
 
-    public static LoginHelper getInstance(LoginHelperResponse loginHelperResponse) {
+    public static LoginHelper getInstance(LoginHelperResponse loginHelperResponse) throws Exception {
         if (handler == null) {
-            try {
-                throw new Exception("You should init your handler in your current activity before getting instance of it");
-            } catch (Exception e) {
-                Log.e("Custom exeption", e.toString());
-            }
+            throw new Exception("You should init your helper in your current activity before getting instance of it");
         }
         handler.helperResponse = loginHelperResponse;
         return handler;
@@ -68,29 +55,16 @@ public class LoginHelper implements Callback<List<User>> {
         ServiceFactory.getInstance().auth("Basic " + credentials).enqueue(this);
     }
 
-    public void rememberUserName(String username) {
-        authData = activity.getSharedPreferences(AUTH_DATA, 0);
-        SharedPreferences.Editor editor = authData.edit();
-        editor.putString(USERNAME_PREF, username);
-        editor.putBoolean(REMEMBER_USERNAME_PREF, true);
-        editor.apply();
-    }
-
-    public void forgetUserName() {
-        SharedPreferences settings = activity.getSharedPreferences(AUTH_DATA, Context.MODE_PRIVATE);
-        settings.edit().clear().apply();
-    }
-
     @Override
     public void onResponse(Call<List<User>> call, Response<List<User>> response) {
         if (response.body() != null) {
+            helperResponse.registerObserver();
             user = response.body().get(0);
             user.setHashedCredentials(credentials);
             initAvatarCallBack();
-            initBroadcastReceiver();
             ServiceFactory.getInstance().getUserAvatar("Basic " + user.getHashedCredentials()).enqueue(avatarCallback);
         } else {
-            helperResponse.setCredentialsError();
+            helperResponse.setError(activity.getString(R.string.credentials_error));
         }
     }
 
@@ -115,32 +89,5 @@ public class LoginHelper implements Callback<List<User>> {
                 helperResponse.setConnectionError();
             }
         };
-    }
-
-    public void initBroadcastReceiver() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("user_was_saved_to_db");
-
-        broadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Intent intentToMain = new Intent(activity, MainActivity.class);
-                helperResponse.hideProgress();
-                activity.startActivity(intentToMain);
-                activity.finish();
-            }
-        };
-        activity.registerReceiver(broadcastReceiver, filter);
-    }
-
-    public void unregisterReceiver() {
-        if (broadcastReceiver != null) {
-            activity.unregisterReceiver(broadcastReceiver);
-        }
-    }
-
-    public void getSharedPreferences() {
-        authData = activity.getSharedPreferences(AUTH_DATA, 0);
-        helperResponse.populateView(authData.getString(USERNAME_PREF, ""), authData.getBoolean(REMEMBER_USERNAME_PREF, false));
     }
 }

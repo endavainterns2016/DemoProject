@@ -1,7 +1,9 @@
-package endava.com.demoproject.cacheableObserver;
+package endava.com.demoproject.events;
 
 import android.os.Parcel;
 
+import endava.com.demoproject.cacheableObserver.Event;
+import endava.com.demoproject.cacheableObserver.EventContext;
 
 
 public class SplashRotationEvent implements Event {

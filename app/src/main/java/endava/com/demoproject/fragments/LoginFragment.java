@@ -1,6 +1,7 @@
 package endava.com.demoproject.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import android.widget.ProgressBar;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import endava.com.demoproject.R;
+import endava.com.demoproject.activities.MainActivity;
 import endava.com.demoproject.presenter.LoginPresenter;
 import endava.com.demoproject.view.LoginView;
 
@@ -75,25 +77,9 @@ public class LoginFragment extends Fragment implements LoginView, View.OnClickLi
     }
 
     @Override
-    public void setUsernameError() {
+    public void setError(String error) {
         Snackbar snackbar = Snackbar
-                .make(view, getString(R.string.fill_in_username), Snackbar.LENGTH_LONG);
-        snackbar.show();
-        hideProgress();
-    }
-
-    @Override
-    public void setPasswordError() {
-        Snackbar snackbar = Snackbar
-                .make(view, getString(R.string.fill_in_password), Snackbar.LENGTH_LONG);
-        snackbar.show();
-        hideProgress();
-    }
-
-    @Override
-    public void setCredentialsError() {
-        Snackbar snackbar = Snackbar
-                .make(view, getString(R.string.credentials_error), Snackbar.LENGTH_SHORT);
+                .make(view, error, Snackbar.LENGTH_LONG);
         snackbar.show();
         hideProgress();
     }
@@ -108,11 +94,24 @@ public class LoginFragment extends Fragment implements LoginView, View.OnClickLi
     }
 
     @Override
+    public void startMainActivity() {
+        Intent intentToMain = new Intent(getActivity(), MainActivity.class);
+        startActivity(intentToMain);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                hideProgress();
+            }
+        });
+        getActivity().finish();
+    }
+
+    @Override
     public void onClick(View v) {
         if (presenter.validateCredentials(mUSerNameEdt.getText().toString(), mPasswordEdt.getText().toString())) {
             if (usernameCheckBox.isChecked()) {
                 presenter.rememberUserName();
-            }else{
+            } else {
                 presenter.forgetUserName();
             }
             presenter.doLogin();

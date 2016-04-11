@@ -1,29 +1,49 @@
 package endava.com.demoproject.presenter;
 
 
+import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import endava.com.demoproject.R;
+import endava.com.demoproject.cacheableObserver.Event;
+import endava.com.demoproject.cacheableObserver.EventContext;
+import endava.com.demoproject.cacheableObserver.Observer;
+import endava.com.demoproject.cacheableObserver.Subject;
 import endava.com.demoproject.helpers.LoginHelper;
 import endava.com.demoproject.helpers.LoginHelperResponse;
+import endava.com.demoproject.helpers.ResourceHelper;
+import endava.com.demoproject.helpers.SharedPreferencesHelper;
+import endava.com.demoproject.helpers.SharedPreferencesHelperResponse;
 import endava.com.demoproject.view.LoginView;
 
-public class LoginPresenter implements LoginHelperResponse {
-    private LoginHelper handler;
+public class LoginPresenter implements LoginHelperResponse, SharedPreferencesHelperResponse, Observer {
+    private LoginHelper loginHelper;
+    private SharedPreferencesHelper sharedPrefHelper;
+    private Subject subject = Subject.newInstance();
     private LoginView loginView;
     private String userName;
     private String password;
 
     public LoginPresenter(LoginView loginView) {
         this.loginView = loginView;
-        handler = LoginHelper.getInstance(this);
+        try {
+            sharedPrefHelper = SharedPreferencesHelper.getInstance(this);
+            loginHelper = LoginHelper.getInstance(this);
+        } catch (Exception e) {
+            Log.e("Exception", e.toString());
+        }
     }
 
     public boolean validateCredentials(String userName, String password) {
         loginView.showProgress();
         boolean result = true;
         if (userName.length() == 0) {
-            loginView.setUsernameError();
+            loginView.setError(ResourceHelper.getResources().getString(R.string.fill_in_username));
             result = false;
         } else if (password.length() == 0) {
-            loginView.setPasswordError();
+            loginView.setError(ResourceHelper.getResources().getString(R.string.fill_in_password));
             result = false;
         } else {
             this.userName = userName;
@@ -32,30 +52,29 @@ public class LoginPresenter implements LoginHelperResponse {
         return result;
     }
 
+    public void registerObserver() {
+        subject.registerObserver(this);
+    }
 
     public void doLogin() {
-        handler.doLogin(userName, password);
+        loginHelper.doLogin(userName, password);
     }
 
     public void rememberUserName() {
-        handler.rememberUserName(userName);
+        sharedPrefHelper.rememberUserName(userName);
     }
 
     public void forgetUserName() {
-        handler.forgetUserName();
+        sharedPrefHelper.forgetUserName();
     }
 
-    public void setCredentialsError() {
-        loginView.setCredentialsError();
+    @Override
+    public void setError(String error) {
+        loginView.setError(error);
     }
 
     public void setConnectionError() {
         loginView.setConnectionError();
-    }
-
-
-    public void hideProgress() {
-        loginView.hideProgress();
     }
 
     public void populateView(String username, boolean shouldSave) {
@@ -63,11 +82,30 @@ public class LoginPresenter implements LoginHelperResponse {
     }
 
     public void getSharedPreferences() {
-        handler.getSharedPreferences();
+        sharedPrefHelper.populateViewWithSharedPreferences();
     }
 
     public void onDestroy() {
         loginView = null;
-        handler.unregisterReceiver();
+        subject.unregisterObservers(this);
+    }
+
+    @Override
+    public void onEvent(Event e) {
+        subject.unregisterObservers(this);
+        loginView.startMainActivity();
+    }
+
+    @Override
+    public List<EventContext> getObserverKeys() {
+        EventContext userWasSavedEvent = new EventContext("user_was_saved", null);
+        List<EventContext> list = new ArrayList<>();
+        list.add(userWasSavedEvent);
+        return list;
+    }
+
+    @Override
+    public boolean isMainObserverForKey(EventContext key) {
+        return false;
     }
 }

@@ -3,17 +3,15 @@ package endava.com.demoproject.view;
 
 public interface LoginView {
 
-    void populateView(String userName,boolean shouldSave);
+    void populateView(String userName, boolean shouldSave);
 
     void showProgress();
 
     void hideProgress();
 
-    void setUsernameError();
+    void setError(String error);
 
-    void setPasswordError();
-
-    void setCredentialsError();
+    void startMainActivity();
 
     void setConnectionError();
 }
