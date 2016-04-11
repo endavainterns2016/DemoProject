@@ -1,9 +1,11 @@
-package endava.com.demoproject.cacheableObserver;
+package endava.com.demoproject.events;
 
 import android.os.Parcel;
 
+import endava.com.demoproject.cacheableObserver.Event;
+import endava.com.demoproject.cacheableObserver.EventContext;
 
-public class SplashRotationEvent implements Event {
+public class UserWasSavedToDbEvent implements Event {
     @Override
     public Object getData() {
         return null;
@@ -11,7 +13,7 @@ public class SplashRotationEvent implements Event {
 
     @Override
     public EventContext getEventKey() {
-        return new EventContext("rotation",null);
+        return new EventContext("user_was_saved",null);
     }
 
     @Override

@@ -2,12 +2,16 @@ package endava.com.demoproject.services;
 
 import android.app.Service;
 import android.content.Intent;
-import endava.com.demoproject.SaveUserToDB;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import endava.com.demoproject.SaveUserToDB;
+import endava.com.demoproject.cacheableObserver.Subject;
+import endava.com.demoproject.events.UserWasSavedToDbEvent;
+
 
 public class SaveUserToDBService extends Service {
+    private Subject subject = Subject.newInstance();
 
     @Nullable
     @Override
@@ -16,14 +20,14 @@ public class SaveUserToDBService extends Service {
     }
 
     @Override
-    public int onStartCommand(final Intent intent, int flags, int startId) {
+    public int onStartCommand(final Intent intent, int flags, final int startId) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 SaveUserToDB command = intent.getParcelableExtra("command");
                 command.execute();
-                Intent i = new Intent("user_was_saved_to_db");
-                sendBroadcast(i);
+                UserWasSavedToDbEvent event = new UserWasSavedToDbEvent();
+                subject.onNewEvent(event);
             }
         }).start();
         return Service.START_STICKY;
