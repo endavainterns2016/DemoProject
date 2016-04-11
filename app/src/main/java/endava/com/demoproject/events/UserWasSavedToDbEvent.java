@@ -5,7 +5,7 @@ import android.os.Parcel;
 import endava.com.demoproject.cacheableObserver.Event;
 import endava.com.demoproject.cacheableObserver.EventContext;
 
-public class UserWasSavedToDB implements Event {
+public class UserWasSavedToDbEvent implements Event {
     @Override
     public Object getData() {
         return null;
