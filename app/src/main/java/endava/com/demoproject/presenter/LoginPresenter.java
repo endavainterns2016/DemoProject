@@ -4,6 +4,8 @@ package endava.com.demoproject.presenter;
 import android.content.res.Resources;
 import android.util.Log;
 
+import com.j256.ormlite.dao.BaseDaoImpl;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +23,7 @@ import endava.com.demoproject.helpers.SharedPreferencesHelper;
 import endava.com.demoproject.helpers.SharedPreferencesHelperResponse;
 import endava.com.demoproject.view.LoginView;
 
-public class LoginPresenter implements LoginHelperResponse, SharedPreferencesHelperResponse, Observer {
+public class LoginPresenter extends BasePresenter<LoginView> implements LoginHelperResponse, SharedPreferencesHelperResponse, Observer {
 
     @Inject
     Resources resources;
@@ -93,7 +95,7 @@ public class LoginPresenter implements LoginHelperResponse, SharedPreferencesHel
     }
 
     public void onDestroy() {
-        loginView = null;
+        detachView();
         subject.unregisterObservers(this);
     }
 
@@ -115,5 +117,15 @@ public class LoginPresenter implements LoginHelperResponse, SharedPreferencesHel
     @Override
     public boolean isMainObserverForKey(EventContext key) {
         return false;
+    }
+
+    @Override
+    public void attachView(LoginView mvpView) {
+        super.attachView(mvpView);
+    }
+
+    @Override
+    public void detachView() {
+        super.detachView();
     }
 }

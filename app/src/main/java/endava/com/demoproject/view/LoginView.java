@@ -1,7 +1,7 @@
 package endava.com.demoproject.view;
 
 
-public interface LoginView {
+public interface LoginView extends MvpView {
 
     void populateView(String userName, boolean shouldSave);
 
