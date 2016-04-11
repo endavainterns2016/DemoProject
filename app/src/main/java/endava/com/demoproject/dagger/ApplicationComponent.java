@@ -4,6 +4,7 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 import endava.com.demoproject.helpers.LoginHelper;
+import endava.com.demoproject.helpers.SharedPreferencesHelper;
 import endava.com.demoproject.presenter.LoginPresenter;
 
 @Component(modules = {ApplicationModule.class})
@@ -11,4 +12,6 @@ import endava.com.demoproject.presenter.LoginPresenter;
 public interface ApplicationComponent {
     void inject(LoginHelper loginHelper);
     void inject(LoginPresenter loginPresenter);
+    void inject(SharedPreferencesHelper sharedPreferencesHelper);
+
 }
