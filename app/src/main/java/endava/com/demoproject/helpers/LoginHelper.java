@@ -31,7 +31,7 @@ public class LoginHelper implements Callback<List<User>> {
     private LoginHelperResponse helperResponse;
     private Intent intent;
 
-    public void setHelperResponse(LoginHelperResponse helperResponse) {
+    public void prepareHelper(LoginHelperResponse helperResponse) {
         DemoProjectApplication.getApplicationComponent().inject(this);
         this.helperResponse = helperResponse;
     }
@@ -39,7 +39,7 @@ public class LoginHelper implements Callback<List<User>> {
     public static LoginHelper getInstance(LoginHelperResponse loginHelperResponse) throws Exception {
         if (helper == null) {
             helper = new LoginHelper();
-            helper.setHelperResponse(loginHelperResponse);
+            helper.prepareHelper(loginHelperResponse);
             return helper;
         } else {
             return helper;

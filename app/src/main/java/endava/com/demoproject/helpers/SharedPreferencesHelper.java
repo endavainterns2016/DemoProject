@@ -12,19 +12,17 @@ public class SharedPreferencesHelper {
     public static final String AUTH_DATA = "authData";
     private static final String USERNAME_PREF = "username";
     private static final String REMEMBER_USERNAME_PREF = "rememberUsername";
-    public static SharedPreferencesHelper handler;
+    public static SharedPreferencesHelper helper;
     @Inject
     Context context;
     private SharedPreferences authData;
-    private SharedPreferencesHelperResponse helperResponse;
 
-    public static SharedPreferencesHelper getInstance(SharedPreferencesHelperResponse response) throws Exception {
-        if (handler == null) {
-            handler = new SharedPreferencesHelper();
+    public static SharedPreferencesHelper getInstance() throws Exception {
+        if (helper == null) {
+            helper = new SharedPreferencesHelper();
+            helper.setContext();
         }
-        handler.helperResponse = response;
-        handler.setContext();
-        return handler;
+        return helper;
     }
 
     public void setContext() {
@@ -44,8 +42,8 @@ public class SharedPreferencesHelper {
         settings.edit().clear().apply();
     }
 
-    public void populateViewWithSharedPreferences() {
+    public String getUserName() {
         authData = context.getSharedPreferences(AUTH_DATA, 0);
-        helperResponse.populateView(authData.getString(USERNAME_PREF, ""), authData.getBoolean(REMEMBER_USERNAME_PREF, false));
+        return authData.getString(USERNAME_PREF, "");
     }
 }

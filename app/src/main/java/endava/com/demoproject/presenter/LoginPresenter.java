@@ -2,9 +2,8 @@ package endava.com.demoproject.presenter;
 
 
 import android.content.res.Resources;
+import android.text.TextUtils;
 import android.util.Log;
-
-import com.j256.ormlite.dao.BaseDaoImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +19,9 @@ import endava.com.demoproject.cacheableObserver.Subject;
 import endava.com.demoproject.helpers.LoginHelper;
 import endava.com.demoproject.helpers.LoginHelperResponse;
 import endava.com.demoproject.helpers.SharedPreferencesHelper;
-import endava.com.demoproject.helpers.SharedPreferencesHelperResponse;
 import endava.com.demoproject.view.LoginView;
 
-public class LoginPresenter extends BasePresenter<LoginView> implements LoginHelperResponse, SharedPreferencesHelperResponse, Observer {
+public class LoginPresenter extends BasePresenter<LoginView> implements LoginHelperResponse, Observer {
 
     @Inject
     Resources resources;
@@ -38,7 +36,7 @@ public class LoginPresenter extends BasePresenter<LoginView> implements LoginHel
         this.loginView = loginView;
         DemoProjectApplication.getApplicationComponent().inject(this);
         try {
-            sharedPrefHelper = SharedPreferencesHelper.getInstance(this);
+            sharedPrefHelper = SharedPreferencesHelper.getInstance();
             loginHelper = LoginHelper.getInstance(this);
         } catch (Exception e) {
             Log.e("Exception", e.toString());
@@ -86,12 +84,13 @@ public class LoginPresenter extends BasePresenter<LoginView> implements LoginHel
         loginView.setConnectionError();
     }
 
-    public void populateView(String username, boolean shouldSave) {
-        loginView.populateView(username, shouldSave);
-    }
-
-    public void getSharedPreferences() {
-        sharedPrefHelper.populateViewWithSharedPreferences();
+    public void populateView() {
+        String username = sharedPrefHelper.getUserName();
+        if (!TextUtils.isEmpty(username)) {
+            loginView.populateView(username, true);
+        } else {
+            loginView.populateView(username, false);
+        }
     }
 
     public void onDestroy() {

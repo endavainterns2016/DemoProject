@@ -1,6 +1,8 @@
 package endava.com.demoproject.fragments;
 
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -37,19 +39,32 @@ public class LoginFragment extends Fragment implements LoginView, View.OnClickLi
     @Bind(R.id.progressBar)
     ProgressBar progressBar;
 
+    private Activity activity;
     private LoginPresenter presenter;
     private View view;
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof Activity) {
+            activity = (Activity) context;
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_login, container, false);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         presenter = new LoginPresenter(this);
         presenter.attachView(this);
-        presenter.getSharedPreferences();
+        presenter.populateView();
         mLoginBtn.setOnClickListener(this);
-        return view;
     }
 
     @Override
@@ -96,15 +111,9 @@ public class LoginFragment extends Fragment implements LoginView, View.OnClickLi
 
     @Override
     public void startMainActivity() {
-        Intent intentToMain = new Intent(getActivity(), MainActivity.class);
-        startActivity(intentToMain);
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                hideProgress();
-            }
-        });
-        getActivity().finish();
+        Intent intentToMain = new Intent(activity, MainActivity.class);
+        activity.startActivity(intentToMain);
+        activity.finish();
     }
 
     @Override
