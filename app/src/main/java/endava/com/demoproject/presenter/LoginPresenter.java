@@ -3,7 +3,6 @@ package endava.com.demoproject.presenter;
 
 import android.content.res.Resources;
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,12 +34,8 @@ public class LoginPresenter extends BasePresenter<LoginView> implements LoginHel
     public LoginPresenter(LoginView loginView) {
         this.loginView = loginView;
         DemoProjectApplication.getApplicationComponent().inject(this);
-        try {
-            sharedPrefHelper = SharedPreferencesHelper.getInstance();
-            loginHelper = LoginHelper.getInstance(this);
-        } catch (Exception e) {
-            Log.e("Exception", e.toString());
-        }
+        sharedPrefHelper = SharedPreferencesHelper.getInstance();
+        loginHelper = LoginHelper.getInstance(this);
     }
 
     public boolean validateCredentials(String userName, String password) {
@@ -126,5 +121,6 @@ public class LoginPresenter extends BasePresenter<LoginView> implements LoginHel
     @Override
     public void detachView() {
         super.detachView();
+        loginHelper = null;
     }
 }

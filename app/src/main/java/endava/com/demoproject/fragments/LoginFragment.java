@@ -15,33 +15,24 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import endava.com.demoproject.R;
 import endava.com.demoproject.activities.MainActivity;
 import endava.com.demoproject.presenter.LoginPresenter;
 import endava.com.demoproject.view.LoginView;
 
 public class LoginFragment extends Fragment implements LoginView, View.OnClickListener {
-
-    @Bind(R.id.password_edt)
-    EditText mPasswordEdt;
-
-    @Bind(R.id.login_edt)
-    EditText mUSerNameEdt;
-
-    @Bind(R.id.login_bnt)
-    Button mLoginBtn;
-
-    @Bind(R.id.name_chbx)
-    CheckBox usernameCheckBox;
-
-    @Bind(R.id.progressBar)
-    ProgressBar progressBar;
-
     private Activity activity;
     private LoginPresenter presenter;
     private View view;
+    private Button mLoginBtn;
+    private EditText mUSerNameEdt;
+    private CheckBox usernameCheckBox;
+    private ProgressBar progressBar;
+    private EditText mPasswordEdt;
+
+    public static Fragment newInstance(){
+        return  new LoginFragment();
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -54,13 +45,19 @@ public class LoginFragment extends Fragment implements LoginView, View.OnClickLi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_login, container, false);
+        // ButterKnife.bind(this, view);
         return view;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        mLoginBtn = (Button) view.findViewById(R.id.login_bnt);
+        mPasswordEdt = (EditText) view.findViewById(R.id.password_edt);
+        mUSerNameEdt = (EditText) view.findViewById(R.id.login_edt);
+        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
+        usernameCheckBox = (CheckBox) view.findViewById(R.id.name_chbx);
+
         presenter = new LoginPresenter(this);
         presenter.attachView(this);
         presenter.populateView();
@@ -71,7 +68,7 @@ public class LoginFragment extends Fragment implements LoginView, View.OnClickLi
     public void onDestroyView() {
         super.onDestroyView();
         presenter.onDestroy();
-        ButterKnife.unbind(this);
+        //     ButterKnife.unbind(view);
     }
 
     @Override
@@ -111,7 +108,7 @@ public class LoginFragment extends Fragment implements LoginView, View.OnClickLi
 
     @Override
     public void startMainActivity() {
-        Intent intentToMain = new Intent(activity, MainActivity.class);
+        Intent intentToMain = new Intent(getActivity(), MainActivity.class);
         activity.startActivity(intentToMain);
         activity.finish();
     }

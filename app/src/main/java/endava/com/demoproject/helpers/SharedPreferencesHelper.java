@@ -17,11 +17,11 @@ public class SharedPreferencesHelper {
     Context context;
     private SharedPreferences authData;
 
-    public static SharedPreferencesHelper getInstance() throws Exception {
+    public static SharedPreferencesHelper getInstance() {
         if (helper == null) {
             helper = new SharedPreferencesHelper();
-            helper.setContext();
         }
+        helper.setContext();
         return helper;
     }
 

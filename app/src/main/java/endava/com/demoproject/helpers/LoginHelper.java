@@ -31,19 +31,17 @@ public class LoginHelper implements Callback<List<User>> {
     private LoginHelperResponse helperResponse;
     private Intent intent;
 
+    public static LoginHelper getInstance(LoginHelperResponse loginHelperResponse) {
+        if (helper == null) {
+            helper = new LoginHelper();
+        }
+        helper.prepareHelper(loginHelperResponse); // here we refresh reference for our response,presenter and all other stuff
+        return helper;
+    }
+
     public void prepareHelper(LoginHelperResponse helperResponse) {
         DemoProjectApplication.getApplicationComponent().inject(this);
         this.helperResponse = helperResponse;
-    }
-
-    public static LoginHelper getInstance(LoginHelperResponse loginHelperResponse) throws Exception {
-        if (helper == null) {
-            helper = new LoginHelper();
-            helper.prepareHelper(loginHelperResponse);
-            return helper;
-        } else {
-            return helper;
-        }
     }
 
     public void doLogin(String username, String password) {
@@ -77,7 +75,7 @@ public class LoginHelper implements Callback<List<User>> {
     }
 
 
-    public void stopService(){
+    public void stopService() {
         context.stopService(intent);
     }
 
