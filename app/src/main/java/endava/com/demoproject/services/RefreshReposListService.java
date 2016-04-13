@@ -7,8 +7,13 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import endava.com.demoproject.cacheableObserver.Subject;
+import endava.com.demoproject.events.refreshReposListEvent;
+
 public class RefreshReposListService extends Service {
     private Handler mHandler = new Handler();
+    private Subject subject = Subject.newInstance();
+    private refreshReposListEvent  refreshEvent = new refreshReposListEvent();
     private int refreshPeriod;
 
     @Nullable
@@ -19,7 +24,7 @@ public class RefreshReposListService extends Service {
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
-        refreshPeriod = intent.getIntExtra("autoSyncInterval", 1000);
+        refreshPeriod = intent.getIntExtra("autoSyncInterval", 60000);
         startRefreshHandler();
         return Service.START_STICKY;
     }
@@ -37,13 +42,13 @@ public class RefreshReposListService extends Service {
     }
 
     public void startRefreshHandler() {
-        mHandler.postDelayed(refreshTask, refreshPeriod);
+        mHandler.postDelayed(refreshTask, 10000);
     }
     private Runnable refreshTask = new Runnable() {
         public void run() {
             Log.d("refreshService", "in service refreshed");
-            sendBroadcast(new Intent("refreshReposList"));
-            mHandler.postDelayed(this, refreshPeriod);
+            subject.onNewEvent(refreshEvent);
+            mHandler.postDelayed(this, 10000);
         }
     };
 }

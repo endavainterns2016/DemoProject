@@ -6,7 +6,9 @@ import java.util.List;
 import endava.com.demoproject.cacheableObserver.Event;
 import endava.com.demoproject.cacheableObserver.EventContext;
 import endava.com.demoproject.cacheableObserver.Observer;
+import endava.com.demoproject.cacheableObserver.Subject;
 import endava.com.demoproject.helpers.DbHelper;
+import endava.com.demoproject.helpers.SharedPreferencesHelper;
 import endava.com.demoproject.model.Repo;
 import endava.com.demoproject.model.User;
 import endava.com.demoproject.retrofit.ServiceFactory;
@@ -19,12 +21,14 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
 
     private User user;
     private ReposListView reposListView;
+    private Subject subject = Subject.newInstance();
 
     @Override
     public void attachView(ReposListView mvpView) {
         super.attachView(mvpView);
         user = DbHelper.getInstance().getUser();
         reposListView = getMvpView();
+        subject.registerObserver(this);
     }
 
 
@@ -52,11 +56,12 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
     @Override
     public void detachView() {
         super.detachView();
+        subject.unregisterObservers(this);
     }
 
     @Override
     public void onEvent(Event e) {
-
+        populateView();
     }
 
     @Override
@@ -69,7 +74,14 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
 
     @Override
     public boolean isMainObserverForKey(EventContext key) {
-        return false;
+        return true;
     }
 
+    public boolean getAutoSyncEnabled() {
+        return SharedPreferencesHelper.getInstance().getAutoSyncStatus();
+    }
+
+    public int getAutoSyncInterval() {
+        return SharedPreferencesHelper.getInstance().getAutoSyncInterval();
+    }
 }
