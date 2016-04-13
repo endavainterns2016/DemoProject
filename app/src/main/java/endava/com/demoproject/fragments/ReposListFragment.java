@@ -39,17 +39,23 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import endava.com.demoproject.R;
+import endava.com.demoproject.activities.MainActivity;
+import endava.com.demoproject.adapters.ReposAdapter;
+import endava.com.demoproject.model.Repo;
+import endava.com.demoproject.model.User;
+import endava.com.demoproject.presenter.ReposListPresenter;
+import endava.com.demoproject.services.RefreshReposListService;
+import endava.com.demoproject.view.ReposListView;
 
-public class ReposListFragment extends Fragment implements LoaderManager.LoaderCallbacks<User>, ReposAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, SharedPreferences.OnSharedPreferenceChangeListener {
+public class ReposListFragment extends Fragment implements ReposAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, ReposListView {
 
-
+    private ReposListPresenter reposListPresenter;
     private ReposAdapter mAdapter;
     private ArrayList<Repo> reposList = new ArrayList<>();
     private User user;
-    private Callback<List<Repo>> reposCallBack;
+    private View view;
+
     private MainActivity mActivity;
     private SnackBarOnClickListener snackBarOnClickListener;
     private ProgressDialog progressDialog;
@@ -59,7 +65,7 @@ public class ReposListFragment extends Fragment implements LoaderManager.LoaderC
     private SharedPreferences mSharedPreferences;
     private boolean enableAutoSync;
     private int autoSyncInterval;
-    private boolean appIsMinimized;
+    private boolean appIsMinimized = false;
     private RecyclerView mRecyclerView;
 
     @Override
@@ -71,42 +77,36 @@ public class ReposListFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
-        mSharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
         appIsMinimized = true;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mSharedPreferences.registerOnSharedPreferenceChangeListener(this);
         appIsMinimized = false;
         mAdapter.notifyDataSetChanged();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_repos_list, container, false);
+        view = inflater.inflate(R.layout.fragment_repos_list, container, false);
+        return view;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
-        getLoaderManager().restartLoader(LoaderConstants.USER_LOADING_TASK_ID, null, this);
-
     }
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-        Toolbar mToolbar = mActivity.getActivityToolbar();
-        mToolbar.setTitle(R.string.toolbar_repos_list);
+        reposListPresenter = new ReposListPresenter();
+        reposListPresenter.attachView(this);
+
+        mActivity.getActivityToolbar().setTitle(R.string.toolbar_repos_list);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.repos_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mActivity);
@@ -118,67 +118,14 @@ public class ReposListFragment extends Fragment implements LoaderManager.LoaderC
         mAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
         snackBarOnClickListener = new SnackBarOnClickListener();
+
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity);
         enableAutoSync = mSharedPreferences.getBoolean("enable_auto_sync", false);
         autoSyncInterval = ((mSharedPreferences.getInt("auto_sync_number_picker_key", 1)) * 60 * 1000);
 
-
-        mBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                onRefresh();
-            }
-        };
-
-        reposCallBack = new Callback<List<Repo>>() {
-            @Override
-            public void onResponse(Call<List<Repo>> call, Response<List<Repo>> response) {
-                if (response.body() != null) {
-                    reposList.clear();
-                    for (int i = 0; i < 50; i++) {
-                        reposList.addAll(response.body());
-                    }
-
-                    if (!appIsMinimized) {
-                        Log.d("refreshService", "reposCallBack onresponse not minimized");
-                        finishRefreshing();
-                        mAdapter.notifyDataSetChanged();
-                    } else {
-                        Log.d("refreshService", "reposCallBack onresponse minimized");
-                    }
-                } else {
-                    if (!appIsMinimized) {
-                        Snackbar snackbar = Snackbar
-                                .make(view, getString(R.string.network_error), Snackbar.LENGTH_LONG);
-                        snackbar.show();
-                        finishRefreshing();
-                    } else {
-                        pushNotification();
-                    }
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Repo>> call, Throwable t) {
-                if (!appIsMinimized) {
-                    Snackbar snackbar = Snackbar
-                            .make(view, getString(R.string.get_token_error), Snackbar.LENGTH_LONG)
-                            .setAction(getString(R.string.try_again), snackBarOnClickListener);
-                    snackbar.show();
-                    finishRefreshing();
-                } else {
-                    pushNotification();
-                }
-            }
-        };
+        reposListPresenter.populateView();
 
         startRefreshService();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
@@ -213,6 +160,7 @@ public class ReposListFragment extends Fragment implements LoaderManager.LoaderC
             mActivity.unregisterReceiver(mBroadcastReceiver);
             mActivity.stopService(new Intent(mActivity, RefreshReposListService.class));
         }
+        reposListPresenter.detachView();
     }
 
     public void startRefreshService() {
@@ -245,39 +193,18 @@ public class ReposListFragment extends Fragment implements LoaderManager.LoaderC
     public void onItemClick(View view, int position) {
         Log.d("recycleView", "clicked on" + position);
         RepoDetailsFragment mRepoDetailsFragment = new RepoDetailsFragment();
+        Bundle args = new Bundle();
+        args.putInt("repoID", reposList.get(position).getDbId());
+        mRepoDetailsFragment.setArguments(args);
         getFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.root_activity_layout, mRepoDetailsFragment)
                 .addToBackStack(null).commit();
     }
 
-    private void handleReposRequest() {
-        ServiceFactory.getInstance().getReposList("Basic " + user.getHashedCredentials()).enqueue(reposCallBack);
-    }
-
-    @Override
-    public Loader<User> onCreateLoader(final int id, final Bundle args) {
-        progressDialog = ProgressDialog.show(getContext(), "", getString(R.string.progress_dialog_loading));
-        return new UserLoadingTask(mActivity);
-    }
-
-    @Override
-    public void onLoadFinished(final Loader<User> loader, final User result) {
-        if (result != null) {
-            user = result;
-            handleReposRequest();
-        }
-        progressDialog.dismiss();
-    }
-
-    @Override
-    public void onLoaderReset(final Loader<User> loader) {
-
-    }
-
     @Override
     public void onRefresh() {
-        handleReposRequest();
+        reposListPresenter.populateView();
     }
 
     private void finishRefreshing() {
@@ -286,40 +213,69 @@ public class ReposListFragment extends Fragment implements LoaderManager.LoaderC
         }
     }
 
+    //RepoListView
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity);
-
-        if (key.equals("enable_auto_sync")) {
-            enableAutoSync = mSharedPreferences.getBoolean("enable_auto_sync", false);
-            if (enableAutoSync) {
-                mActivity.registerReceiver(mBroadcastReceiver, new IntentFilter("refreshReposList"));
-                if (!isMyServiceRunning(RefreshReposListService.class)) {
-                    Intent intent = new Intent(mActivity, RefreshReposListService.class);
-                    intent.putExtra("autoSyncInterval", autoSyncInterval);
-                    mActivity.startService(intent);
-                }
-            } else {
-                mActivity.unregisterReceiver(mBroadcastReceiver);
-                mActivity.stopService(new Intent(mActivity, RefreshReposListService.class));
-            }
+    public void populateList(List<Repo> newReposList) {
+        reposList.clear();
+        for (int i = 0; i < 50; i++) {
+            reposList.addAll(newReposList);
         }
 
-        if (key.equals("auto_sync_number_picker_key")) {
-            autoSyncInterval = ((mSharedPreferences.getInt("auto_sync_number_picker_key", 1)) * 60 * 1000);
-            mActivity.stopService(new Intent(mActivity, RefreshReposListService.class));
-            Intent intent = new Intent(mActivity, RefreshReposListService.class);
-            intent.putExtra("autoSyncInterval", autoSyncInterval);
-            mActivity.startService(intent);
+        if (!appIsMinimized) {
+            Log.d("refreshService", "reposCallBack onresponse not minimized");
+            finishRefreshing();
+            mAdapter.notifyDataSetChanged();
+            hideProgress();
         }
     }
+
+    @Override
+    public void handleOnRequestFailure() {
+        Log.d("refreshService", "handleOnRequestFailure 1");
+        if (!appIsMinimized) {
+            Log.d("refreshService", "handleOnRequestFailure 2");
+            finishRefreshing();
+            hideProgress();
+            Snackbar snackbar = Snackbar
+                    .make(view, getString(R.string.get_token_error), Snackbar.LENGTH_LONG)
+                    .setAction(getString(R.string.try_again), snackBarOnClickListener);
+            snackbar.show();
+        } else {
+            pushNotification();
+        }
+    }
+
+    @Override
+    public void handleError() {
+        if (!appIsMinimized) {
+            finishRefreshing();
+            hideProgress();
+            Snackbar snackbar = Snackbar
+                    .make(view, getString(R.string.network_error), Snackbar.LENGTH_LONG);
+            snackbar.show();
+        } else {
+            pushNotification();
+        }
+    }
+
+    @Override
+    public void showProgress() {
+        progressDialog = ProgressDialog.show(getContext(), "", getString(R.string.progress_dialog_loading));
+    }
+
+    @Override
+    public void hideProgress() {
+        progressDialog.dismiss();
+        progressDialog = null;
+    }
+
 
     public class SnackBarOnClickListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
             mRefreshLayout.setRefreshing(true);
-            handleReposRequest();
+            reposListPresenter.populateView();
         }
     }
 }

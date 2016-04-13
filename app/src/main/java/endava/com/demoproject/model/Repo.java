@@ -10,6 +10,7 @@ import com.j256.ormlite.table.DatabaseTable;
 public class Repo {
 
     public final static String NAME = "NAME";
+    public final static String GIT_ID_FIELD_NAME = "GIT_ID";
     public final static String DESCRIPTION = "DESCRIPTION";
     public final static String HOME_URL = "HOME_URL";
     public final static String DEF_BRANCH = "DEFAULT_BRANCH";
@@ -18,9 +19,12 @@ public class Repo {
     public final static String LAST_PUSH = "LAST_PUSH";
     public static final String OPEN_ISSUES = "OPEN_ISSUES";
 
-
     @DatabaseField(generatedId = true)
-    private Integer id;
+    private int dbId;
+
+    @DatabaseField(dataType = DataType.LONG_OBJ, columnName = GIT_ID_FIELD_NAME)
+    @SerializedName("id")
+    private Long gitId;
 
     @DatabaseField(dataType = DataType.STRING, columnName = NAME)
     private String name;
@@ -51,12 +55,20 @@ public class Repo {
     @SerializedName("open_issues")
     private Integer openIssues;
 
-    public Integer getId() {
-        return id;
+    public int getDbId() {
+        return dbId;
+
+
+    public void setDbId(int id) {
+        this.dbId = id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public Long getGitId() {
+        return gitId;
+    }
+
+    public void setGitId(Long gitId) {
+        this.gitId = gitId;
     }
 
     public String getName() {

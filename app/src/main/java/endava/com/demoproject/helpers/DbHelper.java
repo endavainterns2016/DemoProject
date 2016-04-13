@@ -30,7 +30,7 @@ public class DbHelper {
         try {
             return dbHelper.getUserDAO().queryForAll().get(FIRST_ITEM);
         } catch (Exception e) {
-            Log.e(getClass().getSimpleName(), e.toString());
+            Log.d(getClass().getSimpleName(), e.toString());
             return null;
         }
     }
@@ -39,7 +39,7 @@ public class DbHelper {
         try {
             dbHelper.getUserDAO().createOrUpdate(user);
         } catch (Exception e) {
-            Log.e(getClass().getSimpleName(), e.toString());
+            Log.d(getClass().getSimpleName(), e.toString());
         }
     }
 
@@ -47,7 +47,7 @@ public class DbHelper {
         try {
             dbHelper.getUserDAO().delete(user);
         } catch (Exception e) {
-            Log.e(getClass().getSimpleName(), e.toString());
+            Log.d(getClass().getSimpleName(), e.toString());
         }
     }
 
@@ -55,7 +55,7 @@ public class DbHelper {
         try {
             dbHelper.getUserDAO().update(user);
         } catch (Exception e) {
-            Log.e(getClass().getSimpleName(), e.toString());
+            Log.d(getClass().getSimpleName(), e.toString());
         }
     }
 
