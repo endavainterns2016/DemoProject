@@ -1,6 +1,6 @@
 package endava.com.demoproject.presenter;
 
-import endava.com.demoproject.db.ClientDataBaseHelper;
+import endava.com.demoproject.helpers.DbHelper;
 import endava.com.demoproject.view.SplashView;
 
 public class SplashPresenter extends BasePresenter<SplashView> {
@@ -16,7 +16,7 @@ public class SplashPresenter extends BasePresenter<SplashView> {
     }
 
     public boolean userIsAvailable() {
-        return ClientDataBaseHelper.getInstance().getUser() != null;
+        return DbHelper.getInstance().getUser() != null;
     }
 
 }

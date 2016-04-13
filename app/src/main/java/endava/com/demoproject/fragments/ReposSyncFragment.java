@@ -10,16 +10,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import endava.com.demoproject.R;
-import endava.com.demoproject.activities.MainActivity;
-import endava.com.demoproject.adapters.ReposAdapter;
-import endava.com.demoproject.adapters.ReposSyncAdapter;
-import endava.com.demoproject.asyncLoader.UserLoadingTask;
-import endava.com.demoproject.constants.LoaderConstants;
-import endava.com.demoproject.model.Repo;
-import endava.com.demoproject.model.User;
-import endava.com.demoproject.retrofit.ServiceFactory;
-import endava.com.demoproject.services.RefreshReposListService;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
@@ -40,6 +30,16 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import endava.com.demoproject.R;
+import endava.com.demoproject.activities.MainActivity;
+import endava.com.demoproject.adapters.ReposAdapter;
+import endava.com.demoproject.adapters.ReposSyncAdapter;
+import endava.com.demoproject.asyncLoader.UserLoadingTask;
+import endava.com.demoproject.constants.LoaderConstants;
+import endava.com.demoproject.model.Repo;
+import endava.com.demoproject.model.User;
+import endava.com.demoproject.retrofit.ServiceFactory;
+import endava.com.demoproject.services.RefreshReposListService;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -245,7 +245,7 @@ public class ReposSyncFragment extends Fragment implements LoaderManager.LoaderC
     public void onItemClick(View view, int position) {
         Log.d("recycleView", "clicked on" + position);
         RepoDetailsFragment mRepoDetailsFragment = new RepoDetailsFragment();
-        mRepoDetailsFragment.setRepo(reposList.get(position));
+        //mRepoDetailsFragment.setRepo(reposList.get(position));
         getFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.root_activity_layout, mRepoDetailsFragment)
