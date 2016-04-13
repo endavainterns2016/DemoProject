@@ -2,10 +2,6 @@ package endava.com.demoproject.fragments;
 
 
 import android.content.Context;
-import endava.com.demoproject.R;
-import endava.com.demoproject.activities.MainActivity;
-import endava.com.demoproject.formatter.DateFormats;
-import endava.com.demoproject.model.Repo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
@@ -13,6 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import endava.com.demoproject.R;
+import endava.com.demoproject.activities.MainActivity;
+import endava.com.demoproject.formatter.DateFormats;
+import endava.com.demoproject.model.Repo;
 
 public class RepoDetailsFragment extends Fragment {
 
@@ -58,7 +59,7 @@ public class RepoDetailsFragment extends Fragment {
         lastPushTextView = (TextView) view.findViewById(R.id.lastPush);
         openIssuesTextView = (TextView) view.findViewById(R.id.openIssues);
 
-        idTextView.setText(String.valueOf(mRepo.getId()));
+        idTextView.setText(String.valueOf(mRepo.getGitId()));
         nameTextView.setText(mRepo.getName());
         if (!mRepo.getDescription().equals("")) {
             descriptionTextView.setText(mRepo.getDescription());

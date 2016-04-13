@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -48,11 +47,9 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
     private SnackBarOnClickListener snackBarOnClickListener;
     private ProgressDialog progressDialog;
     private SwipeRefreshLayout mRefreshLayout;
-    private BroadcastReceiver mBroadcastReceiver;
     private BroadcastReceiver networkBroadcastReceiver;
     private SharedPreferences mSharedPreferences;
-    private boolean enableAutoSync;
-    private int autoSyncInterval;
+
     private boolean appIsMinimized = false;
     private RecyclerView mRecyclerView;
 
@@ -94,6 +91,8 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
         reposListPresenter = new ReposListPresenter();
         reposListPresenter.attachView(this);
 
+        progressDialog = new ProgressDialog(mActivity);
+        progressDialog.setMessage(getString(R.string.progress_dialog_loading));
         mActivity.getActivityToolbar().setTitle(R.string.toolbar_repos_list);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.repos_recycler_view);
         mRecyclerView.setHasFixedSize(true);
@@ -106,10 +105,6 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
         mAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
         snackBarOnClickListener = new SnackBarOnClickListener();
-
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity);
-        enableAutoSync = mSharedPreferences.getBoolean("enable_auto_sync", false);
-        autoSyncInterval = ((mSharedPreferences.getInt("auto_sync_number_picker_key", 1)) * 60 * 1000);
 
         reposListPresenter.populateView();
 
@@ -144,19 +139,18 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
     public void onDestroy() {
         super.onDestroy();
         mActivity.unregisterReceiver(networkBroadcastReceiver);
-        if (enableAutoSync) {
-            mActivity.unregisterReceiver(mBroadcastReceiver);
+        if (reposListPresenter.getAutoSyncEnabled()) {
             mActivity.stopService(new Intent(mActivity, RefreshReposListService.class));
         }
         reposListPresenter.detachView();
+        reposListPresenter = null;
     }
 
     public void startRefreshService() {
-        if (enableAutoSync) {
-            mActivity.registerReceiver(mBroadcastReceiver, new IntentFilter("refreshReposList"));
+        if (reposListPresenter.getAutoSyncEnabled()) {
             if (!isMyServiceRunning(RefreshReposListService.class)) {
                 Intent intent = new Intent(mActivity, RefreshReposListService.class);
-                intent.putExtra("autoSyncInterval", autoSyncInterval);
+                intent.putExtra("autoSyncInterval", reposListPresenter.getAutoSyncInterval());
                 mActivity.startService(intent);
             }
         }
@@ -248,13 +242,12 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
 
     @Override
     public void showProgress() {
-        progressDialog = ProgressDialog.show(getContext(), "", getString(R.string.progress_dialog_loading));
+        progressDialog.show();
     }
 
     @Override
     public void hideProgress() {
         progressDialog.dismiss();
-        progressDialog = null;
     }
 
 
