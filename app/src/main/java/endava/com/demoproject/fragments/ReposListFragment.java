@@ -5,11 +5,8 @@ import android.app.ActivityManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -30,7 +27,6 @@ import endava.com.demoproject.R;
 import endava.com.demoproject.activities.MainActivity;
 import endava.com.demoproject.adapters.ReposAdapter;
 import endava.com.demoproject.model.Repo;
-import endava.com.demoproject.model.User;
 import endava.com.demoproject.presenter.ReposListPresenter;
 import endava.com.demoproject.services.RefreshReposListService;
 import endava.com.demoproject.view.ReposListView;
@@ -40,15 +36,12 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
     private ReposListPresenter reposListPresenter;
     private ReposAdapter mAdapter;
     private ArrayList<Repo> reposList = new ArrayList<>();
-    private User user;
     private View view;
 
     private MainActivity mActivity;
     private SnackBarOnClickListener snackBarOnClickListener;
     private ProgressDialog progressDialog;
     private SwipeRefreshLayout mRefreshLayout;
-    private BroadcastReceiver networkBroadcastReceiver;
-    private SharedPreferences mSharedPreferences;
 
     private boolean appIsMinimized = false;
     private RecyclerView mRecyclerView;
@@ -122,23 +115,8 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        networkBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                onRefresh();
-            }
-        };
-
-        mActivity.registerReceiver(networkBroadcastReceiver, new IntentFilter("refreshReposListOnConnectionRestore"));
-    }
-
-    @Override
     public void onDestroy() {
         super.onDestroy();
-        mActivity.unregisterReceiver(networkBroadcastReceiver);
         if (reposListPresenter.getAutoSyncEnabled()) {
             mActivity.stopService(new Intent(mActivity, RefreshReposListService.class));
         }

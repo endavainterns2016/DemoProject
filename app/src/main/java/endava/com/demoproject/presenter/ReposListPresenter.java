@@ -19,16 +19,17 @@ import retrofit2.Response;
 
 public class ReposListPresenter extends BasePresenter<ReposListView> implements Observer, Callback<List<Repo>> {
 
-    private User user;
+    private User user = DbHelper.getInstance().getUser();;
     private ReposListView reposListView;
     private Subject subject = Subject.newInstance();
 
     @Override
     public void attachView(ReposListView mvpView) {
         super.attachView(mvpView);
-        user = DbHelper.getInstance().getUser();
         reposListView = getMvpView();
-        subject.registerObserver(this);
+        if (getAutoSyncEnabled()) {
+            subject.registerObserver(this);
+        }
     }
 
 
@@ -56,7 +57,9 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
     @Override
     public void detachView() {
         super.detachView();
-        subject.unregisterObservers(this);
+        if (getAutoSyncEnabled()) {
+            subject.unregisterObservers(this);
+        }
     }
 
     @Override
