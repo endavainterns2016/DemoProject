@@ -1,7 +1,7 @@
 package endava.com.demoproject;
 
 
-import endava.com.demoproject.db.ClientDataBaseHelper;
+import endava.com.demoproject.helpers.DbHelper;
 import endava.com.demoproject.model.User;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,7 +9,7 @@ import android.os.Parcelable;
 public class SaveUserToDB implements Command, Parcelable {
 
     private User user;
-    private ClientDataBaseHelper dbHelper = ClientDataBaseHelper.getInstance();
+    private DbHelper dbHelper = DbHelper.getInstance();
 
     public SaveUserToDB(User user) {
         this.user = user;

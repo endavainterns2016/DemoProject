@@ -26,7 +26,7 @@ import endava.com.demoproject.R;
 import endava.com.demoproject.RoundedTransformation;
 import endava.com.demoproject.asyncLoader.UserLoadingTask;
 import endava.com.demoproject.constants.LoaderConstants;
-import endava.com.demoproject.db.ClientDataBaseHelper;
+import endava.com.demoproject.helpers.DbHelper;
 import endava.com.demoproject.fragments.ReposLikeFragment;
 import endava.com.demoproject.fragments.ReposListFragment;
 import endava.com.demoproject.fragments.ReposSyncFragment;
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements OnMenuTabClickLis
     private DrawerLayout mDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView mNavigationView;
-    private ClientDataBaseHelper dbHelper;
+    private DbHelper dbHelper;
     private TextView user_login_nav;
     private ImageView avatarImageView;
 
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements OnMenuTabClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-        dbHelper = ClientDataBaseHelper.getInstance();
+        dbHelper = DbHelper.getInstance();
         getSupportLoaderManager().restartLoader(LoaderConstants.USER_LOADING_TASK_ID, savedInstanceState, this);
 
         mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.root_activity_coordinator_layout), savedInstanceState);

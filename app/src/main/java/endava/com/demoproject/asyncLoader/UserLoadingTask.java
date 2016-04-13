@@ -1,13 +1,13 @@
 package endava.com.demoproject.asyncLoader;
 
 import android.content.Context;
-import endava.com.demoproject.db.ClientDataBaseHelper;
+import endava.com.demoproject.helpers.DbHelper;
 import endava.com.demoproject.model.User;
 
 import java.util.concurrent.TimeUnit;
 
 public class UserLoadingTask extends DemoLoader<User> {
-    private ClientDataBaseHelper dbHelper = ClientDataBaseHelper.getInstance();
+    private DbHelper dbHelper = DbHelper.getInstance();
 
     public UserLoadingTask(Context context) {
         super(context);
