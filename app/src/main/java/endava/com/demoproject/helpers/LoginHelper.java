@@ -30,6 +30,7 @@ public class LoginHelper implements Callback<List<User>> {
     private User user;
     private LoginHelperResponse helperResponse;
     private Intent intent;
+    private String userName;
 
     public static LoginHelper getInstance(LoginHelperResponse loginHelperResponse) {
         if (helper == null) {
@@ -45,6 +46,7 @@ public class LoginHelper implements Callback<List<User>> {
     }
 
     public void doLogin(String username, String password) {
+        userName = username;
         try {
             credentials = android.util.Base64.encodeToString(
                     (username + ":" + password).getBytes("UTF-8"),
@@ -61,6 +63,7 @@ public class LoginHelper implements Callback<List<User>> {
         if (response.body() != null) {
             helperResponse.registerObserver();
             user = response.body().get(0);
+            user.setUserName(userName);
             user.setHashedCredentials(credentials);
             initAvatarCallBack();
             ServiceFactory.getInstance().getUserAvatar("Basic " + user.getHashedCredentials()).enqueue(avatarCallback);
