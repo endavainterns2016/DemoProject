@@ -10,6 +10,7 @@ import com.j256.ormlite.table.DatabaseTable;
 public class Repo {
 
     public final static String NAME = "NAME";
+    public final static String OWNER = "OWNER";
     public final static String GIT_ID_FIELD_NAME = "GIT_ID";
     public final static String DESCRIPTION = "DESCRIPTION";
     public final static String HOME_URL = "HOME_URL";
@@ -28,6 +29,21 @@ public class Repo {
 
     @DatabaseField(dataType = DataType.STRING, columnName = NAME)
     private String name;
+
+    @DatabaseField(dataType = DataType.STRING, columnName = OWNER)
+    private String owner;
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public void setOpenIssues(Integer openIssues) {
+        this.openIssues = openIssues;
+    }
 
     @DatabaseField(dataType = DataType.STRING, columnName = DESCRIPTION)
     private String description;
@@ -57,7 +73,7 @@ public class Repo {
 
     public int getDbId() {
         return dbId;
-
+    }
 
     public void setDbId(int id) {
         this.dbId = id;

@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,16 +15,19 @@ import android.widget.TextView;
 
 import endava.com.demoproject.R;
 import endava.com.demoproject.activities.MainActivity;
+import endava.com.demoproject.asyncLoader.RepoLoadingTask;
+import endava.com.demoproject.constants.LoaderConstants;
 import endava.com.demoproject.formatter.DateFormats;
 import endava.com.demoproject.model.Repo;
 import endava.com.demoproject.presenter.RepoListDetailPresenter;
 import endava.com.demoproject.view.RepoDetailsView;
 
-public class RepoDetailsFragment extends Fragment implements RepoDetailsView {
+public class RepoDetailsFragment extends Fragment implements RepoDetailsView, LoaderManager.LoaderCallbacks<Repo> {
 
     public static final String ID_TAG = "ID";
     private RepoListDetailPresenter repoListDetailPresenter;
     private Integer id;
+    private Repo repoFromDb;
     private MainActivity mActivity;
     private TextView idTextView;
     private TextView nameTextView;
@@ -35,19 +40,20 @@ public class RepoDetailsFragment extends Fragment implements RepoDetailsView {
     private TextView openIssuesTextView;
     private ProgressDialog dialog;
 
+    public static RepoDetailsFragment getInstance(Integer id) {
+        RepoDetailsFragment repoDetailsFragment = new RepoDetailsFragment();
+        Bundle args = new Bundle();
+        args.putInt(ID_TAG, id);
+        repoDetailsFragment.setArguments(args);
+        return repoDetailsFragment;
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof MainActivity) {
             mActivity = (MainActivity) context;
         }
-    }
-    public static RepoDetailsFragment getInstance(Integer id){
-        RepoDetailsFragment repoDetailsFragment = new RepoDetailsFragment();
-        Bundle args = new Bundle();
-        args.putInt(ID_TAG, id);
-        repoDetailsFragment.setArguments(args);
-        return repoDetailsFragment;
     }
 
     @Override
@@ -80,7 +86,7 @@ public class RepoDetailsFragment extends Fragment implements RepoDetailsView {
 
     @Override
     public void populateView(Repo repo) {
-        idTextView.setText(String.valueOf(repo.getId()));
+        idTextView.setText(String.valueOf(repo.getGitId()));
         nameTextView.setText(repo.getName());
         if (!repo.getDescription().equals("")) {
             descriptionTextView.setText(repo.getDescription());
@@ -95,6 +101,11 @@ public class RepoDetailsFragment extends Fragment implements RepoDetailsView {
         sizeTextView.setText(String.format(getString(R.string.repo_size), (repo.getSize() / 1024)));
         lastPushTextView.setText(DateFormats.formatISO(repo.getLastPush()));
         openIssuesTextView.setText(String.format("%d", repo.getOpenIssues()));
+    }
+
+    @Override
+    public void populateViewFromDB() {
+        populateView(repoFromDb);
     }
 
     @Override
@@ -114,5 +125,30 @@ public class RepoDetailsFragment extends Fragment implements RepoDetailsView {
     public void onDestroyView() {
         super.onDestroyView();
         repoListDetailPresenter.onDestroy();
+    }
+
+    @Override
+    public Loader<Repo> onCreateLoader(int Loaderid, Bundle args) {
+        showProgress();
+        return new RepoLoadingTask(mActivity, id);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getLoaderManager().restartLoader(LoaderConstants.REPO_LOADING_TASK_ID, null, this);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Repo> loader, Repo data) {
+        hideProgress();
+        repoFromDb = data;
+        repoListDetailPresenter.updateRepo(repoFromDb);
+        populateViewFromDB();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Repo> loader) {
+
     }
 }

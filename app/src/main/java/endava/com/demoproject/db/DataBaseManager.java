@@ -20,7 +20,7 @@ import endava.com.demoproject.model.User;
 public class DataBaseManager extends OrmLiteSqliteOpenHelper {
 
     private static final String DATABASE_NAME = "demoProject.db";
-    private static final int DATABASE_VERSION = 15;
+    private static final int DATABASE_VERSION = 16;
 
     private UserDAO userDAO = null;
     private RepoDAO repoDAO = null;

@@ -37,6 +37,7 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
     @Override
     public void onResponse(Call<List<Repo>> call, Response<List<Repo>> response) {
         if (response.body() != null) {
+            DbHelper.getInstance().createRepos(response.body());
             reposListView.populateList(response.body());
         } else {
             reposListView.handleError();

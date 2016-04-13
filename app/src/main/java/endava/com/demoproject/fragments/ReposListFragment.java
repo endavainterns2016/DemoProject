@@ -10,27 +10,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import endava.com.demoproject.R;
-import endava.com.demoproject.activities.MainActivity;
-import endava.com.demoproject.adapters.ReposAdapter;
-import endava.com.demoproject.asyncLoader.UserLoadingTask;
-import endava.com.demoproject.constants.LoaderConstants;
-import endava.com.demoproject.model.Repo;
-import endava.com.demoproject.model.User;
-import endava.com.demoproject.retrofit.ServiceFactory;
-import endava.com.demoproject.services.RefreshReposListService;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -192,10 +180,7 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
     @Override
     public void onItemClick(View view, int position) {
         Log.d("recycleView", "clicked on" + position);
-        RepoDetailsFragment mRepoDetailsFragment = new RepoDetailsFragment();
-        Bundle args = new Bundle();
-        args.putInt("repoID", reposList.get(position).getDbId());
-        mRepoDetailsFragment.setArguments(args);
+        RepoDetailsFragment mRepoDetailsFragment = RepoDetailsFragment.getInstance(reposList.get(position).getDbId());
         getFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.root_activity_layout, mRepoDetailsFragment)
