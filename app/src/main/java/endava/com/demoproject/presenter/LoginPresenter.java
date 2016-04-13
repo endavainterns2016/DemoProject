@@ -1,15 +1,9 @@
 package endava.com.demoproject.presenter;
 
 
-import android.content.res.Resources;
-import android.text.TextUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
-import endava.com.demoproject.DemoProjectApplication;
 import endava.com.demoproject.R;
 import endava.com.demoproject.cacheableObserver.Event;
 import endava.com.demoproject.cacheableObserver.EventContext;
@@ -17,15 +11,15 @@ import endava.com.demoproject.cacheableObserver.Observer;
 import endava.com.demoproject.cacheableObserver.Subject;
 import endava.com.demoproject.helpers.LoginHelper;
 import endava.com.demoproject.helpers.LoginHelperResponse;
+import endava.com.demoproject.helpers.ResourcesHelper;
 import endava.com.demoproject.helpers.SharedPreferencesHelper;
 import endava.com.demoproject.view.LoginView;
 
 public class LoginPresenter extends BasePresenter<LoginView> implements LoginHelperResponse, Observer {
 
-    @Inject
-    Resources resources;
     private LoginHelper loginHelper;
     private SharedPreferencesHelper sharedPrefHelper;
+    private ResourcesHelper resourcesHelper;
     private Subject subject = Subject.newInstance();
     private LoginView loginView;
     private String userName;
@@ -33,7 +27,7 @@ public class LoginPresenter extends BasePresenter<LoginView> implements LoginHel
 
     public LoginPresenter(LoginView loginView) {
         this.loginView = loginView;
-        DemoProjectApplication.getApplicationComponent().inject(this);
+        resourcesHelper = ResourcesHelper.getInstance();
         sharedPrefHelper = SharedPreferencesHelper.getInstance();
         loginHelper = LoginHelper.getInstance(this);
     }
@@ -42,10 +36,10 @@ public class LoginPresenter extends BasePresenter<LoginView> implements LoginHel
         loginView.showProgress();
         boolean result = true;
         if (userName.length() == 0) {
-            loginView.setError(resources.getString(R.string.fill_in_username));
+            loginView.setError(resourcesHelper.provideResources().getString(R.string.fill_in_username));
             result = false;
         } else if (password.length() == 0) {
-            loginView.setError(resources.getString(R.string.fill_in_password));
+            loginView.setError(resourcesHelper.provideResources().getString(R.string.fill_in_password));
             result = false;
         } else {
             this.userName = userName;
@@ -81,7 +75,7 @@ public class LoginPresenter extends BasePresenter<LoginView> implements LoginHel
 
     public void populateView() {
         String username = sharedPrefHelper.getUserName();
-        if (!TextUtils.isEmpty(username)) {
+        if (username.length() != 0) {
             loginView.populateView(username, true);
         } else {
             loginView.populateView(username, false);

@@ -45,7 +45,6 @@ public class LoginFragment extends Fragment implements LoginView, View.OnClickLi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_login, container, false);
-        // ButterKnife.bind(this, view);
         return view;
     }
 
@@ -68,7 +67,6 @@ public class LoginFragment extends Fragment implements LoginView, View.OnClickLi
     public void onDestroyView() {
         super.onDestroyView();
         presenter.onDestroy();
-        //     ButterKnife.unbind(view);
     }
 
     @Override

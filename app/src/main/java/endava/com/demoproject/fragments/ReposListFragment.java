@@ -245,7 +245,6 @@ public class ReposListFragment extends Fragment implements LoaderManager.LoaderC
     public void onItemClick(View view, int position) {
         Log.d("recycleView", "clicked on" + position);
         RepoDetailsFragment mRepoDetailsFragment = new RepoDetailsFragment();
-        mRepoDetailsFragment.setRepo(reposList.get(position));
         getFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.root_activity_layout, mRepoDetailsFragment)

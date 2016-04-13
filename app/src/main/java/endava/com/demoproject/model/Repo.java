@@ -51,7 +51,7 @@ public class Repo {
     @SerializedName("open_issues")
     private Integer openIssues;
 
-    public long getId() {
+    public Integer getId() {
         return id;
     }
 
