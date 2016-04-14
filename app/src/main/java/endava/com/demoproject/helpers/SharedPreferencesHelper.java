@@ -3,6 +3,7 @@ package endava.com.demoproject.helpers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import javax.inject.Inject;
 
@@ -13,15 +14,18 @@ public class SharedPreferencesHelper {
     private static final String USERNAME_PREF = "username";
     private static final String REMEMBER_USERNAME_PREF = "rememberUsername";
     public static SharedPreferencesHelper helper;
+    private SharedPreferences defaultSharedPreferences;
     @Inject
     Context context;
     private SharedPreferences authData;
+    private boolean enableAutoSync;
+    private int autoSyncInterval;
 
     public static SharedPreferencesHelper getInstance() {
         if (helper == null) {
             helper = new SharedPreferencesHelper();
+            helper.setContext();
         }
-        helper.setContext();
         return helper;
     }
 
@@ -45,5 +49,22 @@ public class SharedPreferencesHelper {
     public String getUserName() {
         authData = context.getSharedPreferences(AUTH_DATA, 0);
         return authData.getString(USERNAME_PREF, "");
+    }
+
+    public boolean getAutoSyncStatus(){
+        enableAutoSync = getDefaultSharedPrefs().getBoolean("enable_auto_sync", false);
+        return enableAutoSync;
+    }
+
+    public int getAutoSyncInterval() {
+        autoSyncInterval = ((getDefaultSharedPrefs().getInt("auto_sync_number_picker_key", 1)) * 60 * 1000);
+        return autoSyncInterval;
+    }
+
+    public SharedPreferences getDefaultSharedPrefs(){
+        if (defaultSharedPreferences == null) {
+            defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        }
+        return defaultSharedPreferences;
     }
 }

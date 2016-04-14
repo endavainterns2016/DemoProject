@@ -33,7 +33,6 @@ import java.util.List;
 import endava.com.demoproject.R;
 import endava.com.demoproject.activities.MainActivity;
 import endava.com.demoproject.adapters.ReposAdapter;
-import endava.com.demoproject.adapters.ReposSyncAdapter;
 import endava.com.demoproject.asyncLoader.UserLoadingTask;
 import endava.com.demoproject.constants.LoaderConstants;
 import endava.com.demoproject.model.Repo;
@@ -44,10 +43,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ReposSyncFragment extends Fragment implements LoaderManager.LoaderCallbacks<User>, ReposAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, SharedPreferences.OnSharedPreferenceChangeListener {
+public class ReposListFragment_backup extends Fragment implements LoaderManager.LoaderCallbacks<User>, ReposAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
 
-    private ReposSyncAdapter mAdapter;
+    private ReposAdapter mAdapter;
     private ArrayList<Repo> reposList = new ArrayList<>();
     private User user;
     private Callback<List<Repo>> reposCallBack;
@@ -101,12 +100,13 @@ public class ReposSyncFragment extends Fragment implements LoaderManager.LoaderC
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
         getLoaderManager().restartLoader(LoaderConstants.USER_LOADING_TASK_ID, null, this);
+
     }
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         Toolbar mToolbar = mActivity.getActivityToolbar();
-        mToolbar.setTitle(R.string.toolbar_repos_sync);
+        mToolbar.setTitle(R.string.toolbar_repos_list);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.repos_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mActivity);
@@ -114,7 +114,8 @@ public class ReposSyncFragment extends Fragment implements LoaderManager.LoaderC
         mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
         mRefreshLayout.setOnRefreshListener(this);
         mRefreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary);
-        mAdapter = new ReposSyncAdapter(reposList);
+        mAdapter = new ReposAdapter(reposList);
+        mAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
         snackBarOnClickListener = new SnackBarOnClickListener();
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mActivity);
@@ -142,6 +143,7 @@ public class ReposSyncFragment extends Fragment implements LoaderManager.LoaderC
                         Log.d("refreshService", "reposCallBack onresponse not minimized");
                         finishRefreshing();
                         mAdapter.notifyDataSetChanged();
+                        progressDialog.dismiss();
                     } else {
                         Log.d("refreshService", "reposCallBack onresponse minimized");
                     }
@@ -151,6 +153,7 @@ public class ReposSyncFragment extends Fragment implements LoaderManager.LoaderC
                                 .make(view, getString(R.string.network_error), Snackbar.LENGTH_LONG);
                         snackbar.show();
                         finishRefreshing();
+                        progressDialog.dismiss();
                     } else {
                         pushNotification();
                     }
@@ -166,6 +169,7 @@ public class ReposSyncFragment extends Fragment implements LoaderManager.LoaderC
                             .setAction(getString(R.string.try_again), snackBarOnClickListener);
                     snackbar.show();
                     finishRefreshing();
+                    progressDialog.dismiss();
                 } else {
                     pushNotification();
                 }
@@ -243,7 +247,8 @@ public class ReposSyncFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public void onItemClick(View view, int position) {
         Log.d("recycleView", "clicked on" + position);
-        RepoDetailsFragment mRepoDetailsFragment = RepoDetailsFragment.getInstance(reposList.get(position).getDbId());
+        RepoDetailsFragment mRepoDetailsFragment = new RepoDetailsFragment();
+        //mRepoDetailsFragment.setRepo(reposList.get(position));
         getFragmentManager().beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.root_activity_layout, mRepoDetailsFragment)
@@ -266,7 +271,6 @@ public class ReposSyncFragment extends Fragment implements LoaderManager.LoaderC
             user = result;
             handleReposRequest();
         }
-        progressDialog.dismiss();
     }
 
     @Override

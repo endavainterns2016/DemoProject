@@ -1,15 +1,15 @@
 package endava.com.demoproject.retrofit;
 
+import java.util.List;
+
 import endava.com.demoproject.model.Avatar;
 import endava.com.demoproject.model.Repo;
 import endava.com.demoproject.model.User;
-
-import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
+import retrofit2.http.Path;
 
 public interface UserAPI {
 
@@ -23,4 +23,8 @@ public interface UserAPI {
 
     @GET("/user")
     Call<Avatar> getUserAvatar(@Header("authorization") String token);
+
+
+    @GET("/repos/{owner}/{repo}")
+    Call<Repo> updateRepo(@Header("authorization") String token, @Path("owner") String owner, @Path("repo") String repo);
 }

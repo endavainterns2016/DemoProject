@@ -32,12 +32,15 @@ public class SplashFragment extends Fragment implements SplashView {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        splashPresenter = new SplashPresenter();
-        splashPresenter.attachView(this);
-
         return inflater.inflate(R.layout.fragment_splash_screen, container,
                 false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        splashPresenter = new SplashPresenter();
+        splashPresenter.attachView(this);
     }
 
     @Override

@@ -1,7 +1,5 @@
 package endava.com.demoproject.adapters;
 
-import endava.com.demoproject.R;
-import endava.com.demoproject.model.Repo;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+
+import endava.com.demoproject.R;
+import endava.com.demoproject.model.Repo;
 
 public class ReposAdapter extends RecyclerView.Adapter<ReposAdapter.RepoViewHolder> {
     private ArrayList<Repo> reposList;
@@ -37,7 +38,7 @@ public class ReposAdapter extends RecyclerView.Adapter<ReposAdapter.RepoViewHold
     public void onBindViewHolder(RepoViewHolder holder, int position) {
         holder.repoName.setText(reposList.get(position).getName());
         holder.repoDescription.setText(reposList.get(position).getDescription());
-        holder.repoId.setText(String.valueOf(reposList.get(position).getId()));
+        holder.repoId.setText(String.valueOf(reposList.get(position).getGitId()));
 
     }
 

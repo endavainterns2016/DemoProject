@@ -6,14 +6,14 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 public class HelperProvider {
 
-    private static DataBaseHelper databaseHelper;
+    private static DataBaseManager databaseHelper;
 
-    public static DataBaseHelper getHelper() {
+    public static DataBaseManager getHelper() {
         return databaseHelper;
     }
 
     public static void setHelper(Context context) {
-        databaseHelper = OpenHelperManager.getHelper(context, DataBaseHelper.class);
+        databaseHelper = OpenHelperManager.getHelper(context, DataBaseManager.class);
     }
 
     public static void releaseHelper() {

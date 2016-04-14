@@ -7,10 +7,15 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import endava.com.demoproject.cacheableObserver.Subject;
+import endava.com.demoproject.events.refreshReposListEvent;
+
 public class NetworkStateChangedReceiver extends BroadcastReceiver {
 
     private static final String LOG_TAG = "NetworkChangedReceiver";
     private boolean isConnected = false;
+    private Subject subject = Subject.newInstance();
+    private refreshReposListEvent refreshEvent = new refreshReposListEvent();
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -28,7 +33,7 @@ public class NetworkStateChangedReceiver extends BroadcastReceiver {
                             Log.d(LOG_TAG, "Now you are connected to Internet!");
                             isConnected = true;
 
-                            context.sendBroadcast(new Intent("refreshReposListOnConnectionRestore"));
+                            subject.onNewEvent(refreshEvent);
                         }
                         return true;
                     }
