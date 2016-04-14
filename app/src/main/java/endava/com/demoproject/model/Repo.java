@@ -30,14 +30,14 @@ public class Repo {
     @DatabaseField(dataType = DataType.STRING, columnName = NAME)
     private String name;
 
-    @DatabaseField(dataType = DataType.STRING, columnName = OWNER)
-    private String owner;
+    @DatabaseField(foreign = true, columnName = OWNER, foreignAutoRefresh = true)
+    private Owner owner;
 
-    public String getOwner() {
+    public Owner getOwner() {
         return owner;
     }
 
-    public void setOwner(String owner) {
+    public void setOwner(Owner owner) {
         this.owner = owner;
     }
 

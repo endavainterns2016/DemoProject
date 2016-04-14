@@ -1,11 +1,5 @@
 package endava.com.demoproject.presenter;
 
-import android.content.Context;
-import android.util.Log;
-
-import javax.inject.Inject;
-
-import endava.com.demoproject.DemoProjectApplication;
 import endava.com.demoproject.helpers.DbHelper;
 import endava.com.demoproject.model.Repo;
 import endava.com.demoproject.retrofit.ServiceFactory;
@@ -15,21 +9,21 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class RepoListDetailPresenter extends BasePresenter<RepoDetailsView> implements Callback<Repo> {
-    @Inject
-    Context context;
     private RepoDetailsView repoDetailsView;
     private DbHelper dbHelper;
-    private Integer repoId;
+    private Repo repo;
 
-    public RepoListDetailPresenter(RepoDetailsView repoDetailsView, Integer repoId) {
+    public RepoListDetailPresenter(RepoDetailsView repoDetailsView) {
         this.repoDetailsView = repoDetailsView;
-        this.repoId = repoId;
-        DemoProjectApplication.getApplicationComponent().inject(this);
         dbHelper = DbHelper.getInstance();
     }
 
-    public void updateRepo(Repo repo) {
-        ServiceFactory.getInstance().updateRepo("Basic " + dbHelper.getUser().getHashedCredentials(), repo.getOwner(), repo.getName()).enqueue(this);
+    public void updateRepo() {
+        ServiceFactory.getInstance().updateRepo("Basic " + dbHelper.getUser().getHashedCredentials(), repo.getOwner().getLogin(), repo.getName()).enqueue(this);
+    }
+
+    public void setRepo(Repo repo) {
+        this.repo = repo;
     }
 
     @Override
@@ -37,6 +31,17 @@ public class RepoListDetailPresenter extends BasePresenter<RepoDetailsView> impl
         super.attachView(mvpView);
     }
 
+    public void populateView(Repo repo) {
+        repoDetailsView.populateView(repo);
+    }
+
+    public void initView() {
+        repoDetailsView.initView();
+    }
+
+    public void updateRepo(Repo repo) {
+        dbHelper.updateRepo(repo);
+    }
 
     @Override
     public void detachView() {
@@ -50,12 +55,12 @@ public class RepoListDetailPresenter extends BasePresenter<RepoDetailsView> impl
 
     @Override
     public void onResponse(Call<Repo> call, Response<Repo> response) {
-        Log.d("","");
+        repoDetailsView.populateView(response.body());
+        updateRepo(response.body());
     }
 
     @Override
     public void onFailure(Call<Repo> call, Throwable t) {
-        Log.d("","");
-
+        repoDetailsView.networkError();
     }
 }

@@ -7,6 +7,7 @@
     <string name="welcome_back">Welcome back!</string>
     <string name="remember_name">Remember username</string>
     <string name="get_token_error">There is a problem with your network</string>
+    <string name="repo_update_failed">"Couldn't update your repo"</string>
     <string name="credentials_error">Wrong username and/or password</string>
     <string name="network_error">Wrong user or some network error</string>
     <string name="fill_in_username">Please enter username</string>

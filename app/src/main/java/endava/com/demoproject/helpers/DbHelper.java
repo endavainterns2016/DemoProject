@@ -7,6 +7,7 @@ import java.util.List;
 
 import endava.com.demoproject.db.DataBaseManager;
 import endava.com.demoproject.db.HelperProvider;
+import endava.com.demoproject.model.Owner;
 import endava.com.demoproject.model.Repo;
 import endava.com.demoproject.model.User;
 
@@ -68,9 +69,29 @@ public class DbHelper {
         }
     }
 
-    public void createRepos(final List<Repo> list) {
+    public void updateRepo(Repo repo) {
         try {
+            dbHelper.getRepoDAO().update(repo);
+        } catch (SQLException e) {
+            Log.d("SQLException", e.toString());
+        }
+    }
+
+    public void createRepos(final List<Repo> list) {
+        List<Repo> repoToDeleteList;
+        List<Owner> ownerToDeleteList;
+        try {
+            repoToDeleteList = dbHelper.getRepoDAO().queryForAll();
+            ownerToDeleteList = dbHelper.getOwnerDAO().queryForAll();
+
+            for (Owner owner : ownerToDeleteList) {
+                dbHelper.getOwnerDAO().delete(owner);
+            }
+            for (Repo repo : repoToDeleteList) {
+                dbHelper.getRepoDAO().delete(repo);
+            }
             for (Repo repo : list) {
+                dbHelper.getOwnerDAO().createOrUpdate(repo.getOwner());
                 dbHelper.getRepoDAO().createOrUpdate(repo);
             }
         } catch (SQLException e) {

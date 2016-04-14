@@ -4,6 +4,7 @@ package endava.com.demoproject.fragments;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -27,7 +28,6 @@ public class RepoDetailsFragment extends Fragment implements RepoDetailsView, Lo
     public static final String ID_TAG = "ID";
     private RepoListDetailPresenter repoListDetailPresenter;
     private Integer id;
-    private Repo repoFromDb;
     private MainActivity mActivity;
     private TextView idTextView;
     private TextView nameTextView;
@@ -39,6 +39,8 @@ public class RepoDetailsFragment extends Fragment implements RepoDetailsView, Lo
     private TextView lastPushTextView;
     private TextView openIssuesTextView;
     private ProgressDialog dialog;
+    private View view;
+    private Snackbar snackbar;
 
     public static RepoDetailsFragment getInstance(Integer id) {
         RepoDetailsFragment repoDetailsFragment = new RepoDetailsFragment();
@@ -57,20 +59,28 @@ public class RepoDetailsFragment extends Fragment implements RepoDetailsView, Lo
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getLoaderManager().restartLoader(LoaderConstants.REPO_LOADING_TASK_ID, null, this);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_repo_details, container, false);
+        view = inflater.inflate(R.layout.fragment_repo_details, container, false);
+        return view;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        this.id = getArguments().getInt(ID_TAG);
-        initView(view);
-        repoListDetailPresenter = new RepoListDetailPresenter(this, id);
+        id = getArguments().getInt(ID_TAG);
+        repoListDetailPresenter = new RepoListDetailPresenter(this);
         repoListDetailPresenter.attachView(this);
+        repoListDetailPresenter.initView();
     }
 
-    private void initView(View view) {
+    @Override
+    public void initView() {
         Toolbar mToolbar = mActivity.getActivityToolbar();
         mToolbar.setTitle(R.string.toolbar_repos_details);
         idTextView = (TextView) view.findViewById(R.id.id);
@@ -103,10 +113,6 @@ public class RepoDetailsFragment extends Fragment implements RepoDetailsView, Lo
         openIssuesTextView.setText(String.format("%d", repo.getOpenIssues()));
     }
 
-    @Override
-    public void populateViewFromDB() {
-        populateView(repoFromDb);
-    }
 
     @Override
     public void showProgress() {
@@ -122,8 +128,17 @@ public class RepoDetailsFragment extends Fragment implements RepoDetailsView, Lo
     }
 
     @Override
+    public void networkError() {
+        snackbar = Snackbar
+                .make(view, getString(R.string.repo_update_failed), Snackbar.LENGTH_LONG)
+                .setAction(getString(R.string.try_again), new ClickHandler());
+        snackbar.show();
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
+        snackbar.dismiss();
         repoListDetailPresenter.onDestroy();
     }
 
@@ -134,21 +149,23 @@ public class RepoDetailsFragment extends Fragment implements RepoDetailsView, Lo
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        getLoaderManager().restartLoader(LoaderConstants.REPO_LOADING_TASK_ID, null, this);
-    }
-
-    @Override
     public void onLoadFinished(Loader<Repo> loader, Repo data) {
         hideProgress();
-        repoFromDb = data;
-        repoListDetailPresenter.updateRepo(repoFromDb);
-        populateViewFromDB();
+        repoListDetailPresenter.setRepo(data);
+        repoListDetailPresenter.populateView(data);
+        repoListDetailPresenter.updateRepo();
     }
 
     @Override
     public void onLoaderReset(Loader<Repo> loader) {
 
+    }
+
+    public class ClickHandler implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            repoListDetailPresenter.updateRepo();
+        }
     }
 }

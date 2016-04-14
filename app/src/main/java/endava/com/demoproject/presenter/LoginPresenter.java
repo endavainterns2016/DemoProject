@@ -104,7 +104,7 @@ public class LoginPresenter extends BasePresenter<LoginView> implements LoginHel
 
     @Override
     public boolean isMainObserverForKey(EventContext key) {
-        return false;
+        return true;
     }
 
     @Override

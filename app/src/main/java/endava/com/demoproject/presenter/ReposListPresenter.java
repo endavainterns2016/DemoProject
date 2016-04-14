@@ -19,7 +19,7 @@ import retrofit2.Response;
 
 public class ReposListPresenter extends BasePresenter<ReposListView> implements Observer, Callback<List<Repo>> {
 
-    private User user = DbHelper.getInstance().getUser();;
+    private User user = DbHelper.getInstance().getUser();
     private ReposListView reposListView;
     private Subject subject = Subject.newInstance();
 

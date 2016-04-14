@@ -25,6 +25,6 @@ public interface UserAPI {
     Call<Avatar> getUserAvatar(@Header("authorization") String token);
 
 
-    @GET("/user/{owner}/{repo}")
+    @GET("/repos/{owner}/{repo}")
     Call<Repo> updateRepo(@Header("authorization") String token, @Path("owner") String owner, @Path("repo") String repo);
 }
