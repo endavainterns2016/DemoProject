@@ -42,13 +42,13 @@ public class RefreshReposListService extends Service {
     }
 
     public void startRefreshHandler() {
-        mHandler.postDelayed(refreshTask, 10000);
+        mHandler.postDelayed(refreshTask, refreshPeriod);
     }
     private Runnable refreshTask = new Runnable() {
         public void run() {
             Log.d("refreshService", "in service refreshed");
             subject.onNewEvent(refreshEvent);
-            mHandler.postDelayed(this, 10000);
+            mHandler.postDelayed(this, refreshPeriod);
         }
     };
 }

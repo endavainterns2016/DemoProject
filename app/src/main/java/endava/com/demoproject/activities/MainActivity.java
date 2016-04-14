@@ -26,10 +26,10 @@ import endava.com.demoproject.R;
 import endava.com.demoproject.RoundedTransformation;
 import endava.com.demoproject.asyncLoader.UserLoadingTask;
 import endava.com.demoproject.constants.LoaderConstants;
-import endava.com.demoproject.helpers.DbHelper;
 import endava.com.demoproject.fragments.ReposLikeFragment;
 import endava.com.demoproject.fragments.ReposListFragment;
 import endava.com.demoproject.fragments.ReposSyncFragment;
+import endava.com.demoproject.helpers.DbHelper;
 import endava.com.demoproject.model.User;
 
 public class MainActivity extends AppCompatActivity implements OnMenuTabClickListener,
@@ -53,7 +53,8 @@ public class MainActivity extends AppCompatActivity implements OnMenuTabClickLis
         dbHelper = DbHelper.getInstance();
         getSupportLoaderManager().restartLoader(LoaderConstants.USER_LOADING_TASK_ID, savedInstanceState, this);
 
-        mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.root_activity_coordinator_layout), savedInstanceState);
+        mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.root_activity_coordinator_layout),
+                findViewById(R.id.root_activity_layout), savedInstanceState);
         mBottomBar.noNavBarGoodness();
         mBottomBar.setItemsFromMenu(R.menu.repos_list_fragment_bottom_bar, this);
         mBottomBar.setActiveTabColor(getResources().getColor(R.color.colorAccent));
@@ -86,6 +87,10 @@ public class MainActivity extends AppCompatActivity implements OnMenuTabClickLis
         }
         mDrawer.closeDrawers();
         return true;
+    }
+
+    public BottomBar getBottomBar(){
+        return mBottomBar;
     }
 
     @Override
