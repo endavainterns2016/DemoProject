@@ -233,7 +233,9 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
 
     @Override
     public void hideProgress() {
-        progressDialog.dismiss();
+        if (!appIsMinimized) {
+            progressDialog.dismiss();
+        }
     }
 
 

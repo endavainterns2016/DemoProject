@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.roughike.bottombar.BottomBar;
+
 import endava.com.demoproject.R;
 import endava.com.demoproject.activities.MainActivity;
 import endava.com.demoproject.asyncLoader.RepoLoadingTask;
@@ -41,6 +43,7 @@ public class RepoDetailsFragment extends Fragment implements RepoDetailsView, Lo
     private ProgressDialog dialog;
     private View view;
     private Snackbar snackbar;
+    private BottomBar activityBottomBar;
 
     public static RepoDetailsFragment getInstance(Integer id) {
         RepoDetailsFragment repoDetailsFragment = new RepoDetailsFragment();
@@ -83,6 +86,7 @@ public class RepoDetailsFragment extends Fragment implements RepoDetailsView, Lo
     public void initView() {
         Toolbar mToolbar = mActivity.getActivityToolbar();
         mToolbar.setTitle(R.string.toolbar_repos_details);
+        activityBottomBar = mActivity.getBottomBar();
         idTextView = (TextView) view.findViewById(R.id.id);
         nameTextView = (TextView) view.findViewById(R.id.name);
         descriptionTextView = (TextView) view.findViewById(R.id.description);
@@ -130,7 +134,7 @@ public class RepoDetailsFragment extends Fragment implements RepoDetailsView, Lo
     @Override
     public void networkError() {
         snackbar = Snackbar
-                .make(view, getString(R.string.repo_update_failed), Snackbar.LENGTH_LONG)
+                .make(activityBottomBar, getString(R.string.repo_update_failed), Snackbar.LENGTH_LONG)
                 .setAction(getString(R.string.try_again), new ClickHandler());
         snackbar.show();
     }
