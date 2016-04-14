@@ -20,6 +20,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.roughike.bottombar.BottomBar;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +44,7 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
     private SnackBarOnClickListener snackBarOnClickListener;
     private ProgressDialog progressDialog;
     private SwipeRefreshLayout mRefreshLayout;
+    private BottomBar activityBottomBar;
 
     private boolean appIsMinimized = false;
     private RecyclerView mRecyclerView;
@@ -58,11 +61,13 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
     public void onPause() {
         super.onPause();
         appIsMinimized = true;
+        Log.d("lifecycle", "pause");
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        Log.d("lifecycle", "resume");
         appIsMinimized = false;
         mAdapter.notifyDataSetChanged();
     }
@@ -87,6 +92,7 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
         progressDialog = new ProgressDialog(mActivity);
         progressDialog.setMessage(getString(R.string.progress_dialog_loading));
         mActivity.getActivityToolbar().setTitle(R.string.toolbar_repos_list);
+        activityBottomBar = mActivity.getBottomBar();
         mRecyclerView = (RecyclerView) view.findViewById(R.id.repos_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mActivity);
@@ -197,7 +203,7 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
             finishRefreshing();
             hideProgress();
             Snackbar snackbar = Snackbar
-                    .make(view, getString(R.string.get_token_error), Snackbar.LENGTH_LONG)
+                    .make(activityBottomBar, getString(R.string.get_token_error), Snackbar.LENGTH_LONG)
                     .setAction(getString(R.string.try_again), snackBarOnClickListener);
             snackbar.show();
         } else {
@@ -211,7 +217,7 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
             finishRefreshing();
             hideProgress();
             Snackbar snackbar = Snackbar
-                    .make(view, getString(R.string.network_error), Snackbar.LENGTH_LONG);
+                    .make(activityBottomBar, getString(R.string.network_error), Snackbar.LENGTH_LONG);
             snackbar.show();
         } else {
             pushNotification();
@@ -220,7 +226,9 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
 
     @Override
     public void showProgress() {
-        progressDialog.show();
+        if (!appIsMinimized) {
+            progressDialog.show();
+        }
     }
 
     @Override
