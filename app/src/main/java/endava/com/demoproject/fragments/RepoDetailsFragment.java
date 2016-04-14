@@ -110,7 +110,7 @@ public class RepoDetailsFragment extends Fragment implements RepoDetailsView, Lo
         }
         sizeTextView.setText(String.format(getString(R.string.repo_size), (repo.getSize() / 1024)));
         lastPushTextView.setText(DateFormats.formatISO(repo.getLastPush()));
-        openIssuesTextView.setText(String.format("%d", repo.getOpenIssues()));
+        openIssuesTextView.setText(String.valueOf(repo.getOpenIssues()));
     }
 
 
