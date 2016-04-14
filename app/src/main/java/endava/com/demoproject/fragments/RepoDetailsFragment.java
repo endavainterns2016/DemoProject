@@ -138,7 +138,8 @@ public class RepoDetailsFragment extends Fragment implements RepoDetailsView, Lo
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        snackbar.dismiss();
+        if (snackbar != null)
+            snackbar.dismiss();
         repoListDetailPresenter.onDestroy();
     }
 
