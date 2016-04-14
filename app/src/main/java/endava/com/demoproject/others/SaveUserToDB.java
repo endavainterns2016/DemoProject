@@ -1,4 +1,4 @@
-package endava.com.demoproject;
+package endava.com.demoproject.others;
 
 
 import endava.com.demoproject.helpers.DbHelper;

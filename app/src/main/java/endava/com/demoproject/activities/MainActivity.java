@@ -23,7 +23,7 @@ import com.roughike.bottombar.OnMenuTabClickListener;
 import com.squareup.picasso.Picasso;
 
 import endava.com.demoproject.R;
-import endava.com.demoproject.RoundedTransformation;
+import endava.com.demoproject.others.RoundedTransformation;
 import endava.com.demoproject.asyncLoader.UserLoadingTask;
 import endava.com.demoproject.constants.LoaderConstants;
 import endava.com.demoproject.fragments.ReposLikeFragment;

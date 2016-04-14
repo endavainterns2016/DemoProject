@@ -12,7 +12,7 @@ import javax.inject.Inject;
 
 import endava.com.demoproject.DemoProjectApplication;
 import endava.com.demoproject.R;
-import endava.com.demoproject.SaveUserToDB;
+import endava.com.demoproject.others.SaveUserToDB;
 import endava.com.demoproject.model.Avatar;
 import endava.com.demoproject.model.User;
 import endava.com.demoproject.retrofit.ServiceFactory;

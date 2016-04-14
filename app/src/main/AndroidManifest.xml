@@ -41,7 +41,7 @@
 
         <service android:name=".services.SaveUserToDBService" />
 
-        <receiver android:name=".NetworkStateChangedReceiver">
+        <receiver android:name=".others.NetworkStateChangedReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>

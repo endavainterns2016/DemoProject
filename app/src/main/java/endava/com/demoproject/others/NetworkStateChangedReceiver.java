@@ -1,4 +1,4 @@
-package endava.com.demoproject;
+package endava.com.demoproject.others;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

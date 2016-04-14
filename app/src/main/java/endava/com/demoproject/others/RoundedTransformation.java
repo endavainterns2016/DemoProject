@@ -1,4 +1,4 @@
-package endava.com.demoproject;
+package endava.com.demoproject.others;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;

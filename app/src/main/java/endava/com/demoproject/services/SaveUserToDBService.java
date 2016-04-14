@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import endava.com.demoproject.SaveUserToDB;
+import endava.com.demoproject.others.SaveUserToDB;
 import endava.com.demoproject.cacheableObserver.Subject;
 import endava.com.demoproject.events.UserWasSavedToDbEvent;
 
