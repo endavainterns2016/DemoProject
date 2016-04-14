@@ -6,5 +6,7 @@ public interface Presenter<V extends MvpView> {
 
     void attachView(V mvpView);
 
+    void initView();
+
     void detachView();
 }

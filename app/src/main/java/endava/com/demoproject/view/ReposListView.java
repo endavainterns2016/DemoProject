@@ -10,6 +10,8 @@ public interface ReposListView extends MvpView {
 
     void handleOnRequestFailure();
 
+    void initView();
+
     void handleError();
 
     void showProgress();

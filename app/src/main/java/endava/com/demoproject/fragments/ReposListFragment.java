@@ -88,7 +88,14 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         reposListPresenter = new ReposListPresenter();
         reposListPresenter.attachView(this);
+        reposListPresenter.initView();
+        reposListPresenter.populateView();
+        startRefreshService();
+    }
 
+
+    @Override
+    public void initView() {
         progressDialog = new ProgressDialog(mActivity);
         progressDialog.setMessage(getString(R.string.progress_dialog_loading));
         mActivity.getActivityToolbar().setTitle(R.string.toolbar_repos_list);
@@ -104,10 +111,6 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
         mAdapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
         snackBarOnClickListener = new SnackBarOnClickListener();
-
-        reposListPresenter.populateView();
-
-        startRefreshService();
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {

@@ -27,9 +27,14 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
     public void attachView(ReposListView mvpView) {
         super.attachView(mvpView);
         reposListView = mvpView;
-            subject.registerObserver(this);
+        subject.registerObserver(this);
     }
 
+    @Override
+    public void initView() {
+        super.initView();
+        reposListView.initView();
+    }
 
     public void populateView() {
         reposListView.showProgress();
@@ -55,7 +60,7 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
     @Override
     public void detachView() {
         super.detachView();
-            subject.unregisterObservers(this);
+        subject.unregisterObservers(this);
     }
 
     @Override

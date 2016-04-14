@@ -12,6 +12,11 @@ public class BasePresenter<T extends MvpView> implements Presenter<T> {
     }
 
     @Override
+    public void initView() {
+
+    }
+
+    @Override
     public void detachView() {
         mMvpView = null;
     }
