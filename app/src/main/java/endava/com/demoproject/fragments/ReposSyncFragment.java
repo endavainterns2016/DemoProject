@@ -83,7 +83,7 @@ public class ReposSyncFragment extends Fragment implements SwipeRefreshLayout.On
     public void initView() {
         progressDialog = new ProgressDialog(mActivity);
         progressDialog.setMessage(getString(R.string.progress_dialog_loading));
-        mActivity.getActivityToolbar().setTitle(R.string.toolbar_repos_list);
+        mActivity.getActivityToolbar().setTitle(R.string.toolbar_repos_sync);
         activityBottomBar = mActivity.getBottomBar();
         mRecyclerView = (RecyclerView) view.findViewById(R.id.repos_recycler_view);
         mRecyclerView.setHasFixedSize(true);
