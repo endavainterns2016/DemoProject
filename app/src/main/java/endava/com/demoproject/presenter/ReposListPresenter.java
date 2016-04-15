@@ -1,5 +1,7 @@
 package endava.com.demoproject.presenter;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,18 +18,48 @@ import endava.com.demoproject.view.ReposListView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func0;
+import rx.schedulers.Schedulers;
 
 public class ReposListPresenter extends BasePresenter<ReposListView> implements Observer, Callback<List<Repo>> {
 
-    private User user = DbHelper.getInstance().getUser();
+    private User user;
     private ReposListView reposListView;
     private Subject subject = Subject.newInstance();
+    private Subscription subscription;
 
     @Override
     public void attachView(ReposListView mvpView) {
         super.attachView(mvpView);
         reposListView = mvpView;
         subject.registerObserver(this);
+
+    }
+
+    public void loadUser(){
+        Log.d("rxjava", "loadUser");
+        subscription = getUserObservable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<User>() {
+            @Override
+            public void onCompleted() {
+                Log.d("rxjava", "onCompleted");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(User userResult) {
+                Log.d("rxjava", "onNext");
+                user = userResult;
+                handleReposListRequest();
+            }
+        });
     }
 
     @Override
@@ -37,7 +69,17 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
     }
 
     public void populateView() {
+        Log.d("rxjava", "populateView");
         reposListView.showProgress();
+        if (user == null) {
+            loadUser();
+        } else {
+            handleReposListRequest();
+        }
+    }
+
+    public void handleReposListRequest() {
+        Log.d("rxjava", "handleReposListRequest");
         ServiceFactory.getInstance().getReposList("Basic " + user.getHashedCredentials()).enqueue(this);
     }
 
@@ -52,6 +94,20 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
         }
     }
 
+    public User getUser() {
+        Log.d("rxjava", "getUser");
+        return DbHelper.getInstance().getUser();
+    }
+
+    public Observable<User> getUserObservable() {
+        return Observable.defer(new Func0<Observable<User>>() {
+            @Override
+            public Observable<User> call() {
+                return Observable.just(getUser());
+            }
+        });
+    }
+
     @Override
     public void onFailure(Call<List<Repo>> call, Throwable t) {
         reposListView.handleOnRequestFailure();
@@ -61,6 +117,9 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
     public void detachView() {
         super.detachView();
         subject.unregisterObservers(this);
+        if (subscription != null && subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+        }
     }
 
     @Override
