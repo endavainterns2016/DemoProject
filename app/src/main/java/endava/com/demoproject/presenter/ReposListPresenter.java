@@ -22,7 +22,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func0;
 import rx.schedulers.Schedulers;
 
 public class ReposListPresenter extends BasePresenter<ReposListView> implements Observer, Callback<List<Repo>> {
@@ -42,7 +41,7 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
 
     public void loadUser(){
         Log.d("rxjava", "loadUser");
-        subscription = getUserObservable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<User>() {
+        subscription = Observable.just(getUser()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<User>() {
             @Override
             public void onCompleted() {
                 Log.d("rxjava", "onCompleted");
@@ -97,15 +96,6 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
     public User getUser() {
         Log.d("rxjava", "getUser");
         return DbHelper.getInstance().getUser();
-    }
-
-    public Observable<User> getUserObservable() {
-        return Observable.defer(new Func0<Observable<User>>() {
-            @Override
-            public Observable<User> call() {
-                return Observable.just(getUser());
-            }
-        });
     }
 
     @Override
