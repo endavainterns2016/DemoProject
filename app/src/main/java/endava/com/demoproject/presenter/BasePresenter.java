@@ -2,18 +2,13 @@ package endava.com.demoproject.presenter;
 
 import endava.com.demoproject.view.MvpView;
 
-public class BasePresenter<T extends MvpView> implements Presenter<T> {
+public abstract class BasePresenter<T extends MvpView> implements Presenter<T> {
 
     private T mMvpView;
 
     @Override
     public void attachView(T mvpView) {
         mMvpView = mvpView;
-    }
-
-    @Override
-    public void initView() {
-
     }
 
     @Override

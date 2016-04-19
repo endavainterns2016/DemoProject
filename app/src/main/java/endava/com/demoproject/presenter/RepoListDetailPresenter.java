@@ -49,6 +49,16 @@ public class RepoListDetailPresenter extends BasePresenter<RepoDetailsView> impl
         repoDetailsView = null;
     }
 
+    @Override
+    public void onResume() {
+
+    }
+
+    @Override
+    public void onPause() {
+
+    }
+
     public void onDestroy() {
         detachView();
     }

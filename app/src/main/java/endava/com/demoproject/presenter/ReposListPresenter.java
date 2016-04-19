@@ -63,7 +63,6 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
 
     @Override
     public void initView() {
-        super.initView();
         reposListView.initView();
     }
 
@@ -110,6 +109,16 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
         if (subscription != null && subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
+    }
+
+    @Override
+    public void onResume() {
+
+    }
+
+    @Override
+    public void onPause() {
+
     }
 
     @Override
