@@ -19,7 +19,7 @@ public class RepoListDetailPresenter extends BasePresenter<RepoDetailsView> impl
     }
 
     public void updateRepo() {
-        ServiceFactory.getInstance().updateRepo("Basic " + dbHelper.getUser().getHashedCredentials(), repo.getOwner().getLogin(), repo.getName()).enqueue(this);
+        ServiceFactory.getInstance().updateRepo(dbHelper.getUser().getHashedCredentials(), repo.getOwner().getLogin(), repo.getName()).enqueue(this);
     }
 
     public void setRepo(Repo repo) {

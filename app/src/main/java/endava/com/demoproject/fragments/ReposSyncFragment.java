@@ -152,7 +152,7 @@ public class ReposSyncFragment extends Fragment implements SwipeRefreshLayout.On
             finishRefreshing();
             hideProgress();
             Snackbar snackbar = Snackbar
-                    .make(activityBottomBar, getString(R.string.network_error), Snackbar.LENGTH_LONG);
+                    .make(activityBottomBar, getString(R.string.connection_error_message), Snackbar.LENGTH_LONG);
             snackbar.show();
         }
     }

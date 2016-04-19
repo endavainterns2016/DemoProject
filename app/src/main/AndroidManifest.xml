@@ -39,7 +39,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
-        <service android:name=".services.SaveUserToDBService" />
+        <service android:name=".services.LoginService" />
 
         <receiver android:name=".others.NetworkStateChangedReceiver">
             <intent-filter>

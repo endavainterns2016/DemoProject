@@ -78,7 +78,7 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
 
     public void handleReposListRequest() {
         Log.d("rxjava", "handleReposListRequest");
-        ServiceFactory.getInstance().getReposList("Basic " + user.getHashedCredentials()).enqueue(this);
+        ServiceFactory.getInstance().getReposList(user.getHashedCredentials()).enqueue(this);
     }
 
 

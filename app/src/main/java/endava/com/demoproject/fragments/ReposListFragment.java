@@ -217,7 +217,7 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
             finishRefreshing();
             hideProgress();
             Snackbar snackbar = Snackbar
-                    .make(activityBottomBar, getString(R.string.network_error), Snackbar.LENGTH_LONG);
+                    .make(activityBottomBar, getString(R.string.connection_error_message), Snackbar.LENGTH_LONG);
             snackbar.show();
         } else {
             pushNotification();
