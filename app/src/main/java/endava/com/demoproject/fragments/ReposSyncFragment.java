@@ -4,7 +4,6 @@ package endava.com.demoproject.fragments;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -74,7 +73,6 @@ public class ReposSyncFragment extends Fragment implements SwipeRefreshLayout.On
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         reposListPresenter = new ReposListPresenter();
         reposListPresenter.attachView(this);
-        reposListPresenter.initView();
         reposListPresenter.populateView();
     }
 
@@ -95,6 +93,11 @@ public class ReposSyncFragment extends Fragment implements SwipeRefreshLayout.On
         mAdapter = new ReposSyncAdapter(reposList);
         mRecyclerView.setAdapter(mAdapter);
         snackBarOnClickListener = new SnackBarOnClickListener();
+    }
+
+    @Override
+    public void showError() {
+
     }
 
     @Override
@@ -131,32 +134,6 @@ public class ReposSyncFragment extends Fragment implements SwipeRefreshLayout.On
             hideProgress();
         }
     }
-
-    @Override
-    public void handleOnRequestFailure() {
-        Log.d("refreshService", "handleOnRequestFailure 1");
-        if (!appIsMinimized) {
-            Log.d("refreshService", "handleOnRequestFailure 2");
-            finishRefreshing();
-            hideProgress();
-            Snackbar snackbar = Snackbar
-                    .make(activityBottomBar, getString(R.string.get_token_error), Snackbar.LENGTH_LONG)
-                    .setAction(getString(R.string.try_again), snackBarOnClickListener);
-            snackbar.show();
-        }
-    }
-
-    @Override
-    public void handleError() {
-        if (!appIsMinimized) {
-            finishRefreshing();
-            hideProgress();
-            Snackbar snackbar = Snackbar
-                    .make(activityBottomBar, getString(R.string.connection_error_message), Snackbar.LENGTH_LONG);
-            snackbar.show();
-        }
-    }
-
     @Override
     public void showProgress() {
         if (!appIsMinimized) {

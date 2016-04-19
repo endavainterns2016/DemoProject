@@ -8,11 +8,9 @@ public interface ReposListView extends MvpView {
 
     void populateList(List<Repo> newReposList);
 
-    void handleOnRequestFailure();
-
     void initView();
 
-    void handleError();
+    void showError();
 
     void showProgress();
 

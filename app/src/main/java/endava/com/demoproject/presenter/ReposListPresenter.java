@@ -35,8 +35,27 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
     public void attachView(ReposListView mvpView) {
         super.attachView(mvpView);
         reposListView = mvpView;
-        subject.registerObserver(this);
+        reposListView.initView();
+        populateView();
+    }
 
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        subject.registerObserver(this);
+    }
+
+    @Override
+    public void onPause() {
+        subject.unregisterObservers(this);
     }
 
     public void loadUser(){
@@ -61,11 +80,6 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
         });
     }
 
-    @Override
-    public void initView() {
-        reposListView.initView();
-    }
-
     public void populateView() {
         Log.d("rxjava", "populateView");
         reposListView.showProgress();
@@ -74,6 +88,10 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
         } else {
             handleReposListRequest();
         }
+    }
+
+    public void onRefresh() {
+        populateView();
     }
 
     public void handleReposListRequest() {
@@ -87,9 +105,18 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
         if (response.body() != null) {
             DbHelper.getInstance().createRepos(response.body());
             reposListView.populateList(response.body());
+            reposListView.hideProgress();
         } else {
-            reposListView.handleError();
+            reposListView.hideProgress();
+            reposListView.showError();
         }
+    }
+
+
+    @Override
+    public void onFailure(Call<List<Repo>> call, Throwable t) {
+        reposListView.hideProgress();
+        reposListView.showError();
     }
 
     public User getUser() {
@@ -98,32 +125,9 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
     }
 
     @Override
-    public void onFailure(Call<List<Repo>> call, Throwable t) {
-        reposListView.handleOnRequestFailure();
-    }
-
-    @Override
-    public void detachView() {
-        super.detachView();
-        subject.unregisterObservers(this);
-        if (subscription != null && subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
-    }
-
-    @Override
-    public void onResume() {
-
-    }
-
-    @Override
-    public void onPause() {
-
-    }
-
-    @Override
     public void onEvent(Event e) {
         populateView();
+        Log.d("NetworkChangedReceiver", "onEvent");
     }
 
     @Override

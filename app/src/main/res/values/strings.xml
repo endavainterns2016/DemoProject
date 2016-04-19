@@ -9,6 +9,7 @@
     <string name="get_token_error">There is a problem with your network</string>
     <string name="repo_update_failed">"Couldn't update your repo"</string>
     <string name="credentials_error_message">Wrong username and/or password</string>
+    <string name="repoList_network_error">Network error !</string>
     <string name="connection_error_message">Wrong user or some network error</string>
     <string name="fill_in_username">Please enter username</string>
     <string name="fill_in_password">Please enter password</string>

@@ -110,11 +110,6 @@ public class LoginPresenter extends BasePresenter<LoginView> implements Observer
     }
 
     @Override
-    public void initView() {
-
-    }
-
-    @Override
     public void detachView() {
         super.detachView();
         subject.unregisterObservers(this);

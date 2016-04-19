@@ -36,19 +36,16 @@ public class RefreshReposListService extends Service {
         mHandler = null;
     }
 
-    @Override
-    public void onTaskRemoved(Intent rootIntent) {
-        super.onTaskRemoved(rootIntent);
-    }
+
 
     public void startRefreshHandler() {
-        mHandler.postDelayed(refreshTask, refreshPeriod);
+        mHandler.postDelayed(refreshTask, 10000);
     }
     private Runnable refreshTask = new Runnable() {
         public void run() {
             Log.d("refreshService", "in service refreshed");
             subject.onNewEvent(refreshEvent);
-            mHandler.postDelayed(this, refreshPeriod);
+            mHandler.postDelayed(this, 10000);
         }
     };
 }
