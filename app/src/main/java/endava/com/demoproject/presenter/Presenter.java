@@ -6,8 +6,6 @@ public interface Presenter<V extends MvpView> {
 
     public void attachView(V mvpView);
 
-    public void initView();
-
     public void detachView();
 
     public void onResume();

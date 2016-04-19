@@ -20,8 +20,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.roughike.bottombar.BottomBar;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,36 +38,24 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
     private ArrayList<Repo> reposList = new ArrayList<>();
     private View view;
 
-    private MainActivity mActivity;
     private SnackBarOnClickListener snackBarOnClickListener;
     private ProgressDialog progressDialog;
     private SwipeRefreshLayout mRefreshLayout;
-    private BottomBar activityBottomBar;
 
-    private boolean appIsMinimized = false;
     private RecyclerView mRecyclerView;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof MainActivity) {
-            mActivity = (MainActivity) context;
-        }
-    }
 
     @Override
     public void onPause() {
         super.onPause();
-        appIsMinimized = true;
+        reposListPresenter.onPause();
         Log.d("lifecycle", "pause");
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        reposListPresenter.onResume();
         Log.d("lifecycle", "resume");
-        appIsMinimized = false;
-        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -88,21 +74,18 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         reposListPresenter = new ReposListPresenter();
         reposListPresenter.attachView(this);
-        reposListPresenter.initView();
-        reposListPresenter.populateView();
         startRefreshService();
     }
 
 
     @Override
     public void initView() {
-        progressDialog = new ProgressDialog(mActivity);
+        progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.progress_dialog_loading));
-        mActivity.getActivityToolbar().setTitle(R.string.toolbar_repos_list);
-        activityBottomBar = mActivity.getBottomBar();
+        ((MainActivity) getActivity()).getActivityToolbar().setTitle(R.string.toolbar_repos_list);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.repos_recycler_view);
         mRecyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mActivity);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
         mRefreshLayout.setOnRefreshListener(this);
@@ -114,7 +97,7 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) mActivity.getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager manager = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
                 return true;
@@ -127,7 +110,9 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
     public void onDestroy() {
         super.onDestroy();
         if (reposListPresenter.getAutoSyncEnabled()) {
-            mActivity.stopService(new Intent(mActivity, RefreshReposListService.class));
+            if (isMyServiceRunning(RefreshReposListService.class)) {
+                getActivity().stopService(new Intent(getActivity(), RefreshReposListService.class));
+            }
         }
         reposListPresenter.detachView();
         reposListPresenter = null;
@@ -136,24 +121,24 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
     public void startRefreshService() {
         if (reposListPresenter.getAutoSyncEnabled()) {
             if (!isMyServiceRunning(RefreshReposListService.class)) {
-                Intent intent = new Intent(mActivity, RefreshReposListService.class);
+                Intent intent = new Intent(getActivity(), RefreshReposListService.class);
                 intent.putExtra("autoSyncInterval", reposListPresenter.getAutoSyncInterval());
-                mActivity.startService(intent);
+                getActivity().startService(intent);
             }
         }
     }
 
     public void pushNotification() {
         NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(mActivity)
+                new NotificationCompat.Builder(getActivity())
                         .setSmallIcon(R.drawable.ic_error_white_24dp)
                         .setContentTitle(getString(R.string.notification_error_title))
                         .setContentText(getString(R.string.notification_error_text));
-        Intent notifIntent = new Intent(mActivity, MainActivity.class);
-        PendingIntent resultPendingIntent = PendingIntent.getActivity(mActivity, 1, notifIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent notifIntent = new Intent(getActivity(), MainActivity.class);
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(getActivity(), 1, notifIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(resultPendingIntent);
         mBuilder.setAutoCancel(true);
-        NotificationManager mNotificationManager = (NotificationManager) mActivity.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager mNotificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(1, mBuilder.build());
     }
 
@@ -170,13 +155,7 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
 
     @Override
     public void onRefresh() {
-        reposListPresenter.populateView();
-    }
-
-    private void finishRefreshing() {
-        if (mRefreshLayout.isRefreshing()) {
-            mRefreshLayout.setRefreshing(false);
-        }
+        reposListPresenter.onRefresh();
     }
 
     //RepoListView
@@ -187,64 +166,41 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
             reposList.addAll(newReposList);
         }
 
-        if (!appIsMinimized) {
-            Log.d("refreshService", "reposCallBack onresponse not minimized");
-            finishRefreshing();
-            mAdapter.notifyDataSetChanged();
-            hideProgress();
-        }
+        Log.d("refreshService", "reposCallBack onresponse not minimized");
+        mAdapter.notifyDataSetChanged();
     }
 
-    @Override
-    public void handleOnRequestFailure() {
-        Log.d("refreshService", "handleOnRequestFailure 1");
-        if (!appIsMinimized) {
-            Log.d("refreshService", "handleOnRequestFailure 2");
-            finishRefreshing();
-            hideProgress();
-            Snackbar snackbar = Snackbar
-                    .make(activityBottomBar, getString(R.string.get_token_error), Snackbar.LENGTH_LONG)
-                    .setAction(getString(R.string.try_again), snackBarOnClickListener);
-            snackbar.show();
-        } else {
-            pushNotification();
-        }
-    }
+    public void showError() {
+        Snackbar snackbar = Snackbar
+                .make(view, getString(R.string.repoList_network_error), Snackbar.LENGTH_LONG)
+                .setAction(getString(R.string.try_again), snackBarOnClickListener);
+        snackbar.show();
 
-    @Override
-    public void handleError() {
-        if (!appIsMinimized) {
-            finishRefreshing();
-            hideProgress();
-            Snackbar snackbar = Snackbar
-                    .make(activityBottomBar, getString(R.string.network_error), Snackbar.LENGTH_LONG);
-            snackbar.show();
-        } else {
-            pushNotification();
-        }
+        /* TODO */
+        //pushNotification();
     }
 
     @Override
     public void showProgress() {
-        if (!appIsMinimized) {
-            progressDialog.show();
-        }
+        /* TODO */
+        progressDialog.show();
+        mRefreshLayout.setRefreshing(true);
     }
 
     @Override
     public void hideProgress() {
-        if (!appIsMinimized) {
-            progressDialog.dismiss();
+        /* TODO */
+        progressDialog.dismiss();
+        if (mRefreshLayout.isRefreshing()) {
+            mRefreshLayout.setRefreshing(false);
         }
     }
 
 
     public class SnackBarOnClickListener implements View.OnClickListener {
-
         @Override
         public void onClick(View v) {
-            mRefreshLayout.setRefreshing(true);
-            reposListPresenter.populateView();
+            reposListPresenter.onRefresh();
         }
     }
 }

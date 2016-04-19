@@ -113,11 +113,6 @@ public class LoginPresenter extends BasePresenter<LoginView> implements LoginHel
     }
 
     @Override
-    public void initView() {
-
-    }
-
-    @Override
     public void detachView() {
         super.detachView();
         loginHelper = null;

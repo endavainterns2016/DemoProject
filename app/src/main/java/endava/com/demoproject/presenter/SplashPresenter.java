@@ -6,11 +6,6 @@ import endava.com.demoproject.view.SplashView;
 public class SplashPresenter extends BasePresenter<SplashView> {
 
     @Override
-    public void initView() {
-
-    }
-
-    @Override
     public void onResume() {
 
     }
