@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements OnMenuTabClickLis
     }
 
     @Override
-    public Loader onCreateLoader(int id, Bundle args) {
+    public Loader<User> onCreateLoader(int id, Bundle args) {
         return new UserLoadingTask(MainActivity.this);
     }
 

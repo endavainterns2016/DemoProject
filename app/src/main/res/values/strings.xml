@@ -56,4 +56,5 @@
 
     <string name="mihail_likes_it">Mihail Bohnearschi likes this app</string>
     <string name="ivan_likes_it">Ivan Croitor likes this app</string>
+    <string name="refreshList">refreshList</string>
 </resources>

@@ -37,7 +37,7 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
     private ReposAdapter mAdapter;
     private ArrayList<Repo> reposList = new ArrayList<>();
     private View view;
-
+    private boolean appIsMinimized = false;
     private SnackBarOnClickListener snackBarOnClickListener;
     private ProgressDialog progressDialog;
     private SwipeRefreshLayout mRefreshLayout;
@@ -47,6 +47,7 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
     @Override
     public void onPause() {
         super.onPause();
+        appIsMinimized = true;
         reposListPresenter.onPause();
         Log.d("lifecycle", "pause");
     }
@@ -54,8 +55,10 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
     @Override
     public void onResume() {
         super.onResume();
+        appIsMinimized = false;
         reposListPresenter.onResume();
         Log.d("lifecycle", "resume");
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -176,20 +179,20 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
                 .setAction(getString(R.string.try_again), snackBarOnClickListener);
         snackbar.show();
 
-        /* TODO */
-        //pushNotification();
+        if (appIsMinimized) {
+            pushNotification();
+        }
     }
+
 
     @Override
     public void showProgress() {
-        /* TODO */
         progressDialog.show();
         mRefreshLayout.setRefreshing(true);
     }
 
     @Override
     public void hideProgress() {
-        /* TODO */
         progressDialog.dismiss();
         if (mRefreshLayout.isRefreshing()) {
             mRefreshLayout.setRefreshing(false);

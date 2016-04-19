@@ -5,11 +5,13 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import endava.com.demoproject.R;
 import endava.com.demoproject.cacheableObserver.Event;
 import endava.com.demoproject.cacheableObserver.EventContext;
 import endava.com.demoproject.cacheableObserver.Observer;
 import endava.com.demoproject.cacheableObserver.Subject;
 import endava.com.demoproject.helpers.DbHelper;
+import endava.com.demoproject.helpers.ResourcesHelper;
 import endava.com.demoproject.helpers.SharedPreferencesHelper;
 import endava.com.demoproject.model.Repo;
 import endava.com.demoproject.model.User;
@@ -132,7 +134,7 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
 
     @Override
     public List<EventContext> getObserverKeys() {
-        EventContext refreshEvent = new EventContext("refreshList", null);
+        EventContext refreshEvent = new EventContext(ResourcesHelper.getInstance().provideResources().getString(R.string.refreshList), null);
         List<EventContext> list = new ArrayList<>();
         list.add(refreshEvent);
         return list;
