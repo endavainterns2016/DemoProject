@@ -5,10 +5,6 @@ import endava.com.demoproject.view.SplashView;
 
 public class SplashPresenter extends BasePresenter<SplashView> {
 
-    public boolean userIsAvailable() {
-        return DbHelper.getInstance().getUser() != null;
-    }
-
     @Override
     public void initView() {
 
@@ -22,5 +18,9 @@ public class SplashPresenter extends BasePresenter<SplashView> {
     @Override
     public void onPause() {
 
+    }
+
+    public void onSplashFinished() {
+        getMvpView().startNextActivity(DbHelper.getInstance().getUser() == null);
     }
 }
