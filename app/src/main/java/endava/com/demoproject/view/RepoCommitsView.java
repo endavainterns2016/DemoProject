@@ -2,11 +2,15 @@ package endava.com.demoproject.view;
 
 import java.util.List;
 
-import endava.com.demoproject.model.Repo;
+import endava.com.demoproject.model.CommitModel;
 
 public interface RepoCommitsView extends MvpView {
 
-    void populateList(List<Repo> newReposList);
+    int getRepoID();
+
+    void populateList(List<CommitModel> newReposList);
+
+    void setToolbarTitle(String title);
 
     void initView();
 

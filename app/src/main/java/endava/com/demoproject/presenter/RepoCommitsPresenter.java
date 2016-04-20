@@ -2,11 +2,12 @@ package endava.com.demoproject.presenter;
 
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import endava.com.demoproject.helpers.DbHelper;
+import endava.com.demoproject.model.CommitModel;
 import endava.com.demoproject.model.Repo;
-import endava.com.demoproject.model.User;
 import endava.com.demoproject.retrofit.ServiceFactory;
 import endava.com.demoproject.view.RepoCommitsView;
 import retrofit2.Call;
@@ -21,9 +22,9 @@ import rx.schedulers.Schedulers;
 /**
  * Created by lbuzmacov on 20-04-16.
  */
-public class RepoCommitsPresenter extends BasePresenter<RepoCommitsView> implements Callback<List<Repo>> {
+public class RepoCommitsPresenter extends BasePresenter<RepoCommitsView> implements Callback<List<CommitModel>> {
 
-    private User user;
+    private ArrayList<CommitModel> commitsList = new ArrayList<>();
     private RepoCommitsView repoCommitsView;
     private Subscription subscription;
 
@@ -54,12 +55,19 @@ public class RepoCommitsPresenter extends BasePresenter<RepoCommitsView> impleme
 
     }
 
-    public void loadUser(){
-        Log.d("rxjava", "loadUser");
-        subscription = Observable.just(getUser()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<User>() {
+
+    public void populateView() {
+        Log.d("Commitsrxjava", "populateView");
+        repoCommitsView.showProgress();
+            loadRepo();
+    }
+
+    public void loadRepo(){
+        Log.d("Commitsrxjava", "loadUser");
+        subscription = Observable.just(getRepo()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Repo>() {
             @Override
             public void onCompleted() {
-                Log.d("rxjava", "onCompleted");
+                Log.d("Commitsrxjava", "onCompleted");
             }
 
             @Override
@@ -68,38 +76,27 @@ public class RepoCommitsPresenter extends BasePresenter<RepoCommitsView> impleme
             }
 
             @Override
-            public void onNext(User userResult) {
-                Log.d("rxjava", "onNext");
-                user = userResult;
-                handleReposListRequest();
+            public void onNext(Repo repo) {
+                Log.d("Commitsrxjava", "onNext");
+                repoCommitsView.setToolbarTitle(repo.getName());
+                handleCommitsListRequest(repo);
             }
         });
     }
 
-    public void populateView() {
-        Log.d("rxjava", "populateView");
-        repoCommitsView.showProgress();
-        if (user == null) {
-            loadUser();
-        } else {
-            handleReposListRequest();
-        }
+    private Repo getRepo() {
+      return DbHelper.getInstance().getRepoById(repoCommitsView.getRepoID());
     }
 
-    public void onRefresh() {
-        populateView();
-    }
-
-    public void handleReposListRequest() {
-        Log.d("rxjava", "handleReposListRequest");
-        ServiceFactory.getInstance().getReposList(user.getHashedCredentials()).enqueue(this);
+    public void handleCommitsListRequest(Repo repo) {
+        Log.d("Commitsrxjava", "handleReposListRequest");
+        ServiceFactory.getInstance().getCommitsList(DbHelper.getInstance().getUser().getHashedCredentials(), repo.getOwner().getLogin(), repo.getName()).enqueue(this);
     }
 
 
     @Override
-    public void onResponse(Call<List<Repo>> call, Response<List<Repo>> response) {
+    public void onResponse(Call<List<CommitModel>> call, Response<List<CommitModel>> response) {
         if (response.body() != null) {
-            DbHelper.getInstance().createRepos(response.body());
             repoCommitsView.populateList(response.body());
             repoCommitsView.hideProgress();
         } else {
@@ -108,15 +105,10 @@ public class RepoCommitsPresenter extends BasePresenter<RepoCommitsView> impleme
         }
     }
 
-
     @Override
-    public void onFailure(Call<List<Repo>> call, Throwable t) {
+    public void onFailure(Call<List<CommitModel>> call, Throwable t) {
         repoCommitsView.hideProgress();
         repoCommitsView.showError();
-    }
 
-    public User getUser() {
-        Log.d("rxjava", "getUser");
-        return DbHelper.getInstance().getUser();
     }
 }
