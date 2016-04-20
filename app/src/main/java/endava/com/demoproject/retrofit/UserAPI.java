@@ -3,6 +3,7 @@ package endava.com.demoproject.retrofit;
 import java.util.List;
 
 import endava.com.demoproject.model.Avatar;
+import endava.com.demoproject.model.CommitModel;
 import endava.com.demoproject.model.Repo;
 import endava.com.demoproject.model.User;
 import retrofit2.Call;
@@ -27,4 +28,7 @@ public interface UserAPI {
 
     @GET("/repos/{owner}/{repo}")
     Call<Repo> updateRepo(@Header("authorization") String token, @Path("owner") String owner, @Path("repo") String repo);
+
+    @GET("/repos/{owner}/{repo}/commits")
+    Call<List<CommitModel>> getCommitsList(@Header("authorization") String token, @Path("owner") String owner, @Path("repo") String repo);
 }
