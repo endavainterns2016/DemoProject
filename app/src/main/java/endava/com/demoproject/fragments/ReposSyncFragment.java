@@ -13,8 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.roughike.bottombar.BottomBar;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +33,6 @@ public class ReposSyncFragment extends Fragment implements SwipeRefreshLayout.On
     private SnackBarOnClickListener snackBarOnClickListener;
     private ProgressDialog progressDialog;
     private SwipeRefreshLayout mRefreshLayout;
-    private BottomBar activityBottomBar;
 
     private boolean appIsMinimized = false;
     private RecyclerView mRecyclerView;
@@ -82,7 +79,6 @@ public class ReposSyncFragment extends Fragment implements SwipeRefreshLayout.On
         progressDialog = new ProgressDialog(mActivity);
         progressDialog.setMessage(getString(R.string.progress_dialog_loading));
         mActivity.getActivityToolbar().setTitle(R.string.toolbar_repos_sync);
-        activityBottomBar = mActivity.getBottomBar();
         mRecyclerView = (RecyclerView) view.findViewById(R.id.repos_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mActivity);
