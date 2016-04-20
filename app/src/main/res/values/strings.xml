@@ -56,6 +56,7 @@
 
     <string name="mihail_likes_it">Mihail Bohnearschi likes this app</string>
     <string name="ivan_likes_it">Ivan Croitor likes this app</string>
+    <string name="refreshList">refreshList</string>
     <string name="successful_login_tag">successful_login</string>
     <string name="credential_error_tag">credential_error</string>
     <string name="connection_error_tag">connection_error</string>

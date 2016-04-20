@@ -5,9 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.Loader;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -23,41 +21,40 @@ import com.roughike.bottombar.OnMenuTabClickListener;
 import com.squareup.picasso.Picasso;
 
 import endava.com.demoproject.R;
-import endava.com.demoproject.others.RoundedTransformation;
-import endava.com.demoproject.asyncLoader.UserLoadingTask;
-import endava.com.demoproject.constants.LoaderConstants;
 import endava.com.demoproject.fragments.ReposLikeFragment;
 import endava.com.demoproject.fragments.ReposListFragment;
 import endava.com.demoproject.fragments.ReposSyncFragment;
-import endava.com.demoproject.helpers.DbHelper;
-import endava.com.demoproject.model.User;
+import endava.com.demoproject.others.RoundedTransformation;
+import endava.com.demoproject.presenter.MainPresenter;
+import endava.com.demoproject.view.MainView;
 
 public class MainActivity extends AppCompatActivity implements OnMenuTabClickListener,
-        NavigationView.OnNavigationItemSelectedListener,
-        LoaderManager.LoaderCallbacks<User> {
+        NavigationView.OnNavigationItemSelectedListener, MainView {
 
     private BottomBar mBottomBar;
-    private User user;
     private Toolbar mToolbar;
     private DrawerLayout mDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView mNavigationView;
-    private DbHelper dbHelper;
     private TextView user_login_nav;
     private ImageView avatarImageView;
+    private MainPresenter mainPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_activity);
-        dbHelper = DbHelper.getInstance();
-        getSupportLoaderManager().restartLoader(LoaderConstants.USER_LOADING_TASK_ID, savedInstanceState, this);
+        mainPresenter = new MainPresenter();
+        mainPresenter.attachView(this);
+    }
 
+    @Override
+    public void initView() {
+        setContentView(R.layout.main_activity);
         mBottomBar = BottomBar.attachShy((CoordinatorLayout) findViewById(R.id.root_activity_coordinator_layout),
-                findViewById(R.id.root_activity_layout), savedInstanceState);
+                findViewById(R.id.root_activity_layout), null);
         mBottomBar.noNavBarGoodness();
         mBottomBar.setItemsFromMenu(R.menu.repos_list_fragment_bottom_bar, this);
-        mBottomBar.setActiveTabColor(getResources().getColor(R.color.colorAccent));
+        mBottomBar.setActiveTabColor(ContextCompat.getColor(this, R.color.colorAccent));
         mNavigationView = (NavigationView) findViewById(R.id.nvView);
         View header = mNavigationView.getHeaderView(0);
         user_login_nav = (TextView) header.findViewById(R.id.user_login);
@@ -68,9 +65,21 @@ public class MainActivity extends AppCompatActivity implements OnMenuTabClickLis
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, mToolbar, R.string.drawer_open, R.string.drawer_close);
         mDrawer.addDrawerListener(mDrawerToggle);
-
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.root_activity_layout, new ReposListFragment()).commit();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mainPresenter.detachView();
+        mainPresenter = null;
+    }
+
+    @Override
+    public void setNavViewDetails(String username, String url) {
+        user_login_nav.setText(username);
+        Picasso.with(this).load(url).resize(80, 80).transform(new RoundedTransformation(getResources(), 40)).placeholder(R.drawable.nav_drawer_background).into(avatarImageView);
     }
 
 
@@ -78,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements OnMenuTabClickLis
     public boolean onNavigationItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.drawer_signout:
-                logOutDialogShow();
+                mainPresenter.logOut();
                 break;
             case R.id.drawer_settings:
                 Intent intentToMain = new Intent(this, SettingsActivity.class);
@@ -87,10 +96,6 @@ public class MainActivity extends AppCompatActivity implements OnMenuTabClickLis
         }
         mDrawer.closeDrawers();
         return true;
-    }
-
-    public BottomBar getBottomBar(){
-        return mBottomBar;
     }
 
     @Override
@@ -102,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements OnMenuTabClickLis
         return mToolbar;
     }
 
+    @Override
     public void logOutDialogShow() {
         AlertDialog.Builder logOutDialog = new AlertDialog.Builder(this);
         logOutDialog.setTitle(R.string.menu_signout);
@@ -111,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements OnMenuTabClickLis
 
         logOutDialog.setPositiveButton(R.string.alert_delete_ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                logOutUser();
+                mainPresenter.onLogOut();
                 dialog.dismiss();
             }
         });
@@ -125,8 +131,8 @@ public class MainActivity extends AppCompatActivity implements OnMenuTabClickLis
         logOutDialog.show();
     }
 
-    public void logOutUser() {
-        dbHelper.deleteUser(user);
+    @Override
+    public void navigateToLoginView() {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
@@ -153,22 +159,6 @@ public class MainActivity extends AppCompatActivity implements OnMenuTabClickLis
         }
     }
 
-    @Override
-    public Loader onCreateLoader(int id, Bundle args) {
-        return new UserLoadingTask(MainActivity.this);
-    }
-
-    @Override
-    public void onLoadFinished(Loader loader, User result) {
-        user = result;
-        user_login_nav.setText(result.getUserName());
-        Picasso.with(this).load(result.getAvatarUrl()).resize(80, 80).transform(new RoundedTransformation(getResources(), 40)).placeholder(R.drawable.nav_drawer_background).into(avatarImageView);
-    }
-
-    @Override
-    public void onLoaderReset(Loader loader) {
-
-    }
 
     @Override
     public void onMenuTabSelected(int menuItemId) {
@@ -195,4 +185,6 @@ public class MainActivity extends AppCompatActivity implements OnMenuTabClickLis
     public void onMenuTabReSelected(int menuItemId) {
 
     }
+
+
 }

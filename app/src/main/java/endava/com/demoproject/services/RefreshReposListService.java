@@ -8,12 +8,12 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import endava.com.demoproject.cacheableObserver.Subject;
-import endava.com.demoproject.events.refreshReposListEvent;
+import endava.com.demoproject.events.RefreshRepoListEvent;
 
 public class RefreshReposListService extends Service {
     private Handler mHandler = new Handler();
     private Subject subject = Subject.newInstance();
-    private refreshReposListEvent  refreshEvent = new refreshReposListEvent();
+    private RefreshRepoListEvent refreshEvent = new RefreshRepoListEvent();
     private int refreshPeriod;
 
     @Nullable
