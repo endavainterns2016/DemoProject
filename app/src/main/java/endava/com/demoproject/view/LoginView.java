@@ -5,13 +5,13 @@ public interface LoginView extends MvpView {
 
     void populateView(String userName, boolean shouldSave);
 
-    void showProgress();
+    void requestStarted();
 
-    void hideProgress();
+    void requestFinished();
 
-    void setError(String error);
+    void showError(String error);
 
-    void startMainActivity();
+    void finishLogin();
 
-    void setConnectionError();
+    void showConnectionError();
 }

@@ -30,8 +30,8 @@ public class LoginFragment extends Fragment implements LoginView, View.OnClickLi
     private ProgressBar progressBar;
     private EditText mPasswordEdt;
 
-    public static Fragment newInstance(){
-        return  new LoginFragment();
+    public static Fragment newInstance() {
+        return new LoginFragment();
     }
 
     @Override
@@ -59,7 +59,6 @@ public class LoginFragment extends Fragment implements LoginView, View.OnClickLi
 
         presenter = new LoginPresenter(this);
         presenter.attachView(this);
-        presenter.populateView();
         mLoginBtn.setOnClickListener(this);
     }
 
@@ -76,36 +75,41 @@ public class LoginFragment extends Fragment implements LoginView, View.OnClickLi
     }
 
     @Override
-    public void showProgress() {
+    public void requestStarted() {
         progressBar.setVisibility(View.VISIBLE);
         mLoginBtn.setEnabled(false);
     }
 
     @Override
-    public void hideProgress() {
-        progressBar.setVisibility(View.INVISIBLE);
-        mLoginBtn.setEnabled(true);
+    public void requestFinished() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressBar.setVisibility(View.INVISIBLE);
+                mLoginBtn.setEnabled(true);
+            }
+        });
     }
 
     @Override
-    public void setError(String error) {
+    public void showError(String error) {
         Snackbar snackbar = Snackbar
                 .make(view, error, Snackbar.LENGTH_LONG);
         snackbar.show();
-        hideProgress();
+        this.requestFinished();
     }
 
     @Override
-    public void setConnectionError() {
+    public void showConnectionError() {
         Snackbar snackbar = Snackbar
                 .make(view, getString(R.string.get_token_error), Snackbar.LENGTH_LONG)
                 .setAction(getString(R.string.try_again), this);
         snackbar.show();
-        hideProgress();
+        requestFinished();
     }
 
     @Override
-    public void startMainActivity() {
+    public void finishLogin() {
         Intent intentToMain = new Intent(getActivity(), MainActivity.class);
         activity.startActivity(intentToMain);
         activity.finish();
@@ -113,13 +117,6 @@ public class LoginFragment extends Fragment implements LoginView, View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        if (presenter.validateCredentials(mUSerNameEdt.getText().toString(), mPasswordEdt.getText().toString())) {
-            if (usernameCheckBox.isChecked()) {
-                presenter.rememberUserName();
-            } else {
-                presenter.forgetUserName();
-            }
-            presenter.doLogin();
-        }
+        presenter.doLogin(mUSerNameEdt.getText().toString(), mPasswordEdt.getText().toString(), usernameCheckBox.isChecked());
     }
 }

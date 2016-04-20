@@ -8,9 +8,9 @@
     <string name="remember_name">Remember username</string>
     <string name="get_token_error">There is a problem with your network</string>
     <string name="repo_update_failed">"Couldn't update your repo"</string>
-    <string name="credentials_error">Wrong username and/or password</string>
-    <string name="network_error">Wrong user or some network error</string>
+    <string name="credentials_error_message">Wrong username and/or password</string>
     <string name="repoList_network_error">Network error !</string>
+    <string name="connection_error_message">Wrong user or some network error</string>
     <string name="fill_in_username">Please enter username</string>
     <string name="fill_in_password">Please enter password</string>
     <string name="toolbar_repos_list">Repository List</string>
@@ -57,4 +57,7 @@
     <string name="mihail_likes_it">Mihail Bohnearschi likes this app</string>
     <string name="ivan_likes_it">Ivan Croitor likes this app</string>
     <string name="refreshList">refreshList</string>
+    <string name="successful_login_tag">successful_login</string>
+    <string name="credential_error_tag">credential_error</string>
+    <string name="connection_error_tag">connection_error</string>
 </resources>

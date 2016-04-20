@@ -6,7 +6,6 @@ public class Avatar {
     @SerializedName("avatar_url")
     private String avatarUrl;
 
-
     public String getAvatarUrl() {
         return avatarUrl;
     }

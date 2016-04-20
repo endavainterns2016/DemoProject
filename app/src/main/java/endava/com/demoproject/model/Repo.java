@@ -32,6 +32,25 @@ public class Repo {
 
     @DatabaseField(foreign = true, columnName = OWNER, foreignAutoRefresh = true)
     private Owner owner;
+    @DatabaseField(dataType = DataType.STRING, columnName = DESCRIPTION)
+    private String description;
+    @DatabaseField(dataType = DataType.STRING, columnName = HOME_URL)
+    @SerializedName("html_url")
+    private String homeUrl;
+    @DatabaseField(dataType = DataType.STRING, columnName = DEF_BRANCH)
+    @SerializedName("default_branch")
+    private String defaultBranch;
+    @DatabaseField(dataType = DataType.STRING, columnName = CODE_LANG)
+    @SerializedName("language")
+    private String codeLanguage;
+    @DatabaseField(dataType = DataType.DOUBLE_OBJ, columnName = SIZE)
+    private Double size;
+    @DatabaseField(dataType = DataType.STRING, columnName = LAST_PUSH)
+    @SerializedName("pushed_at")
+    private String lastPush;
+    @DatabaseField(dataType = DataType.INTEGER_OBJ, columnName = OPEN_ISSUES)
+    @SerializedName("open_issues")
+    private Integer openIssues;
 
     public Owner getOwner() {
         return owner;
@@ -44,32 +63,6 @@ public class Repo {
     public void setOpenIssues(Integer openIssues) {
         this.openIssues = openIssues;
     }
-
-    @DatabaseField(dataType = DataType.STRING, columnName = DESCRIPTION)
-    private String description;
-
-    @DatabaseField(dataType = DataType.STRING, columnName = HOME_URL)
-    @SerializedName("html_url")
-    private String homeUrl;
-
-    @DatabaseField(dataType = DataType.STRING, columnName = DEF_BRANCH)
-    @SerializedName("default_branch")
-    private String defaultBranch;
-
-    @DatabaseField(dataType = DataType.STRING, columnName = CODE_LANG)
-    @SerializedName("language")
-    private String codeLanguage;
-
-    @DatabaseField(dataType = DataType.DOUBLE_OBJ, columnName = SIZE)
-    private Double size;
-
-    @DatabaseField(dataType = DataType.STRING, columnName = LAST_PUSH)
-    @SerializedName("pushed_at")
-    private String lastPush;
-
-    @DatabaseField(dataType = DataType.INTEGER_OBJ, columnName = OPEN_ISSUES)
-    @SerializedName("open_issues")
-    private Integer openIssues;
 
     public int getDbId() {
         return dbId;
