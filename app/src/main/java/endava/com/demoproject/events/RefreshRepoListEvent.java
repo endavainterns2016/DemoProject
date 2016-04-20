@@ -1,5 +1,6 @@
 package endava.com.demoproject.events;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 
 import endava.com.demoproject.R;
@@ -7,7 +8,8 @@ import endava.com.demoproject.cacheableObserver.Event;
 import endava.com.demoproject.cacheableObserver.EventContext;
 import endava.com.demoproject.helpers.ResourcesHelper;
 
-public class refreshReposListEvent implements Event {
+@SuppressLint("ParcelCreator")
+public class RefreshRepoListEvent implements Event {
     @Override
     public Object getData() {
         return null;

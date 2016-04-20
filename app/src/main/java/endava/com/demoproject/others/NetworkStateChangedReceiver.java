@@ -8,13 +8,13 @@ import android.net.NetworkInfo;
 import android.util.Log;
 
 import endava.com.demoproject.cacheableObserver.Subject;
-import endava.com.demoproject.events.refreshReposListEvent;
+import endava.com.demoproject.events.RefreshRepoListEvent;
 
 public class NetworkStateChangedReceiver extends BroadcastReceiver {
 
     private static boolean firstConnect = true;
     private Subject subject = Subject.newInstance();
-    private refreshReposListEvent refreshEvent = new refreshReposListEvent();
+    private RefreshRepoListEvent refreshEvent = new RefreshRepoListEvent();
 
     @Override
     public void onReceive(Context context, Intent intent) {
