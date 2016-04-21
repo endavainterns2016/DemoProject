@@ -10,7 +10,7 @@ public interface RepoCommitsView extends MvpView {
 
     void populateList(List<CommitModel> newReposList);
 
-    void setToolbarTitle(String title);
+    void setRepoName(String title);
 
     void initView();
 

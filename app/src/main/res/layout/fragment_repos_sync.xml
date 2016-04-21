@@ -7,9 +7,16 @@
         android:layout_height="match_parent"
         tools:context="com.shppandroid1.app.MainActivity">
 
-        <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/repos_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical" />
+    <com.jaredrummler.fastscrollrecyclerview.FastScrollRecyclerView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/repos_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:fastScrollHideDelay="600"
+        app:fastScrollAlwaysEnabled="false"
+        app:fastScrollPopupBackgroundColor="?attr/colorAccent"
+        app:fastScrollPopupTextColor="@android:color/white"
+        app:fastScrollThumbActiveColor="?attr/colorAccent"
+        app:fastScrollThumbInactiveColor="?attr/colorAccent"/>
     </android.support.v4.widget.SwipeRefreshLayout>

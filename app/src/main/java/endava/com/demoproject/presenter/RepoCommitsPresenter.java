@@ -78,7 +78,7 @@ public class RepoCommitsPresenter extends BasePresenter<RepoCommitsView> impleme
             @Override
             public void onNext(Repo repo) {
                 Log.d("Commitsrxjava", "onNext");
-                repoCommitsView.setToolbarTitle(repo.getName());
+                repoCommitsView.setRepoName(repo.getName());
                 handleCommitsListRequest(repo);
             }
         });

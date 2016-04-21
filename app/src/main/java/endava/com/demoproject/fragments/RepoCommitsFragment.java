@@ -48,7 +48,7 @@ public class RepoCommitsFragment extends Fragment implements RepoCommitsView {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_repos_list, container, false);
+        view = inflater.inflate(R.layout.fragment_commits_list, container, false);
         return view;
     }
 
@@ -71,7 +71,7 @@ public class RepoCommitsFragment extends Fragment implements RepoCommitsView {
     }
 
     @Override
-    public void setToolbarTitle(String title){
+    public void setRepoName(String title){
         ((MainActivity) getActivity()).getActivityToolbar().setTitle(String.format(getString(R.string.commits_list), title));
     }
 
@@ -83,7 +83,7 @@ public class RepoCommitsFragment extends Fragment implements RepoCommitsView {
         mRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new RepoCommitsAdapter(commitsList);
+        mAdapter = new RepoCommitsAdapter(commitsList, getActivity());
         mRecyclerView.setAdapter(mAdapter);
     }
 
