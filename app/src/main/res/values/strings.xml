@@ -60,4 +60,8 @@
     <string name="successful_login_tag">successful_login</string>
     <string name="credential_error_tag">credential_error</string>
     <string name="connection_error_tag">connection_error</string>
+    <string name="commits_list">%s Commits</string>
+    <string name="commit_number">Commit: %d</string>
+    <string name="name">Name: %s</string>
+    <string name="email">E-mail: %s</string>
 </resources>

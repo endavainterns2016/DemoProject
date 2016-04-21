@@ -79,6 +79,7 @@ public class LoginCommand implements Command, Parcelable, Event {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(credentials);
+        dest.writeString(userName);
     }
 
     @Override
