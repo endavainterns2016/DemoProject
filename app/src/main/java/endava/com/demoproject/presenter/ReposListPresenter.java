@@ -62,7 +62,7 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
 
     public void loadUser(){
         Log.d("rxjava", "loadUser");
-        subscription = Observable.just(getUser()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<User>() {
+        subscription = Observable.just(getUser()).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<User>() {
             @Override
             public void onCompleted() {
                 Log.d("rxjava", "onCompleted");

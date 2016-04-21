@@ -64,7 +64,7 @@ public class RepoCommitsPresenter extends BasePresenter<RepoCommitsView> impleme
 
     public void loadRepo(){
         Log.d("Commitsrxjava", "loadUser");
-        subscription = Observable.just(getRepo()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Repo>() {
+        subscription = Observable.just(getRepo()).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Repo>() {
             @Override
             public void onCompleted() {
                 Log.d("Commitsrxjava", "onCompleted");

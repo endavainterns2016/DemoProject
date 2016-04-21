@@ -48,7 +48,7 @@ public class MainPresenter extends BasePresenter<MainView> {
 
     public void loadUser() {
         Log.d("Mainrxjava", "loadUser");
-        subscription = Observable.just(getUser()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<User>() {
+        subscription = Observable.just(getUser()).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<User>() {
             @Override
             public void onCompleted() {
                 Log.d("Mainrxjava", "onCompleted");
