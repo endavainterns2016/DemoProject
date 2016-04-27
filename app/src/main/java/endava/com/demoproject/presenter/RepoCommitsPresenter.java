@@ -8,13 +8,13 @@ import java.util.List;
 import endava.com.demoproject.helpers.DbHelper;
 import endava.com.demoproject.model.CommitModel;
 import endava.com.demoproject.model.Repo;
-import endava.com.demoproject.retrofit.ServiceFactory;
+import endava.com.demoproject.retrofit.UserAPI;
 import endava.com.demoproject.view.RepoCommitsView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import rx.Observable;
-import rx.Subscriber;
+import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -22,11 +22,18 @@ import rx.schedulers.Schedulers;
 /**
  * Created by lbuzmacov on 20-04-16.
  */
-public class RepoCommitsPresenter extends BasePresenter<RepoCommitsView> implements Callback<List<CommitModel>> {
+public class RepoCommitsPresenter extends BasePresenter<RepoCommitsView> implements Callback<List<CommitModel>>, Observer<Repo> {
 
     private ArrayList<CommitModel> commitsList = new ArrayList<>();
     private RepoCommitsView repoCommitsView;
     private Subscription subscription;
+    private DbHelper dbHelper;
+    private UserAPI userAPI;
+
+    public RepoCommitsPresenter(DbHelper dbHelper, UserAPI userAPI){
+        this.dbHelper = dbHelper;
+        this.userAPI = userAPI;
+    }
 
     @Override
     public void attachView(RepoCommitsView mvpView) {
@@ -50,6 +57,10 @@ public class RepoCommitsPresenter extends BasePresenter<RepoCommitsView> impleme
 
     }
 
+    public Subscription getSubscription() {
+        return subscription;
+    }
+
     @Override
     public void onPause() {
 
@@ -64,33 +75,33 @@ public class RepoCommitsPresenter extends BasePresenter<RepoCommitsView> impleme
 
     public void loadRepo(){
         Log.d("Commitsrxjava", "loadUser");
-        subscription = Observable.just(getRepo()).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Repo>() {
-            @Override
-            public void onCompleted() {
-                Log.d("Commitsrxjava", "onCompleted");
-            }
+        subscription = Observable.just(getRepo()).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(this);
+    }
 
-            @Override
-            public void onError(Throwable e) {
+    @Override
+    public void onCompleted() {
+        Log.d("Commitsrxjava", "onCompleted");
+    }
 
-            }
+    @Override
+    public void onError(Throwable e) {
 
-            @Override
-            public void onNext(Repo repo) {
-                Log.d("Commitsrxjava", "onNext");
-                repoCommitsView.setRepoName(repo.getName());
-                handleCommitsListRequest(repo);
-            }
-        });
+    }
+
+    @Override
+    public void onNext(Repo repo) {
+        Log.d("Commitsrxjava", "onNext");
+        repoCommitsView.setRepoName(repo.getName());
+        handleCommitsListRequest(repo);
     }
 
     private Repo getRepo() {
-      return DbHelper.getInstance().getRepoById(repoCommitsView.getRepoID());
+      return dbHelper.getRepoById(repoCommitsView.getRepoID());
     }
 
     public void handleCommitsListRequest(Repo repo) {
         Log.d("Commitsrxjava", "handleReposListRequest");
-        ServiceFactory.getInstance().getCommitsList(DbHelper.getInstance().getUser().getHashedCredentials(), repo.getOwner().getLogin(), repo.getName()).enqueue(this);
+        userAPI.getCommitsList(dbHelper.getUser().getHashedCredentials(), repo.getOwner().getLogin(), repo.getName()).enqueue(this);
     }
 
 
