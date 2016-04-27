@@ -19,8 +19,10 @@ import endava.com.demoproject.activities.MainActivity;
 import endava.com.demoproject.asyncLoader.RepoLoadingTask;
 import endava.com.demoproject.constants.LoaderConstants;
 import endava.com.demoproject.formatter.DateFormats;
+import endava.com.demoproject.helpers.DbHelper;
 import endava.com.demoproject.model.Repo;
 import endava.com.demoproject.presenter.RepoListDetailPresenter;
+import endava.com.demoproject.retrofit.ServiceFactory;
 import endava.com.demoproject.view.RepoDetailsView;
 
 public class RepoDetailsFragment extends Fragment implements RepoDetailsView, LoaderManager.LoaderCallbacks<Repo> {
@@ -74,7 +76,7 @@ public class RepoDetailsFragment extends Fragment implements RepoDetailsView, Lo
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         id = getArguments().getInt(ID_TAG);
-        repoListDetailPresenter = new RepoListDetailPresenter(this);
+        repoListDetailPresenter = new RepoListDetailPresenter(this, DbHelper.getInstance(), ServiceFactory.getInstance());
         repoListDetailPresenter.attachView(this);
         repoListDetailPresenter.initView();
     }
