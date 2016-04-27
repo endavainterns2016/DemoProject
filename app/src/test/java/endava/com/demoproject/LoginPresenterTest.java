@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
-public class ValidateCredentialsTest {
+public class LoginPresenterTest {
 
     private LoginPresenter loginPresenter;
     private LoginView loginView;
