@@ -3,6 +3,7 @@ package endava.com.demoproject.presenter;
 import endava.com.demoproject.helpers.DbHelper;
 import endava.com.demoproject.model.Repo;
 import endava.com.demoproject.retrofit.ServiceFactory;
+import endava.com.demoproject.retrofit.UserAPI;
 import endava.com.demoproject.view.RepoDetailsView;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -12,14 +13,16 @@ public class RepoListDetailPresenter extends BasePresenter<RepoDetailsView> impl
     private RepoDetailsView repoDetailsView;
     private DbHelper dbHelper;
     private Repo repo;
+    private UserAPI userAPI;
 
-    public RepoListDetailPresenter(RepoDetailsView repoDetailsView) {
+    public RepoListDetailPresenter(RepoDetailsView repoDetailsView, DbHelper dbHelper,UserAPI userAPI) {
         this.repoDetailsView = repoDetailsView;
-        dbHelper = DbHelper.getInstance();
+        this.dbHelper = dbHelper;
+        this.userAPI = userAPI;
     }
 
     public void updateRepo() {
-        ServiceFactory.getInstance().updateRepo(dbHelper.getUser().getHashedCredentials(), repo.getOwner().getLogin(), repo.getName()).enqueue(this);
+        userAPI.updateRepo(dbHelper.getUser().getHashedCredentials(), repo.getOwner().getLogin(), repo.getName()).enqueue(this);
     }
 
     public void setRepo(Repo repo) {
@@ -65,8 +68,10 @@ public class RepoListDetailPresenter extends BasePresenter<RepoDetailsView> impl
 
     @Override
     public void onResponse(Call<Repo> call, Response<Repo> response) {
-        repoDetailsView.populateView(response.body());
-        updateRepo(response.body());
+        if (response != null) {
+            repoDetailsView.populateView(response.body());
+            updateRepo(response.body());
+        }
     }
 
     @Override

@@ -34,7 +34,7 @@ public class LoginFragment extends Fragment implements LoginView, View.OnClickLi
     private ProgressBar progressBar;
     private EditText mPasswordEdt;
 
-    public static Fragment newInstance() {
+    public static LoginFragment newInstance() {
         return new LoginFragment();
     }
 
