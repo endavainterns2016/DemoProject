@@ -11,18 +11,22 @@ import org.robolectric.annotation.Config;
 import java.util.List;
 
 import endava.com.demoproject.cacheableObserver.EventContext;
+import endava.com.demoproject.cacheableObserver.Subject;
 import endava.com.demoproject.helpers.DbHelper;
 import endava.com.demoproject.helpers.SharedPreferencesHelper;
 import endava.com.demoproject.model.Repo;
+import endava.com.demoproject.model.User;
 import endava.com.demoproject.presenter.ReposListPresenter;
+import endava.com.demoproject.retrofit.UserAPI;
 import endava.com.demoproject.view.ReposListView;
+import retrofit2.Call;
 import retrofit2.Response;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.times;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -36,9 +40,17 @@ public class ReposListPresenterTest {
     @Mock
     private DbHelper dbHelper;
     @Mock
+    private UserAPI userAPI;
+    @Mock
+    private Call<List<Repo>> call;
+    @Mock
     private ReposListView reposListView;
     @Mock
     private Repo repo;
+    @Mock
+    private User user;
+    @Mock
+    private Subject subject;
     @Mock
     private EventContext eventContext;
     @Mock
@@ -49,21 +61,21 @@ public class ReposListPresenterTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        reposListPresenter = new ReposListPresenter(sharedPreferencesHelper, dbHelper);
+        reposListPresenter = new ReposListPresenter(sharedPreferencesHelper, dbHelper, userAPI, subject);
         reposListPresenter.attachView(reposListView);
         repoList.add(repo);
-        when(sharedPreferencesHelper.getAutoSyncStatus()).thenReturn(true);
-        when(sharedPreferencesHelper.getAutoSyncInterval()).thenReturn(60);
     }
 
     @Test
     public void testGetAutoSyncEnabled() throws Exception {
+        when(sharedPreferencesHelper.getAutoSyncStatus()).thenReturn(true);
         reposListPresenter.getAutoSyncEnabled();
         assertTrue(sharedPreferencesHelper.getAutoSyncStatus());
     }
 
     @Test
     public void testGetAutoSyncInterval() throws Exception {
+        when(sharedPreferencesHelper.getAutoSyncInterval()).thenReturn(60);
         reposListPresenter.getAutoSyncInterval();
         assertEquals(sharedPreferencesHelper.getAutoSyncInterval(), 60);
     }
@@ -105,8 +117,7 @@ public class ReposListPresenterTest {
 
     @Test
     public void testAttachView() throws Exception {
-        reposListPresenter.attachView(reposListView);
-        verify(reposListView, times(2)).initView();
+        verify(reposListView).initView();
     }
 
     @Test
@@ -115,9 +126,33 @@ public class ReposListPresenterTest {
         assertTrue(reposListPresenter.getSubscription().isUnsubscribed());
     }
 
-//    @Test
-//    public void testLoadUser() throws Exception {
-//        reposListPresenter.loadUser();
-//        assertNotNull(reposListPresenter.getLoadedUser());
-//    }
+    @Test
+    public void testGetUser() throws Exception {
+        verify(dbHelper).getUser();
+    }
+
+    @Test
+    public void testHandleReposRequest() throws Exception {
+        when(userAPI.getReposList((anyString()))).thenReturn(call);
+        reposListPresenter.setUser(user);
+        reposListPresenter.handleReposListRequest();
+        verify(userAPI).getReposList(anyString());
+    }
+
+    @Test
+    public void testPopulateView() throws Exception {
+        verify(reposListView).showProgress();
+    }
+
+    @Test
+    public void testOnPause() throws Exception {
+        reposListPresenter.onPause();
+        verify(subject).unregisterObservers(reposListPresenter);
+    }
+
+    @Test
+    public void testOnresume() throws Exception {
+        reposListPresenter.onResume();
+        verify(subject).registerObserver(reposListPresenter);
+    }
 }

@@ -17,8 +17,10 @@ import java.util.List;
 import endava.com.demoproject.R;
 import endava.com.demoproject.activities.MainActivity;
 import endava.com.demoproject.adapters.RepoCommitsAdapter;
+import endava.com.demoproject.helpers.DbHelper;
 import endava.com.demoproject.model.CommitModel;
 import endava.com.demoproject.presenter.RepoCommitsPresenter;
+import endava.com.demoproject.retrofit.ServiceFactory;
 import endava.com.demoproject.view.RepoCommitsView;
 
 public class RepoCommitsFragment extends Fragment implements RepoCommitsView {
@@ -54,7 +56,7 @@ public class RepoCommitsFragment extends Fragment implements RepoCommitsView {
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-        repoCommitsPresenter = new RepoCommitsPresenter();
+        repoCommitsPresenter = new RepoCommitsPresenter(DbHelper.getInstance(), ServiceFactory.getInstance());
         repoCommitsPresenter.attachView(this);
     }
 

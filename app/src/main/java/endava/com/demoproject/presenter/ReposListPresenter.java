@@ -15,34 +15,37 @@ import endava.com.demoproject.helpers.ResourcesHelper;
 import endava.com.demoproject.helpers.SharedPreferencesHelper;
 import endava.com.demoproject.model.Repo;
 import endava.com.demoproject.model.User;
-import endava.com.demoproject.retrofit.ServiceFactory;
+import endava.com.demoproject.retrofit.UserAPI;
 import endava.com.demoproject.view.ReposListView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class ReposListPresenter extends BasePresenter<ReposListView> implements Observer, Callback<List<Repo>> {
+public class ReposListPresenter extends BasePresenter<ReposListView> implements Observer, Callback<List<Repo>>, rx.Observer<User> {
 
     private User user;
     private ReposListView reposListView;
-    private Subject subject = Subject.newInstance();
+    private Subject subject;
     private Subscription subscription;
     private SharedPreferencesHelper sharedPreferencesHelper;
     private DbHelper dbHelper;
+    private UserAPI userAPI;
 
-    public ReposListPresenter(SharedPreferencesHelper sharedPreferencesHelper, DbHelper dbHelper){
+    public ReposListPresenter(SharedPreferencesHelper sharedPreferencesHelper, DbHelper dbHelper, UserAPI userAPI, Subject subject){
         this.sharedPreferencesHelper = sharedPreferencesHelper;
         this.dbHelper = dbHelper;
+        this.userAPI = userAPI;
+        this.subject = subject;
     }
 
     @Override
     public void attachView(ReposListView mvpView) {
         super.attachView(mvpView);
+        Log.d("repolistpresenter_init", "onCompleted");
         reposListView = mvpView;
         reposListView.initView();
         populateView();
@@ -61,8 +64,6 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
         return subscription;
     }
 
-
-
     @Override
     public void onResume() {
         subject.registerObserver(this);
@@ -74,34 +75,34 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
     }
 
     public void loadUser(){
-        Log.d("rxjava", "loadUser");
-        subscription = Observable.just(getUser()).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<User>() {
-            @Override
-            public void onCompleted() {
-                Log.d("rxjava", "onCompleted");
-            }
+        Log.d("Rxjava", "loadUser");
+        subscription = Observable.just(getUser()).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(this);
+    }
 
-            @Override
-            public void onError(Throwable e) {
+    @Override
+    public void onCompleted() {
+        Log.d("Rxjava", "onCompleted");
+    }
 
-            }
+    @Override
+    public void onError(Throwable e) {
 
-            @Override
-            public void onNext(User userResult) {
-                Log.d("rxjava", "onNext");
-                user = userResult;
-                handleReposListRequest(user);
-            }
-        });
+    }
+
+    @Override
+    public void onNext(User userResult) {
+        Log.d("Rxjava", "onNext");
+        user = userResult;
+        handleReposListRequest();
     }
 
     public void populateView() {
-        Log.d("rxjava", "populateView");
+        Log.d("Rxjava", "populateView");
         reposListView.showProgress();
         if (user == null) {
             loadUser();
         } else {
-            handleReposListRequest(user);
+            handleReposListRequest();
         }
     }
 
@@ -109,9 +110,9 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
         populateView();
     }
 
-    public void handleReposListRequest(User user) {
-        Log.d("rxjava", "handleReposListRequest");
-        ServiceFactory.getInstance().getReposList(user.getHashedCredentials()).enqueue(this);
+    public void handleReposListRequest() {
+        Log.d("Rxjava", "handleReposListRequest");
+        userAPI.getReposList(user.getHashedCredentials()).enqueue(this);
     }
 
 
@@ -135,8 +136,12 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
     }
 
     public User getUser() {
-        Log.d("rxjava", "getUser");
+        Log.d("Rxjava", "getUser");
         return dbHelper.getUser();
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public User getLoadedUser() {
