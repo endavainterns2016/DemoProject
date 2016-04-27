@@ -32,6 +32,13 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
     private ReposListView reposListView;
     private Subject subject = Subject.newInstance();
     private Subscription subscription;
+    private SharedPreferencesHelper sharedPreferencesHelper;
+    private DbHelper dbHelper;
+
+    public ReposListPresenter(SharedPreferencesHelper sharedPreferencesHelper, DbHelper dbHelper){
+        this.sharedPreferencesHelper = sharedPreferencesHelper;
+        this.dbHelper = dbHelper;
+    }
 
     @Override
     public void attachView(ReposListView mvpView) {
@@ -49,6 +56,12 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
             subscription.unsubscribe();
         }
     }
+
+    public Subscription getSubscription() {
+        return subscription;
+    }
+
+
 
     @Override
     public void onResume() {
@@ -77,7 +90,7 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
             public void onNext(User userResult) {
                 Log.d("rxjava", "onNext");
                 user = userResult;
-                handleReposListRequest();
+                handleReposListRequest(user);
             }
         });
     }
@@ -88,7 +101,7 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
         if (user == null) {
             loadUser();
         } else {
-            handleReposListRequest();
+            handleReposListRequest(user);
         }
     }
 
@@ -96,7 +109,7 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
         populateView();
     }
 
-    public void handleReposListRequest() {
+    public void handleReposListRequest(User user) {
         Log.d("rxjava", "handleReposListRequest");
         ServiceFactory.getInstance().getReposList(user.getHashedCredentials()).enqueue(this);
     }
@@ -105,7 +118,7 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
     @Override
     public void onResponse(Call<List<Repo>> call, Response<List<Repo>> response) {
         if (response.body() != null) {
-            DbHelper.getInstance().createRepos(response.body());
+            dbHelper.createRepos(response.body());
             reposListView.populateList(response.body());
             reposListView.hideProgress();
         } else {
@@ -123,7 +136,11 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
 
     public User getUser() {
         Log.d("rxjava", "getUser");
-        return DbHelper.getInstance().getUser();
+        return dbHelper.getUser();
+    }
+
+    public User getLoadedUser() {
+        return user;
     }
 
     @Override
@@ -146,10 +163,10 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
     }
 
     public boolean getAutoSyncEnabled() {
-        return SharedPreferencesHelper.getInstance().getAutoSyncStatus();
+        return sharedPreferencesHelper.getAutoSyncStatus();
     }
 
     public int getAutoSyncInterval() {
-        return SharedPreferencesHelper.getInstance().getAutoSyncInterval();
+        return sharedPreferencesHelper.getAutoSyncInterval();
     }
 }

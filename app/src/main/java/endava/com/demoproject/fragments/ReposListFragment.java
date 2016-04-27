@@ -26,6 +26,8 @@ import java.util.List;
 import endava.com.demoproject.R;
 import endava.com.demoproject.activities.MainActivity;
 import endava.com.demoproject.adapters.ReposAdapter;
+import endava.com.demoproject.helpers.DbHelper;
+import endava.com.demoproject.helpers.SharedPreferencesHelper;
 import endava.com.demoproject.model.Repo;
 import endava.com.demoproject.presenter.ReposListPresenter;
 import endava.com.demoproject.services.RefreshReposListService;
@@ -75,7 +77,7 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-        reposListPresenter = new ReposListPresenter();
+        reposListPresenter = new ReposListPresenter(SharedPreferencesHelper.getInstance(), DbHelper.getInstance());
         reposListPresenter.attachView(this);
         startRefreshService();
     }
