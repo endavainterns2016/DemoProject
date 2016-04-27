@@ -21,17 +21,19 @@ public class LoginPresenter extends BasePresenter<LoginView> implements Observer
     private LoginHelper loginHelper;
     private SharedPreferencesHelper sharedPrefHelper;
     private ResourcesHelper resourcesHelper;
-    private Subject subject = Subject.newInstance();
+    private Subject subject;
     private LoginView loginView;
     private String userName;
     private HashMap<String, EventHandler> eventHandlerMap = new HashMap<>();
+    private List<EventContext> eventContextList;
 
 
-    public LoginPresenter(LoginView loginView) {
+    public LoginPresenter(LoginView loginView,ResourcesHelper resourcesHelper, SharedPreferencesHelper sharedPrefHelper,LoginHelper loginHelper,Subject subject) {
         this.loginView = loginView;
-        resourcesHelper = ResourcesHelper.getInstance();
-        sharedPrefHelper = SharedPreferencesHelper.getInstance();
-        loginHelper = LoginHelper.getInstance();
+        this.resourcesHelper = resourcesHelper;
+        this.sharedPrefHelper = sharedPrefHelper;
+        this.loginHelper = loginHelper;
+        this.subject = subject;
     }
 
     public boolean validateCredentials(String userName, String password) {
@@ -79,24 +81,30 @@ public class LoginPresenter extends BasePresenter<LoginView> implements Observer
 
     @Override
     public void onEvent(Event e) {
-        eventHandlerMap.get(e.getEventKey().getEventKey()).handleEvent();
+        if(eventContextList.contains(e.getEventKey())){
+            eventHandlerMap.get(e.getEventKey().getEventKey()).handleEvent();
+        }
     }
 
     @Override
     public List<EventContext> getObserverKeys() {
-        List<EventContext> list = new ArrayList<>();
+        eventContextList = new ArrayList<>();
         EventContext successfulLogin = new EventContext(resourcesHelper.provideResources().getString(R.string.successful_login_tag), null);
         EventContext connectionError = new EventContext(resourcesHelper.provideResources().getString(R.string.connection_error_tag), null);
         EventContext credentialsError = new EventContext(resourcesHelper.provideResources().getString(R.string.credential_error_tag), null);
-        list.add(successfulLogin);
-        list.add(connectionError);
-        list.add(credentialsError);
-        return list;
+        eventContextList.add(successfulLogin);
+        eventContextList.add(connectionError);
+        eventContextList.add(credentialsError);
+        return eventContextList;
     }
 
     @Override
     public boolean isMainObserverForKey(EventContext key) {
-        return true;
+        if(eventContextList.contains(key)){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     @Override

@@ -17,6 +17,10 @@ import android.widget.ProgressBar;
 
 import endava.com.demoproject.R;
 import endava.com.demoproject.activities.MainActivity;
+import endava.com.demoproject.cacheableObserver.Subject;
+import endava.com.demoproject.helpers.LoginHelper;
+import endava.com.demoproject.helpers.ResourcesHelper;
+import endava.com.demoproject.helpers.SharedPreferencesHelper;
 import endava.com.demoproject.presenter.LoginPresenter;
 import endava.com.demoproject.view.LoginView;
 
@@ -57,7 +61,10 @@ public class LoginFragment extends Fragment implements LoginView, View.OnClickLi
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         usernameCheckBox = (CheckBox) view.findViewById(R.id.name_chbx);
 
-        presenter = new LoginPresenter(this);
+        presenter = new LoginPresenter(this, ResourcesHelper.getInstance(),
+                SharedPreferencesHelper.getInstance(),
+                LoginHelper.getInstance(), Subject.newInstance());
+
         presenter.attachView(this);
         mLoginBtn.setOnClickListener(this);
     }
