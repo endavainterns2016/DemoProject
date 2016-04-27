@@ -18,6 +18,11 @@ public class MainPresenter extends BasePresenter<MainView> {
     private MainView mainView;
     private Subscription subscription;
     private User user;
+    private DbHelper dbHelper;
+
+    public MainPresenter(DbHelper dbHelper){
+       this.dbHelper = dbHelper;
+    }
 
     @Override
     public void attachView(MainView mvpView) {
@@ -71,7 +76,7 @@ public class MainPresenter extends BasePresenter<MainView> {
 
     public User getUser() {
         Log.d("Mainrxjava", "getUser");
-        return DbHelper.getInstance().getUser();
+        return dbHelper.getUser();
     }
 
     public void setNavViewDetails(User user) {
@@ -83,7 +88,11 @@ public class MainPresenter extends BasePresenter<MainView> {
     }
 
     public void onLogOut() {
-        DbHelper.getInstance().deleteUser(user);
+        dbHelper.deleteUser(user);
         mainView.navigateToLoginView();
+    }
+
+    public Subscription getSubscription() {
+        return subscription;
     }
 }
