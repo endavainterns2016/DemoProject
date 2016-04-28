@@ -20,8 +20,10 @@ import java.util.List;
 import endava.com.demoproject.R;
 import endava.com.demoproject.activities.MainActivity;
 import endava.com.demoproject.adapters.ReposSyncAdapter;
+import endava.com.demoproject.helpers.DbHelper;
 import endava.com.demoproject.model.Repo;
 import endava.com.demoproject.presenter.ReposSyncPresenter;
+import endava.com.demoproject.retrofit.ServiceFactory;
 import endava.com.demoproject.view.ReposSyncView;
 
 public class ReposSyncFragment extends Fragment implements ReposSyncAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, ReposSyncView {
@@ -43,7 +45,7 @@ public class ReposSyncFragment extends Fragment implements ReposSyncAdapter.OnIt
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-        reposSyncPresenter = new ReposSyncPresenter();
+        reposSyncPresenter = new ReposSyncPresenter(ServiceFactory.getInstance(), DbHelper.getInstance());
         reposSyncPresenter.attachView(this);
     }
 

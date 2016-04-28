@@ -8,6 +8,7 @@ import endava.com.demoproject.helpers.DbHelper;
 import endava.com.demoproject.model.Repo;
 import endava.com.demoproject.model.User;
 import endava.com.demoproject.retrofit.ServiceFactory;
+import endava.com.demoproject.retrofit.UserAPI;
 import endava.com.demoproject.view.ReposSyncView;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -18,14 +19,22 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by lbuzmacov on 20-04-16.
- */
 public class ReposSyncPresenter extends BasePresenter<ReposSyncView> implements Callback<List<Repo>> {
 
     private User user;
     private ReposSyncView reposSyncView;
     private Subscription subscription;
+    private UserAPI userAPI;
+    private DbHelper dbHelper;
+
+    public ReposSyncPresenter(UserAPI userAPI,DbHelper dbHelper) {
+        this.userAPI = userAPI;
+        this.dbHelper = dbHelper;
+    }
+
+    public Subscription getSubscription() {
+        return subscription;
+    }
 
     @Override
     public void attachView(ReposSyncView mvpView) {
@@ -54,7 +63,7 @@ public class ReposSyncPresenter extends BasePresenter<ReposSyncView> implements 
 
     }
 
-    public void loadUser(){
+    public void loadUser() {
         Log.d("rxjava", "loadUser");
         subscription = Observable.just(getUser()).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<User>() {
             @Override
@@ -71,7 +80,7 @@ public class ReposSyncPresenter extends BasePresenter<ReposSyncView> implements 
             public void onNext(User userResult) {
                 Log.d("rxjava", "onNext");
                 user = userResult;
-                handleReposListRequest();
+                handleReposListRequest(userResult);
             }
         });
     }
@@ -82,7 +91,7 @@ public class ReposSyncPresenter extends BasePresenter<ReposSyncView> implements 
         if (user == null) {
             loadUser();
         } else {
-            handleReposListRequest();
+            handleReposListRequest(user);
         }
     }
 
@@ -90,16 +99,16 @@ public class ReposSyncPresenter extends BasePresenter<ReposSyncView> implements 
         populateView();
     }
 
-    public void handleReposListRequest() {
+    public void handleReposListRequest(User user) {
         Log.d("rxjava", "handleReposListRequest");
-        ServiceFactory.getInstance().getReposList(user.getHashedCredentials()).enqueue(this);
+        userAPI.getReposList(user.getHashedCredentials()).enqueue(this);
     }
 
 
     @Override
     public void onResponse(Call<List<Repo>> call, Response<List<Repo>> response) {
         if (response.body() != null) {
-            DbHelper.getInstance().createRepos(response.body());
+            dbHelper.createRepos(response.body());
             reposSyncView.populateList(response.body());
             reposSyncView.hideProgress();
         } else {
@@ -117,6 +126,6 @@ public class ReposSyncPresenter extends BasePresenter<ReposSyncView> implements 
 
     public User getUser() {
         Log.d("rxjava", "getUser");
-        return DbHelper.getInstance().getUser();
+        return dbHelper.getUser();
     }
 }
