@@ -3,6 +3,7 @@ package endava.com.demoproject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricGradleTestRunner;
@@ -13,6 +14,7 @@ import java.util.List;
 import endava.com.demoproject.cacheableObserver.EventContext;
 import endava.com.demoproject.cacheableObserver.Subject;
 import endava.com.demoproject.helpers.DbHelper;
+import endava.com.demoproject.helpers.ResourcesHelper;
 import endava.com.demoproject.helpers.SharedPreferencesHelper;
 import endava.com.demoproject.model.Repo;
 import endava.com.demoproject.model.User;
@@ -51,17 +53,20 @@ public class ReposListPresenterTest {
     private User user;
     @Mock
     private Subject subject;
+
+    @Mock
+    private ResourcesHelper resourcesHelper;
     @Mock
     private EventContext eventContext;
     @Mock
     private List<Repo> repoList;
     private Response<List<Repo>> response;
+    @InjectMocks
     private ReposListPresenter reposListPresenter;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        reposListPresenter = new ReposListPresenter(sharedPreferencesHelper, dbHelper, userAPI, subject);
         reposListPresenter.attachView(reposListView);
         repoList.add(repo);
     }

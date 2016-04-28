@@ -3,6 +3,7 @@ package endava.com.demoproject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricGradleTestRunner;
@@ -60,12 +61,12 @@ public class RepoCommitsPresenterTest {
     @Mock
     private RepoCommitsView repoCommitsView;
     private Response<List<CommitModel>> response;
+    @InjectMocks
     private RepoCommitsPresenter repoCommitsPresenter;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        repoCommitsPresenter = new RepoCommitsPresenter();
         repoCommitsPresenter.attachView(repoCommitsView);
         repoCommitList.add(commitModel);
     }

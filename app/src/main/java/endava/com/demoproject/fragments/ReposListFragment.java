@@ -23,21 +23,21 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import endava.com.demoproject.DemoProjectApplication;
 import endava.com.demoproject.R;
 import endava.com.demoproject.activities.MainActivity;
 import endava.com.demoproject.adapters.ReposAdapter;
-import endava.com.demoproject.cacheableObserver.Subject;
-import endava.com.demoproject.helpers.DbHelper;
-import endava.com.demoproject.helpers.SharedPreferencesHelper;
 import endava.com.demoproject.model.Repo;
 import endava.com.demoproject.presenter.ReposListPresenter;
-import endava.com.demoproject.retrofit.ServiceFactory;
 import endava.com.demoproject.services.RefreshReposListService;
 import endava.com.demoproject.view.ReposListView;
 
 public class ReposListFragment extends Fragment implements ReposAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, ReposListView {
 
-    private ReposListPresenter reposListPresenter;
+    @Inject
+    public ReposListPresenter reposListPresenter;
     private ReposAdapter mAdapter;
     private ArrayList<Repo> reposList = new ArrayList<>();
     private View view;
@@ -45,7 +45,6 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
     private SnackBarOnClickListener snackBarOnClickListener;
     private ProgressDialog progressDialog;
     private SwipeRefreshLayout mRefreshLayout;
-
     private RecyclerView mRecyclerView;
 
     @Override
@@ -79,7 +78,7 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-        reposListPresenter = new ReposListPresenter(SharedPreferencesHelper.getInstance(), DbHelper.getInstance(), ServiceFactory.getInstance(), Subject.newInstance());
+        DemoProjectApplication.getApplicationComponent().inject(this);
         reposListPresenter.attachView(this);
         startRefreshService();
     }

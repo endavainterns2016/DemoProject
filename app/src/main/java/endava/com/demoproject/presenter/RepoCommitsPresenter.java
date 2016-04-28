@@ -2,7 +2,6 @@ package endava.com.demoproject.presenter;
 
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -26,7 +25,6 @@ import rx.schedulers.Schedulers;
  */
 public class RepoCommitsPresenter extends BasePresenter<RepoCommitsView> implements Callback<List<CommitModel>>, Observer<Repo> {
 
-    private ArrayList<CommitModel> commitsList = new ArrayList<>();
     private RepoCommitsView repoCommitsView;
     private Subscription subscription;
     private DbHelper dbHelper;

@@ -7,31 +7,33 @@ import android.preference.PreferenceManager;
 
 import javax.inject.Inject;
 
-import endava.com.demoproject.DemoProjectApplication;
-
 public class SharedPreferencesHelper {
     public static final String AUTH_DATA = "authData";
     private static final String USERNAME_PREF = "username";
     private static final String REMEMBER_USERNAME_PREF = "rememberUsername";
-    public static SharedPreferencesHelper helper;
+//    public static SharedPreferencesHelper helper;
     private SharedPreferences defaultSharedPreferences;
-    @Inject
-    Context context;
+    private Context context;
     private SharedPreferences authData;
     private boolean enableAutoSync;
     private int autoSyncInterval;
 
-    public static SharedPreferencesHelper getInstance() {
-        if (helper == null) {
-            helper = new SharedPreferencesHelper();
-            helper.setContext();
-        }
-        return helper;
+    @Inject
+    public SharedPreferencesHelper(Context context){
+        this.context = context;
     }
 
-    public void setContext() {
-        DemoProjectApplication.getApplicationComponent().inject(this);
-    }
+//    public static SharedPreferencesHelper getInstance() {
+//        if (helper == null) {
+//            helper = new SharedPreferencesHelper();
+//            helper.setContext();
+//        }
+//        return helper;
+//    }
+//
+//    public void setContext() {
+//        DemoProjectApplication.getApplicationComponent().inject(this);
+//    }
 
     public void rememberUserName(String username) {
         authData = context.getSharedPreferences(AUTH_DATA, 0);

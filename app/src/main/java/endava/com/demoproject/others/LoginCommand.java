@@ -6,6 +6,9 @@ import android.os.Parcelable;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import endava.com.demoproject.DemoProjectApplication;
 import endava.com.demoproject.R;
 import endava.com.demoproject.cacheableObserver.Event;
 import endava.com.demoproject.cacheableObserver.EventContext;
@@ -33,10 +36,13 @@ public class LoginCommand implements Command, Parcelable, Event {
     private DbHelper dbHelper = DbHelper.getInstance();
     private String credentials;
     private String userName;
+    @Inject
+    ResourcesHelper resourcesHelper;
     private List<User> userList;
     private Subject subject = Subject.newInstance();
 
     public LoginCommand(String credentials, String userName) {
+        DemoProjectApplication.getApplicationComponent().inject(this);
         this.credentials = credentials;
         this.userName = userName;
     }
@@ -51,7 +57,7 @@ public class LoginCommand implements Command, Parcelable, Event {
         try {
             userList = ServiceFactory.getInstance().auth(credentials).execute().body();
         } catch (Exception e) {
-            subject.onNewEvent(new ConnectionErrorEvent());
+            subject.onNewEvent(new ConnectionErrorEvent(resourcesHelper));
             return;
         }
         if (userList != null) {
@@ -59,7 +65,7 @@ public class LoginCommand implements Command, Parcelable, Event {
             try {
                 user.setAvatarUrl(ServiceFactory.getInstance().getUserAvatar(credentials).execute().body().getAvatarUrl());
             } catch (Exception e) {
-                subject.onNewEvent(new ConnectionErrorEvent());
+                subject.onNewEvent(new ConnectionErrorEvent(resourcesHelper));
                 return;
             }
             user.setHashedCredentials(credentials);
@@ -67,7 +73,7 @@ public class LoginCommand implements Command, Parcelable, Event {
             dbHelper.createUser(user);
             subject.onNewEvent(this);
         } else {
-            subject.onNewEvent(new CredentialsErrorEvent());
+            subject.onNewEvent(new CredentialsErrorEvent(resourcesHelper));
         }
     }
 
@@ -89,6 +95,6 @@ public class LoginCommand implements Command, Parcelable, Event {
 
     @Override
     public EventContext getEventKey() {
-        return new EventContext(ResourcesHelper.getInstance().provideResources().getString(R.string.successful_login_tag), null);
+        return new EventContext(resourcesHelper.provideResources().getString(R.string.successful_login_tag), null);
     }
 }

@@ -9,6 +9,12 @@ import endava.com.demoproject.helpers.ResourcesHelper;
 
 
 public class CredentialsErrorEvent implements Event {
+
+    private ResourcesHelper resourcesHelper;
+
+    public CredentialsErrorEvent(ResourcesHelper resourcesHelper) {
+        this.resourcesHelper = resourcesHelper;
+    }
     @Override
     public Object getData() {
         return null;
@@ -16,7 +22,7 @@ public class CredentialsErrorEvent implements Event {
 
     @Override
     public EventContext getEventKey() {
-        return new EventContext(ResourcesHelper.getInstance().provideResources().getString(R.string.credential_error_tag),null);
+        return new EventContext(resourcesHelper.provideResources().getString(R.string.credential_error_tag),null);
     }
 
     @Override

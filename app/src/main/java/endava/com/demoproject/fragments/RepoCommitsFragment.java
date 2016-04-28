@@ -32,7 +32,6 @@ public class RepoCommitsFragment extends Fragment implements RepoCommitsView {
     private View view;
     private ProgressDialog progressDialog;
     private RecyclerView mRecyclerView;
-//    private RepoCommitsPresenter repoCommitsPresenter;
 
     @Inject
     public RepoCommitsPresenter repoCommitsPresenter;
@@ -61,7 +60,6 @@ public class RepoCommitsFragment extends Fragment implements RepoCommitsView {
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         DemoProjectApplication.getApplicationComponent().inject(this);
-//        repoCommitsPresenter = new RepoCommitsPresenter();
         repoCommitsPresenter.attachView(this);
     }
 

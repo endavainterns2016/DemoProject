@@ -15,18 +15,18 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import javax.inject.Inject;
+
+import endava.com.demoproject.DemoProjectApplication;
 import endava.com.demoproject.R;
 import endava.com.demoproject.activities.MainActivity;
-import endava.com.demoproject.cacheableObserver.Subject;
-import endava.com.demoproject.helpers.LoginHelper;
-import endava.com.demoproject.helpers.ResourcesHelper;
-import endava.com.demoproject.helpers.SharedPreferencesHelper;
 import endava.com.demoproject.presenter.LoginPresenter;
 import endava.com.demoproject.view.LoginView;
 
 public class LoginFragment extends Fragment implements LoginView, View.OnClickListener {
     private Activity activity;
-    private LoginPresenter presenter;
+    @Inject
+    public LoginPresenter presenter;
     private View view;
     private Button mLoginBtn;
     private EditText mUSerNameEdt;
@@ -55,15 +55,12 @@ public class LoginFragment extends Fragment implements LoginView, View.OnClickLi
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        DemoProjectApplication.getApplicationComponent().inject(this);
         mLoginBtn = (Button) view.findViewById(R.id.login_bnt);
         mPasswordEdt = (EditText) view.findViewById(R.id.password_edt);
         mUSerNameEdt = (EditText) view.findViewById(R.id.login_edt);
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         usernameCheckBox = (CheckBox) view.findViewById(R.id.name_chbx);
-
-        presenter = new LoginPresenter(this, ResourcesHelper.getInstance(),
-                SharedPreferencesHelper.getInstance(),
-                LoginHelper.getInstance(), Subject.newInstance());
 
         presenter.attachView(this);
         mLoginBtn.setOnClickListener(this);

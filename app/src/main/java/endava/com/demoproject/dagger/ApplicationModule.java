@@ -7,11 +7,14 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import endava.com.demoproject.cacheableObserver.Subject;
 import endava.com.demoproject.helpers.DbHelper;
 import endava.com.demoproject.helpers.LoginHelper;
 import endava.com.demoproject.helpers.ResourcesHelper;
 import endava.com.demoproject.helpers.SharedPreferencesHelper;
+import endava.com.demoproject.presenter.LoginPresenter;
 import endava.com.demoproject.presenter.RepoCommitsPresenter;
+import endava.com.demoproject.presenter.ReposListPresenter;
 import endava.com.demoproject.retrofit.UserAPI;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -45,20 +48,26 @@ public class ApplicationModule {
 
     @Provides
     @Singleton
-    LoginHelper provideLoginHelper(){
-        return new LoginHelper();
+    LoginHelper provideLoginHelper(Context context){
+        return new LoginHelper(context);
     }
 
     @Provides
     @Singleton
-    ResourcesHelper provideResourcesHelper(){
-        return new ResourcesHelper();
+    ResourcesHelper provideResourcesHelper(Resources resources){
+        return new ResourcesHelper(resources);
     }
 
     @Provides
     @Singleton
-    SharedPreferencesHelper provideSharedPreferencesHelper(){
-        return new SharedPreferencesHelper();
+    SharedPreferencesHelper provideSharedPreferencesHelper(Context context){
+        return new SharedPreferencesHelper(context);
+    }
+
+    @Provides
+    @Singleton
+    Subject provideSubject(){
+        return new Subject();
     }
 
     @Provides
@@ -73,6 +82,16 @@ public class ApplicationModule {
     @Provides
     RepoCommitsPresenter provideRepoCommitsPresenter(DbHelper dbHelper, UserAPI userAPI){
         return new RepoCommitsPresenter(dbHelper, userAPI);
+    }
+
+    @Provides
+    ReposListPresenter provideReposListPresenter(SharedPreferencesHelper sharedPreferencesHelper, DbHelper dbHelper, UserAPI userAPI, Subject subject, ResourcesHelper resourcesHelper){
+        return new ReposListPresenter(sharedPreferencesHelper, dbHelper, userAPI, subject, resourcesHelper);
+    }
+
+    @Provides
+    LoginPresenter provideLoginPresenter (ResourcesHelper resourcesHelper, SharedPreferencesHelper sharedPrefHelper, LoginHelper loginHelper, Subject subject) {
+        return new LoginPresenter(resourcesHelper, sharedPrefHelper, loginHelper, subject);
     }
 
 }

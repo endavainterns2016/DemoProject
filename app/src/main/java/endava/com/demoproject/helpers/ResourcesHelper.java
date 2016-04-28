@@ -5,26 +5,27 @@ import android.content.res.Resources;
 
 import javax.inject.Inject;
 
-import endava.com.demoproject.DemoProjectApplication;
-
 public class ResourcesHelper {
-    private static ResourcesHelper resourcesHelper;
-    @Inject
-    Resources resources;
+//    private static ResourcesHelper resourcesHelper;
+    private Resources resources;
 
-    public static ResourcesHelper getInstance() {
-        if (resourcesHelper == null) {
-            resourcesHelper = new ResourcesHelper();
-        }
-        resourcesHelper.injectResources();
-        return resourcesHelper;
+//    public static ResourcesHelper getInstance() {
+//        if (resourcesHelper == null) {
+//            resourcesHelper = new ResourcesHelper();
+//        }
+//        resourcesHelper.injectResources();
+//        return resourcesHelper;
+//    }
+@Inject
+    public ResourcesHelper(Resources resources){
+        this.resources = resources;
     }
 
     public Resources provideResources() {
-        return resourcesHelper.resources;
+        return resources;
     }
 
-    private void injectResources() {
-        DemoProjectApplication.getApplicationComponent().inject(this);
-    }
+//    private void injectResources() {
+//        DemoProjectApplication.getApplicationComponent().inject(this);
+//    }
 }

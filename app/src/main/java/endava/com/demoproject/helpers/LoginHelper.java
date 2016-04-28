@@ -9,27 +9,30 @@ import java.io.UnsupportedEncodingException;
 
 import javax.inject.Inject;
 
-import endava.com.demoproject.DemoProjectApplication;
 import endava.com.demoproject.others.LoginCommand;
 import endava.com.demoproject.services.LoginService;
 
 public class LoginHelper {
-    public static LoginHelper helper;
-    @Inject
-    Context context;
+//    public static LoginHelper helper;
+    private Context context;
     private String credentials;
 
-    public static LoginHelper getInstance() {
-        if (helper == null) {
-            helper = new LoginHelper();
-        }
-        helper.injectContext();
-        return helper;
+    @Inject
+    public LoginHelper(Context context) {
+        this.context = context;
     }
 
-    public void injectContext() {
-        DemoProjectApplication.getApplicationComponent().inject(this);
-    }
+//    public static LoginHelper getInstance() {
+//        if (helper == null) {
+//            helper = new LoginHelper();
+//        }
+//        helper.injectContext();
+//        return helper;
+//    }
+//
+//    public void injectContext() {
+//        DemoProjectApplication.getApplicationComponent().inject(this);
+//    }
 
     public void doLogin(String username, String password) {
         try {

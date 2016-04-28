@@ -2,12 +2,19 @@ package endava.com.demoproject.events;
 
 import android.os.Parcel;
 
+import javax.inject.Inject;
+
 import endava.com.demoproject.R;
 import endava.com.demoproject.cacheableObserver.Event;
 import endava.com.demoproject.cacheableObserver.EventContext;
 import endava.com.demoproject.helpers.ResourcesHelper;
 
 public class ConnectionErrorEvent implements Event {
+    private ResourcesHelper resourcesHelper;
+
+    public ConnectionErrorEvent(ResourcesHelper resourcesHelper) {
+        this.resourcesHelper = resourcesHelper;
+    }
     @Override
     public Object getData() {
         return null;
@@ -15,7 +22,7 @@ public class ConnectionErrorEvent implements Event {
 
     @Override
     public EventContext getEventKey() {
-        return new EventContext(ResourcesHelper.getInstance().provideResources().getString(R.string.connection_error_tag),null);
+        return new EventContext(resourcesHelper.provideResources().getString(R.string.connection_error_tag),null);
     }
 
     @Override

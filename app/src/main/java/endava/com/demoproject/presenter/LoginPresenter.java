@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import endava.com.demoproject.R;
 import endava.com.demoproject.cacheableObserver.Event;
 import endava.com.demoproject.cacheableObserver.EventContext;
@@ -27,9 +29,8 @@ public class LoginPresenter extends BasePresenter<LoginView> implements Observer
     private HashMap<String, EventHandler> eventHandlerMap = new HashMap<>();
     private List<EventContext> eventContextList;
 
-
-    public LoginPresenter(LoginView loginView,ResourcesHelper resourcesHelper, SharedPreferencesHelper sharedPrefHelper,LoginHelper loginHelper,Subject subject) {
-        this.loginView = loginView;
+    @Inject
+    public LoginPresenter(ResourcesHelper resourcesHelper, SharedPreferencesHelper sharedPrefHelper, LoginHelper loginHelper, Subject subject) {
         this.resourcesHelper = resourcesHelper;
         this.sharedPrefHelper = sharedPrefHelper;
         this.loginHelper = loginHelper;
@@ -81,7 +82,7 @@ public class LoginPresenter extends BasePresenter<LoginView> implements Observer
 
     @Override
     public void onEvent(Event e) {
-        if(eventContextList.contains(e.getEventKey())){
+        if (eventContextList.contains(e.getEventKey())) {
             eventHandlerMap.get(e.getEventKey().getEventKey()).handleEvent();
         }
     }
@@ -100,9 +101,9 @@ public class LoginPresenter extends BasePresenter<LoginView> implements Observer
 
     @Override
     public boolean isMainObserverForKey(EventContext key) {
-        if(eventContextList.contains(key)){
+        if (eventContextList.contains(key)) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -110,6 +111,7 @@ public class LoginPresenter extends BasePresenter<LoginView> implements Observer
     @Override
     public void attachView(LoginView mvpView) {
         super.attachView(mvpView);
+        loginView = mvpView;
         populateView();
         subject.registerObserver(this);
         populateEventsMap();
@@ -129,6 +131,12 @@ public class LoginPresenter extends BasePresenter<LoginView> implements Observer
     @Override
     public void onPause() {
 
+    }
+
+    private void populateEventsMap() {
+        eventHandlerMap.put(resourcesHelper.provideResources().getString(R.string.successful_login_tag), new SuccessfulLoginHandler());
+        eventHandlerMap.put(resourcesHelper.provideResources().getString(R.string.connection_error_tag), new ConnectionErrorHandler());
+        eventHandlerMap.put(resourcesHelper.provideResources().getString(R.string.credential_error_tag), new CredentialsErrorHandler());
     }
 
     private class SuccessfulLoginHandler implements EventHandler {
@@ -153,11 +161,5 @@ public class LoginPresenter extends BasePresenter<LoginView> implements Observer
         public void handleEvent() {
             loginView.showError(resourcesHelper.provideResources().getString(R.string.credentials_error_message));
         }
-    }
-
-    private void populateEventsMap() {
-        eventHandlerMap.put(resourcesHelper.provideResources().getString(R.string.successful_login_tag), new SuccessfulLoginHandler());
-        eventHandlerMap.put(resourcesHelper.provideResources().getString(R.string.connection_error_tag), new ConnectionErrorHandler());
-        eventHandlerMap.put(resourcesHelper.provideResources().getString(R.string.credential_error_tag), new CredentialsErrorHandler());
     }
 }
