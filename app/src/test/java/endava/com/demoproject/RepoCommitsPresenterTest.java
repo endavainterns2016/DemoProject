@@ -65,7 +65,7 @@ public class RepoCommitsPresenterTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        repoCommitsPresenter = new RepoCommitsPresenter(dbHelper, userAPI);
+        repoCommitsPresenter = new RepoCommitsPresenter();
         repoCommitsPresenter.attachView(repoCommitsView);
         repoCommitList.add(commitModel);
     }

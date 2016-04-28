@@ -14,13 +14,14 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import endava.com.demoproject.DemoProjectApplication;
 import endava.com.demoproject.R;
 import endava.com.demoproject.activities.MainActivity;
 import endava.com.demoproject.adapters.RepoCommitsAdapter;
-import endava.com.demoproject.helpers.DbHelper;
 import endava.com.demoproject.model.CommitModel;
 import endava.com.demoproject.presenter.RepoCommitsPresenter;
-import endava.com.demoproject.retrofit.ServiceFactory;
 import endava.com.demoproject.view.RepoCommitsView;
 
 public class RepoCommitsFragment extends Fragment implements RepoCommitsView {
@@ -31,7 +32,10 @@ public class RepoCommitsFragment extends Fragment implements RepoCommitsView {
     private View view;
     private ProgressDialog progressDialog;
     private RecyclerView mRecyclerView;
-    private RepoCommitsPresenter repoCommitsPresenter;
+//    private RepoCommitsPresenter repoCommitsPresenter;
+
+    @Inject
+    public RepoCommitsPresenter repoCommitsPresenter;
 
     public static RepoCommitsFragment getInstance(Integer id) {
         RepoCommitsFragment repoCommitsFragment = new RepoCommitsFragment();
@@ -56,7 +60,8 @@ public class RepoCommitsFragment extends Fragment implements RepoCommitsView {
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-        repoCommitsPresenter = new RepoCommitsPresenter(DbHelper.getInstance(), ServiceFactory.getInstance());
+        DemoProjectApplication.getApplicationComponent().inject(this);
+//        repoCommitsPresenter = new RepoCommitsPresenter();
         repoCommitsPresenter.attachView(this);
     }
 

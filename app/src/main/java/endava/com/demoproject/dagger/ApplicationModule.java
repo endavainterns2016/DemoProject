@@ -11,6 +11,7 @@ import endava.com.demoproject.helpers.DbHelper;
 import endava.com.demoproject.helpers.LoginHelper;
 import endava.com.demoproject.helpers.ResourcesHelper;
 import endava.com.demoproject.helpers.SharedPreferencesHelper;
+import endava.com.demoproject.presenter.RepoCommitsPresenter;
 import endava.com.demoproject.retrofit.UserAPI;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -67,6 +68,11 @@ public class ApplicationModule {
                 .baseUrl("https://api.github.com")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build().create(UserAPI.class);
+    }
+
+    @Provides
+    RepoCommitsPresenter provideRepoCommitsPresenter(DbHelper dbHelper, UserAPI userAPI){
+        return new RepoCommitsPresenter(dbHelper, userAPI);
     }
 
 }

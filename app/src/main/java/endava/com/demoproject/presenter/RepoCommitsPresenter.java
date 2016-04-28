@@ -5,6 +5,8 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import endava.com.demoproject.helpers.DbHelper;
 import endava.com.demoproject.model.CommitModel;
 import endava.com.demoproject.model.Repo;
@@ -30,6 +32,7 @@ public class RepoCommitsPresenter extends BasePresenter<RepoCommitsView> impleme
     private DbHelper dbHelper;
     private UserAPI userAPI;
 
+    @Inject
     public RepoCommitsPresenter(DbHelper dbHelper, UserAPI userAPI){
         this.dbHelper = dbHelper;
         this.userAPI = userAPI;
