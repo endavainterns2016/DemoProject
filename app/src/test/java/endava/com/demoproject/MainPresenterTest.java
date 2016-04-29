@@ -3,6 +3,7 @@ package endava.com.demoproject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricGradleTestRunner;
@@ -33,13 +34,12 @@ public class MainPresenterTest {
 
     @Mock
     private DbHelper dbHelper;
-
+@InjectMocks
     private MainPresenter mainPresenter;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        mainPresenter = new MainPresenter(dbHelper);
         mainPresenter.attachView(mainView);
     }
 

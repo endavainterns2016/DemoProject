@@ -21,15 +21,26 @@ import endava.com.demoproject.services.RefreshReposListService;
 @Component(modules = {ApplicationModule.class})
 @Singleton
 public interface ApplicationComponent {
+
+    //HELPERS
     void inject(LoginHelper loginHelper);
 
     void inject(SharedPreferencesHelper sharedPreferencesHelper);
 
+    //FRAGMENTS
     void inject(RepoCommitsFragment repoCommitsFragment);
 
     void inject(ReposListFragment reposListFragment);
 
     void inject(LoginFragment loginFragment);
+
+    void inject(RepoDetailsFragment repoDetailsFragment);
+
+    void inject(ReposSyncFragment reposSyncFragment);
+
+    void inject(SplashFragment splashFragment);
+
+
 
     void inject(LoginCommand loginCommand);
 
@@ -38,12 +49,6 @@ public interface ApplicationComponent {
     void inject(MainActivity mainActivity);
 
     void inject(RepoLoadingTask repoLoadingTask);
-
-    void inject(RepoDetailsFragment repoDetailsFragment);
-
-    void inject(ReposSyncFragment reposSyncFragment);
-
-    void inject(SplashFragment splashFragment);
 
     void inject(RefreshReposListService refreshReposListService);
 

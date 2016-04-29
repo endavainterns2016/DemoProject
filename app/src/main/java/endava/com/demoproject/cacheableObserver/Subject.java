@@ -12,8 +12,6 @@ import java.util.Map;
  */
 public class Subject {
 
-    public static String subjectKey = "SUBJECT_KEY";
-    private static HashMap<String, Subject> subjectMap = new HashMap<>();
     private Map<EventContext, List<Event>> events = new HashMap<>();
     private List<Observer> observers = new ArrayList<>();
     private String context;
@@ -21,15 +19,6 @@ public class Subject {
     public Subject() {
     }
 
-//    public static Subject newInstance() {
-//        if (subjectMap.containsKey(subjectKey)) {
-//            return subjectMap.get(subjectKey);
-//        } else {
-//            Subject subject = new Subject();
-//            subjectMap.put(subjectKey, subject);
-//            return subject;
-//        }
-//    }
 
     /**
      * Registers {@link Observer} and notifies all cached {@link Event} if they exists

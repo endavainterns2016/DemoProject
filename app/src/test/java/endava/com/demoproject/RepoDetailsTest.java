@@ -3,6 +3,7 @@ package endava.com.demoproject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
@@ -11,7 +12,6 @@ import endava.com.demoproject.model.Owner;
 import endava.com.demoproject.model.Repo;
 import endava.com.demoproject.model.User;
 import endava.com.demoproject.presenter.RepoListDetailPresenter;
-import endava.com.demoproject.retrofit.ServiceFactory;
 import endava.com.demoproject.retrofit.UserAPI;
 import endava.com.demoproject.view.RepoDetailsView;
 import retrofit2.Call;
@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 @Config(constants = BuildConfig.class, sdk = 21)
 public class RepoDetailsTest {
 
+    @InjectMocks
     private RepoListDetailPresenter repoDetailsPresenter;
     private RepoDetailsView repoDetailsView;
     private DbHelper dbHelper;
@@ -44,7 +45,7 @@ public class RepoDetailsTest {
         owner = mock(Owner.class);
         repoCallBack = mock(Call.class);
         userAPI = mock(UserAPI.class);
-        repoDetailsPresenter = new RepoListDetailPresenter(repoDetailsView, dbHelper,userAPI);
+        repoDetailsPresenter.attachView(repoDetailsView);
     }
 
     @Test

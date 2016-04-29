@@ -1,9 +1,12 @@
 package endava.com.demoproject;
 
+import android.content.res.Resources;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.MockitoAnnotations;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
@@ -31,6 +34,7 @@ public class LoginPresenterTest {
     private LoginPresenter loginPresenter;
     private LoginView loginView;
     private LoginHelper loginHelper;
+    private Resources resources;
     private SharedPreferencesHelper sharedPreferencesHelper;
     private EventContext eventContext;
     private Subject subject;
@@ -38,15 +42,15 @@ public class LoginPresenterTest {
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         loginView = mock(LoginView.class);
         loginHelper = mock(LoginHelper.class);
+        resources = mock(Resources.class);
         sharedPreferencesHelper = mock(SharedPreferencesHelper.class);
         subject = mock(Subject.class);
         event = mock(Event.class);
         eventContext = spy(new EventContext("key", ""));
         loginPresenter.attachView(loginView);
-//        when(resourcesHelper.provideResources()).thenReturn(ResourcesHelper.getInstance().provideResources());
-//        when(sharedPreferencesHelper.getUserName()).thenReturn(SharedPreferencesHelper.getInstance().getUserName());
     }
 
     @Test
@@ -121,7 +125,6 @@ public class LoginPresenterTest {
 
     @Test
     public void successfulLoginHandlerTest() {
-//        when(event.getEventKey()).thenReturn(new EventContext(ResourcesHelper.getInstance().provideResources().getString(R.string.successful_login_tag), null));
         loginPresenter.getObserverKeys();
         loginPresenter.attachView(loginView);
         loginPresenter.onEvent(event);
@@ -129,7 +132,6 @@ public class LoginPresenterTest {
     }
     @Test
     public void credentialsErrorHandlerTest() {
-//        when(event.getEventKey()).thenReturn(new EventContext(ResourcesHelper.getInstance().provideResources().getString(R.string.credential_error_tag), null));
         loginPresenter.getObserverKeys();
         loginPresenter.attachView(loginView);
         loginPresenter.onEvent(event);
@@ -137,7 +139,6 @@ public class LoginPresenterTest {
     }
     @Test
     public void connectionErrorHandlerTest() {
-//        when(event.getEventKey()).thenReturn(new EventContext(ResourcesHelper.getInstance().provideResources().getString(R.string.connection_error_tag), null));
         loginPresenter.getObserverKeys();
         loginPresenter.attachView(loginView);
         loginPresenter.onEvent(event);

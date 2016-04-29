@@ -4,20 +4,16 @@ import android.annotation.SuppressLint;
 import android.content.res.Resources;
 import android.os.Parcel;
 
-import javax.inject.Inject;
-
-import endava.com.demoproject.DemoProjectApplication;
 import endava.com.demoproject.R;
 import endava.com.demoproject.cacheableObserver.Event;
 import endava.com.demoproject.cacheableObserver.EventContext;
 
 @SuppressLint("ParcelCreator")
 public class RefreshRepoListEvent implements Event {
-    @Inject
-    Resources resources;
+    private Resources resources;
 
-    public RefreshRepoListEvent(){
-        DemoProjectApplication.getApplicationComponent().inject(this);
+    public RefreshRepoListEvent(Resources resources){
+        this.resources = resources;
     }
 
     @Override

@@ -13,7 +13,6 @@ import endava.com.demoproject.others.LoginCommand;
 import endava.com.demoproject.services.LoginService;
 
 public class LoginHelper {
-//    public static LoginHelper helper;
     private Context context;
     private String credentials;
 
@@ -22,17 +21,6 @@ public class LoginHelper {
         this.context = context;
     }
 
-//    public static LoginHelper getInstance() {
-//        if (helper == null) {
-//            helper = new LoginHelper();
-//        }
-//        helper.injectContext();
-//        return helper;
-//    }
-//
-//    public void injectContext() {
-//        DemoProjectApplication.getApplicationComponent().inject(this);
-//    }
 
     public void doLogin(String username, String password) {
         try {

@@ -14,18 +14,8 @@ import endava.com.demoproject.model.User;
 
 public class DbHelper {
     public static final Integer FIRST_ITEM = 0;
-
-    private static DbHelper helper;
     private DataBaseManager dbHelper = HelperProvider.getHelper();
 
-//    public static DbHelper getInstance() {
-//        if (helper == null) {
-//            helper = new DbHelper();
-//            return helper;
-//        } else {
-//            return helper;
-//        }
-//    }
 
     public User getUser() {
         try {

@@ -11,7 +11,6 @@ public class SharedPreferencesHelper {
     public static final String AUTH_DATA = "authData";
     private static final String USERNAME_PREF = "username";
     private static final String REMEMBER_USERNAME_PREF = "rememberUsername";
-//    public static SharedPreferencesHelper helper;
     private SharedPreferences defaultSharedPreferences;
     private Context context;
     private SharedPreferences authData;
@@ -23,17 +22,6 @@ public class SharedPreferencesHelper {
         this.context = context;
     }
 
-//    public static SharedPreferencesHelper getInstance() {
-//        if (helper == null) {
-//            helper = new SharedPreferencesHelper();
-//            helper.setContext();
-//        }
-//        return helper;
-//    }
-//
-//    public void setContext() {
-//        DemoProjectApplication.getApplicationComponent().inject(this);
-//    }
 
     public void rememberUserName(String username) {
         authData = context.getSharedPreferences(AUTH_DATA, 0);

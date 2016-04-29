@@ -37,6 +37,8 @@ public class ApplicationModule {
         return appContext;
     }
 
+
+    //HELPERS
     @Provides
     @Singleton
     Resources provideResources() {
@@ -77,6 +79,8 @@ public class ApplicationModule {
                 .build().create(UserAPI.class);
     }
 
+
+    //PRESENTERS
     @Provides
     RepoCommitsPresenter provideRepoCommitsPresenter(DbHelper dbHelper, UserAPI userAPI){
         return new RepoCommitsPresenter(dbHelper, userAPI);

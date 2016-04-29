@@ -3,10 +3,10 @@ package endava.com.demoproject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 @Config(constants = BuildConfig.class, sdk = 21)
 public class RepoSyncTest {
 
-
+@InjectMocks
     private ReposSyncPresenter repoSyncPresenter;
     private ReposSyncView reposSyncView;
     private Subscription subscription;
@@ -54,7 +54,6 @@ public class RepoSyncTest {
         userAPI = mock(UserAPI.class);
         callBack = mock(Call.class);
         dbHelper = mock(DbHelper.class);
-        repoSyncPresenter = new ReposSyncPresenter(userAPI,dbHelper);
     }
 
     @Test

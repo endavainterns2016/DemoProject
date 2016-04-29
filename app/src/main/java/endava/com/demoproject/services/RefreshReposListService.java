@@ -2,6 +2,7 @@ package endava.com.demoproject.services;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -17,7 +18,9 @@ public class RefreshReposListService extends Service {
     private Handler mHandler = new Handler();
     @Inject
     public Subject subject;
-    private RefreshRepoListEvent refreshEvent = new RefreshRepoListEvent();
+    @Inject
+    public Resources resources;
+    private RefreshRepoListEvent refreshEvent = new RefreshRepoListEvent(resources);
     private int refreshPeriod;
 
     @Nullable
