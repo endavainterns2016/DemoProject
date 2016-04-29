@@ -14,7 +14,6 @@ import java.util.List;
 import endava.com.demoproject.cacheableObserver.EventContext;
 import endava.com.demoproject.cacheableObserver.Subject;
 import endava.com.demoproject.helpers.DbHelper;
-import endava.com.demoproject.helpers.ResourcesHelper;
 import endava.com.demoproject.helpers.SharedPreferencesHelper;
 import endava.com.demoproject.model.Repo;
 import endava.com.demoproject.model.User;
@@ -54,8 +53,6 @@ public class ReposListPresenterTest {
     @Mock
     private Subject subject;
 
-    @Mock
-    private ResourcesHelper resourcesHelper;
     @Mock
     private EventContext eventContext;
     @Mock

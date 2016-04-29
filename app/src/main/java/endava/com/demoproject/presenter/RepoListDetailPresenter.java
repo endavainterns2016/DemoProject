@@ -1,8 +1,9 @@
 package endava.com.demoproject.presenter;
 
+import javax.inject.Inject;
+
 import endava.com.demoproject.helpers.DbHelper;
 import endava.com.demoproject.model.Repo;
-import endava.com.demoproject.retrofit.ServiceFactory;
 import endava.com.demoproject.retrofit.UserAPI;
 import endava.com.demoproject.view.RepoDetailsView;
 import retrofit2.Call;
@@ -15,8 +16,8 @@ public class RepoListDetailPresenter extends BasePresenter<RepoDetailsView> impl
     private Repo repo;
     private UserAPI userAPI;
 
-    public RepoListDetailPresenter(RepoDetailsView repoDetailsView, DbHelper dbHelper,UserAPI userAPI) {
-        this.repoDetailsView = repoDetailsView;
+    @Inject
+    public RepoListDetailPresenter(DbHelper dbHelper,UserAPI userAPI) {
         this.dbHelper = dbHelper;
         this.userAPI = userAPI;
     }
@@ -32,6 +33,7 @@ public class RepoListDetailPresenter extends BasePresenter<RepoDetailsView> impl
     @Override
     public void attachView(RepoDetailsView mvpView) {
         super.attachView(mvpView);
+        repoDetailsView = mvpView;
     }
 
     public void populateView(Repo repo) {

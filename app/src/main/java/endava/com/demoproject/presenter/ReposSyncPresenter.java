@@ -4,10 +4,11 @@ import android.util.Log;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import endava.com.demoproject.helpers.DbHelper;
 import endava.com.demoproject.model.Repo;
 import endava.com.demoproject.model.User;
-import endava.com.demoproject.retrofit.ServiceFactory;
 import endava.com.demoproject.retrofit.UserAPI;
 import endava.com.demoproject.view.ReposSyncView;
 import retrofit2.Call;
@@ -27,6 +28,7 @@ public class ReposSyncPresenter extends BasePresenter<ReposSyncView> implements 
     private UserAPI userAPI;
     private DbHelper dbHelper;
 
+    @Inject
     public ReposSyncPresenter(UserAPI userAPI,DbHelper dbHelper) {
         this.userAPI = userAPI;
         this.dbHelper = dbHelper;

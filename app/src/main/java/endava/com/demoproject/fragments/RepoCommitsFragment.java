@@ -3,6 +3,7 @@ package endava.com.demoproject.fragments;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -52,6 +53,12 @@ public class RepoCommitsFragment extends Fragment implements RepoCommitsView {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        DemoProjectApplication.getApplicationComponent().inject(this);
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_commits_list, container, false);
         return view;
@@ -59,7 +66,6 @@ public class RepoCommitsFragment extends Fragment implements RepoCommitsView {
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-        DemoProjectApplication.getApplicationComponent().inject(this);
         repoCommitsPresenter.attachView(this);
     }
 

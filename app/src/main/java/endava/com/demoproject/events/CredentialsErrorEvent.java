@@ -1,19 +1,19 @@
 package endava.com.demoproject.events;
 
+import android.content.res.Resources;
 import android.os.Parcel;
 
 import endava.com.demoproject.R;
 import endava.com.demoproject.cacheableObserver.Event;
 import endava.com.demoproject.cacheableObserver.EventContext;
-import endava.com.demoproject.helpers.ResourcesHelper;
 
 
 public class CredentialsErrorEvent implements Event {
 
-    private ResourcesHelper resourcesHelper;
+    private Resources resources;
 
-    public CredentialsErrorEvent(ResourcesHelper resourcesHelper) {
-        this.resourcesHelper = resourcesHelper;
+    public CredentialsErrorEvent(Resources resources) {
+        this.resources = resources;
     }
     @Override
     public Object getData() {
@@ -22,7 +22,7 @@ public class CredentialsErrorEvent implements Event {
 
     @Override
     public EventContext getEventKey() {
-        return new EventContext(resourcesHelper.provideResources().getString(R.string.credential_error_tag),null);
+        return new EventContext(resources.getString(R.string.credential_error_tag),null);
     }
 
     @Override

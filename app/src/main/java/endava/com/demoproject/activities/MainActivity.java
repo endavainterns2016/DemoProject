@@ -20,11 +20,13 @@ import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnMenuTabClickListener;
 import com.squareup.picasso.Picasso;
 
+import javax.inject.Inject;
+
+import endava.com.demoproject.DemoProjectApplication;
 import endava.com.demoproject.R;
 import endava.com.demoproject.fragments.ReposLikeFragment;
 import endava.com.demoproject.fragments.ReposListFragment;
 import endava.com.demoproject.fragments.ReposSyncFragment;
-import endava.com.demoproject.helpers.DbHelper;
 import endava.com.demoproject.others.RoundedTransformation;
 import endava.com.demoproject.presenter.MainPresenter;
 import endava.com.demoproject.view.MainView;
@@ -39,12 +41,13 @@ public class MainActivity extends AppCompatActivity implements OnMenuTabClickLis
     private NavigationView mNavigationView;
     private TextView user_login_nav;
     private ImageView avatarImageView;
-    private MainPresenter mainPresenter;
+    @Inject
+    public MainPresenter mainPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        DemoProjectApplication.getApplicationComponent().inject(this);
         super.onCreate(savedInstanceState);
-        mainPresenter = new MainPresenter(DbHelper.getInstance());
         mainPresenter.attachView(this);
     }
 

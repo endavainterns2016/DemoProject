@@ -7,12 +7,16 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import javax.inject.Inject;
+
+import endava.com.demoproject.DemoProjectApplication;
 import endava.com.demoproject.cacheableObserver.Subject;
 import endava.com.demoproject.events.RefreshRepoListEvent;
 
 public class RefreshReposListService extends Service {
     private Handler mHandler = new Handler();
-    private Subject subject = Subject.newInstance();
+    @Inject
+    public Subject subject;
     private RefreshRepoListEvent refreshEvent = new RefreshRepoListEvent();
     private int refreshPeriod;
 
@@ -20,6 +24,12 @@ public class RefreshReposListService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    @Override
+    public void onCreate() {
+        DemoProjectApplication.getApplicationComponent().inject(this);
+        super.onCreate();
     }
 
     @Override
@@ -39,13 +49,13 @@ public class RefreshReposListService extends Service {
 
 
     public void startRefreshHandler() {
-        mHandler.postDelayed(refreshTask, 10000);
+        mHandler.postDelayed(refreshTask, refreshPeriod);
     }
     private Runnable refreshTask = new Runnable() {
         public void run() {
             Log.d("refreshService", "in service refreshed");
             subject.onNewEvent(refreshEvent);
-            mHandler.postDelayed(this, 10000);
+            mHandler.postDelayed(this, refreshPeriod);
         }
     };
 }

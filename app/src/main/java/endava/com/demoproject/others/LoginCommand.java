@@ -1,6 +1,7 @@
 package endava.com.demoproject.others;
 
 
+import android.content.res.Resources;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -16,16 +17,18 @@ import endava.com.demoproject.cacheableObserver.Subject;
 import endava.com.demoproject.events.ConnectionErrorEvent;
 import endava.com.demoproject.events.CredentialsErrorEvent;
 import endava.com.demoproject.helpers.DbHelper;
-import endava.com.demoproject.helpers.ResourcesHelper;
 import endava.com.demoproject.model.User;
-import endava.com.demoproject.retrofit.ServiceFactory;
+import endava.com.demoproject.retrofit.UserAPI;
 
 public class LoginCommand implements Command, Parcelable, Event {
 
     public static final Creator<LoginCommand> CREATOR = new Creator<LoginCommand>() {
         @Override
         public LoginCommand createFromParcel(Parcel in) {
-            return new LoginCommand(in);
+
+            LoginCommand loginCommand = new LoginCommand(in);
+            DemoProjectApplication.getApplicationComponent().inject(loginCommand);
+            return loginCommand;
         }
 
         @Override
@@ -33,13 +36,19 @@ public class LoginCommand implements Command, Parcelable, Event {
             return new LoginCommand[size];
         }
     };
-    private DbHelper dbHelper = DbHelper.getInstance();
+    @Inject
+    public DbHelper dbHelper;
+    @Inject
+    Resources resources;
+    private List<User> userList;
+    @Inject
+    public Subject subject;
+
+    @Inject
+    public UserAPI userAPI;
+
     private String credentials;
     private String userName;
-    @Inject
-    ResourcesHelper resourcesHelper;
-    private List<User> userList;
-    private Subject subject = Subject.newInstance();
 
     public LoginCommand(String credentials, String userName) {
         DemoProjectApplication.getApplicationComponent().inject(this);
@@ -55,17 +64,17 @@ public class LoginCommand implements Command, Parcelable, Event {
     @Override
     public void execute() {
         try {
-            userList = ServiceFactory.getInstance().auth(credentials).execute().body();
+            userList = userAPI.auth(credentials).execute().body();
         } catch (Exception e) {
-            subject.onNewEvent(new ConnectionErrorEvent(resourcesHelper));
+            subject.onNewEvent(new ConnectionErrorEvent(resources));
             return;
         }
         if (userList != null) {
             User user = userList.get(0);
             try {
-                user.setAvatarUrl(ServiceFactory.getInstance().getUserAvatar(credentials).execute().body().getAvatarUrl());
+                user.setAvatarUrl(userAPI.getUserAvatar(credentials).execute().body().getAvatarUrl());
             } catch (Exception e) {
-                subject.onNewEvent(new ConnectionErrorEvent(resourcesHelper));
+                subject.onNewEvent(new ConnectionErrorEvent(resources));
                 return;
             }
             user.setHashedCredentials(credentials);
@@ -73,7 +82,7 @@ public class LoginCommand implements Command, Parcelable, Event {
             dbHelper.createUser(user);
             subject.onNewEvent(this);
         } else {
-            subject.onNewEvent(new CredentialsErrorEvent(resourcesHelper));
+            subject.onNewEvent(new CredentialsErrorEvent(resources));
         }
     }
 
@@ -95,6 +104,6 @@ public class LoginCommand implements Command, Parcelable, Event {
 
     @Override
     public EventContext getEventKey() {
-        return new EventContext(resourcesHelper.provideResources().getString(R.string.successful_login_tag), null);
+        return new EventContext(resources.getString(R.string.successful_login_tag), null);
     }
 }

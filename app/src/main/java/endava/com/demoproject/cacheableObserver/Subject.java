@@ -21,15 +21,15 @@ public class Subject {
     public Subject() {
     }
 
-    public static Subject newInstance() {
-        if (subjectMap.containsKey(subjectKey)) {
-            return subjectMap.get(subjectKey);
-        } else {
-            Subject subject = new Subject();
-            subjectMap.put(subjectKey, subject);
-            return subject;
-        }
-    }
+//    public static Subject newInstance() {
+//        if (subjectMap.containsKey(subjectKey)) {
+//            return subjectMap.get(subjectKey);
+//        } else {
+//            Subject subject = new Subject();
+//            subjectMap.put(subjectKey, subject);
+//            return subject;
+//        }
+//    }
 
     /**
      * Registers {@link Observer} and notifies all cached {@link Event} if they exists

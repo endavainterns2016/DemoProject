@@ -4,6 +4,7 @@ package endava.com.demoproject.fragments;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -14,21 +15,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import javax.inject.Inject;
+
+import endava.com.demoproject.DemoProjectApplication;
 import endava.com.demoproject.R;
 import endava.com.demoproject.activities.MainActivity;
 import endava.com.demoproject.asyncLoader.RepoLoadingTask;
 import endava.com.demoproject.constants.LoaderConstants;
 import endava.com.demoproject.formatter.DateFormats;
-import endava.com.demoproject.helpers.DbHelper;
 import endava.com.demoproject.model.Repo;
 import endava.com.demoproject.presenter.RepoListDetailPresenter;
-import endava.com.demoproject.retrofit.ServiceFactory;
 import endava.com.demoproject.view.RepoDetailsView;
 
 public class RepoDetailsFragment extends Fragment implements RepoDetailsView, LoaderManager.LoaderCallbacks<Repo> {
 
     public static final String ID_TAG = "ID";
-    private RepoListDetailPresenter repoListDetailPresenter;
+
+    @Inject
+    public RepoListDetailPresenter repoListDetailPresenter;
     private Integer id;
     private MainActivity mActivity;
     private TextView idTextView;
@@ -67,6 +71,12 @@ public class RepoDetailsFragment extends Fragment implements RepoDetailsView, Lo
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        DemoProjectApplication.getApplicationComponent().inject(this);
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_repo_details, container, false);
         return view;
@@ -76,7 +86,6 @@ public class RepoDetailsFragment extends Fragment implements RepoDetailsView, Lo
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         id = getArguments().getInt(ID_TAG);
-        repoListDetailPresenter = new RepoListDetailPresenter(this, DbHelper.getInstance(), ServiceFactory.getInstance());
         repoListDetailPresenter.attachView(this);
         repoListDetailPresenter.initView();
     }

@@ -1,6 +1,8 @@
 package endava.com.demoproject.presenter;
 
 
+import android.content.res.Resources;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +16,6 @@ import endava.com.demoproject.cacheableObserver.EventHandler;
 import endava.com.demoproject.cacheableObserver.Observer;
 import endava.com.demoproject.cacheableObserver.Subject;
 import endava.com.demoproject.helpers.LoginHelper;
-import endava.com.demoproject.helpers.ResourcesHelper;
 import endava.com.demoproject.helpers.SharedPreferencesHelper;
 import endava.com.demoproject.view.LoginView;
 
@@ -22,7 +23,7 @@ public class LoginPresenter extends BasePresenter<LoginView> implements Observer
 
     private LoginHelper loginHelper;
     private SharedPreferencesHelper sharedPrefHelper;
-    private ResourcesHelper resourcesHelper;
+    private Resources resources;
     private Subject subject;
     private LoginView loginView;
     private String userName;
@@ -30,8 +31,8 @@ public class LoginPresenter extends BasePresenter<LoginView> implements Observer
     private List<EventContext> eventContextList;
 
     @Inject
-    public LoginPresenter(ResourcesHelper resourcesHelper, SharedPreferencesHelper sharedPrefHelper, LoginHelper loginHelper, Subject subject) {
-        this.resourcesHelper = resourcesHelper;
+    public LoginPresenter(Resources resources, SharedPreferencesHelper sharedPrefHelper, LoginHelper loginHelper, Subject subject) {
+        this.resources = resources;
         this.sharedPrefHelper = sharedPrefHelper;
         this.loginHelper = loginHelper;
         this.subject = subject;
@@ -41,10 +42,10 @@ public class LoginPresenter extends BasePresenter<LoginView> implements Observer
         loginView.requestStarted();
         boolean result = true;
         if (userName.length() == 0) {
-            loginView.showError(resourcesHelper.provideResources().getString(R.string.fill_in_username));
+            loginView.showError(resources.getString(R.string.fill_in_username));
             result = false;
         } else if (password.length() == 0) {
-            loginView.showError(resourcesHelper.provideResources().getString(R.string.fill_in_password));
+            loginView.showError(resources.getString(R.string.fill_in_password));
             result = false;
         } else {
             this.userName = userName;
@@ -90,9 +91,9 @@ public class LoginPresenter extends BasePresenter<LoginView> implements Observer
     @Override
     public List<EventContext> getObserverKeys() {
         eventContextList = new ArrayList<>();
-        EventContext successfulLogin = new EventContext(resourcesHelper.provideResources().getString(R.string.successful_login_tag), null);
-        EventContext connectionError = new EventContext(resourcesHelper.provideResources().getString(R.string.connection_error_tag), null);
-        EventContext credentialsError = new EventContext(resourcesHelper.provideResources().getString(R.string.credential_error_tag), null);
+        EventContext successfulLogin = new EventContext(resources.getString(R.string.successful_login_tag), null);
+        EventContext connectionError = new EventContext(resources.getString(R.string.connection_error_tag), null);
+        EventContext credentialsError = new EventContext(resources.getString(R.string.credential_error_tag), null);
         eventContextList.add(successfulLogin);
         eventContextList.add(connectionError);
         eventContextList.add(credentialsError);
@@ -134,9 +135,9 @@ public class LoginPresenter extends BasePresenter<LoginView> implements Observer
     }
 
     private void populateEventsMap() {
-        eventHandlerMap.put(resourcesHelper.provideResources().getString(R.string.successful_login_tag), new SuccessfulLoginHandler());
-        eventHandlerMap.put(resourcesHelper.provideResources().getString(R.string.connection_error_tag), new ConnectionErrorHandler());
-        eventHandlerMap.put(resourcesHelper.provideResources().getString(R.string.credential_error_tag), new CredentialsErrorHandler());
+        eventHandlerMap.put(resources.getString(R.string.successful_login_tag), new SuccessfulLoginHandler());
+        eventHandlerMap.put(resources.getString(R.string.connection_error_tag), new ConnectionErrorHandler());
+        eventHandlerMap.put(resources.getString(R.string.credential_error_tag), new CredentialsErrorHandler());
     }
 
     private class SuccessfulLoginHandler implements EventHandler {
@@ -159,7 +160,7 @@ public class LoginPresenter extends BasePresenter<LoginView> implements Observer
 
         @Override
         public void handleEvent() {
-            loginView.showError(resourcesHelper.provideResources().getString(R.string.credentials_error_message));
+            loginView.showError(resources.getString(R.string.credentials_error_message));
         }
     }
 }

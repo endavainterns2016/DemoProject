@@ -1,6 +1,7 @@
 package endava.com.demoproject.events;
 
 import android.annotation.SuppressLint;
+import android.content.res.Resources;
 import android.os.Parcel;
 
 import javax.inject.Inject;
@@ -9,12 +10,11 @@ import endava.com.demoproject.DemoProjectApplication;
 import endava.com.demoproject.R;
 import endava.com.demoproject.cacheableObserver.Event;
 import endava.com.demoproject.cacheableObserver.EventContext;
-import endava.com.demoproject.helpers.ResourcesHelper;
 
 @SuppressLint("ParcelCreator")
 public class RefreshRepoListEvent implements Event {
     @Inject
-    ResourcesHelper resourcesHelper;
+    Resources resources;
 
     public RefreshRepoListEvent(){
         DemoProjectApplication.getApplicationComponent().inject(this);
@@ -27,7 +27,7 @@ public class RefreshRepoListEvent implements Event {
 
     @Override
     public EventContext getEventKey() {
-        return new EventContext(resourcesHelper.provideResources().getString(R.string.refreshList), null);
+        return new EventContext(resources.getString(R.string.refreshList), null);
     }
 
     @Override

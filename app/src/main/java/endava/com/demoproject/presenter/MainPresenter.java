@@ -2,6 +2,8 @@ package endava.com.demoproject.presenter;
 
 import android.util.Log;
 
+import javax.inject.Inject;
+
 import endava.com.demoproject.helpers.DbHelper;
 import endava.com.demoproject.model.User;
 import endava.com.demoproject.view.MainView;
@@ -20,6 +22,7 @@ public class MainPresenter extends BasePresenter<MainView> {
     private User user;
     private DbHelper dbHelper;
 
+    @Inject
     public MainPresenter(DbHelper dbHelper){
        this.dbHelper = dbHelper;
     }

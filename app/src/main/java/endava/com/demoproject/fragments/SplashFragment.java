@@ -3,11 +3,15 @@ package endava.com.demoproject.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import javax.inject.Inject;
+
+import endava.com.demoproject.DemoProjectApplication;
 import endava.com.demoproject.R;
 import endava.com.demoproject.activities.LoginActivity;
 import endava.com.demoproject.activities.MainActivity;
@@ -15,7 +19,8 @@ import endava.com.demoproject.presenter.SplashPresenter;
 import endava.com.demoproject.view.SplashView;
 
 public class SplashFragment extends Fragment implements SplashView {
-    private SplashPresenter splashPresenter;
+    @Inject
+    public SplashPresenter splashPresenter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -27,8 +32,13 @@ public class SplashFragment extends Fragment implements SplashView {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        splashPresenter = new SplashPresenter();
         splashPresenter.attachView(this);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        DemoProjectApplication.getApplicationComponent().inject(this);
+        super.onCreate(savedInstanceState);
     }
 
     @Override

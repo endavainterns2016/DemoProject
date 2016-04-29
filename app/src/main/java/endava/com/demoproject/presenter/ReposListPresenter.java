@@ -1,5 +1,6 @@
 package endava.com.demoproject.presenter;
 
+import android.content.res.Resources;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -13,7 +14,6 @@ import endava.com.demoproject.cacheableObserver.EventContext;
 import endava.com.demoproject.cacheableObserver.Observer;
 import endava.com.demoproject.cacheableObserver.Subject;
 import endava.com.demoproject.helpers.DbHelper;
-import endava.com.demoproject.helpers.ResourcesHelper;
 import endava.com.demoproject.helpers.SharedPreferencesHelper;
 import endava.com.demoproject.model.Repo;
 import endava.com.demoproject.model.User;
@@ -36,15 +36,15 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
     private SharedPreferencesHelper sharedPreferencesHelper;
     private DbHelper dbHelper;
     private UserAPI userAPI;
-    private ResourcesHelper resourcesHelper;
+    private Resources resources;
 
     @Inject
-    public ReposListPresenter (SharedPreferencesHelper sharedPreferencesHelper, DbHelper dbHelper, UserAPI userAPI, Subject subject, ResourcesHelper resourcesHelper){
+    public ReposListPresenter (SharedPreferencesHelper sharedPreferencesHelper, DbHelper dbHelper, UserAPI userAPI, Subject subject, Resources resources){
         this.sharedPreferencesHelper = sharedPreferencesHelper;
         this.dbHelper = dbHelper;
         this.userAPI = userAPI;
         this.subject = subject;
-        this.resourcesHelper = resourcesHelper;
+        this.resources = resources;
     }
 
     @Override
@@ -161,7 +161,7 @@ public class ReposListPresenter extends BasePresenter<ReposListView> implements 
 
     @Override
     public List<EventContext> getObserverKeys() {
-        EventContext refreshEvent = new EventContext(resourcesHelper.provideResources().getString(R.string.refreshList), null);
+        EventContext refreshEvent = new EventContext(resources.getString(R.string.refreshList), null);
         List<EventContext> list = new ArrayList<>();
         list.add(refreshEvent);
         return list;

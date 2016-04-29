@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -65,6 +66,12 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        DemoProjectApplication.getApplicationComponent().inject(this);
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_repos_list, container, false);
         return view;
@@ -78,7 +85,6 @@ public class ReposListFragment extends Fragment implements ReposAdapter.OnItemCl
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-        DemoProjectApplication.getApplicationComponent().inject(this);
         reposListPresenter.attachView(this);
         startRefreshService();
     }

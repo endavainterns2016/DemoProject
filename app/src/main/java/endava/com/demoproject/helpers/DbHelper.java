@@ -18,14 +18,14 @@ public class DbHelper {
     private static DbHelper helper;
     private DataBaseManager dbHelper = HelperProvider.getHelper();
 
-    public static DbHelper getInstance() {
-        if (helper == null) {
-            helper = new DbHelper();
-            return helper;
-        } else {
-            return helper;
-        }
-    }
+//    public static DbHelper getInstance() {
+//        if (helper == null) {
+//            helper = new DbHelper();
+//            return helper;
+//        } else {
+//            return helper;
+//        }
+//    }
 
     public User getUser() {
         try {

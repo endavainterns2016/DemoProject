@@ -3,6 +3,7 @@ package endava.com.demoproject.fragments;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -17,18 +18,20 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import endava.com.demoproject.DemoProjectApplication;
 import endava.com.demoproject.R;
 import endava.com.demoproject.activities.MainActivity;
 import endava.com.demoproject.adapters.ReposSyncAdapter;
-import endava.com.demoproject.helpers.DbHelper;
 import endava.com.demoproject.model.Repo;
 import endava.com.demoproject.presenter.ReposSyncPresenter;
-import endava.com.demoproject.retrofit.ServiceFactory;
 import endava.com.demoproject.view.ReposSyncView;
 
 public class ReposSyncFragment extends Fragment implements ReposSyncAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, ReposSyncView {
 
-    private ReposSyncPresenter reposSyncPresenter;
+    @Inject
+    public ReposSyncPresenter reposSyncPresenter;
     private ReposSyncAdapter mAdapter;
     private ArrayList<Repo> reposList = new ArrayList<>();
     private View view;
@@ -44,8 +47,13 @@ public class ReposSyncFragment extends Fragment implements ReposSyncAdapter.OnIt
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        DemoProjectApplication.getApplicationComponent().inject(this);
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-        reposSyncPresenter = new ReposSyncPresenter(ServiceFactory.getInstance(), DbHelper.getInstance());
         reposSyncPresenter.attachView(this);
     }
 

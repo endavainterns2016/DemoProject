@@ -11,7 +11,6 @@ import endava.com.demoproject.cacheableObserver.Event;
 import endava.com.demoproject.cacheableObserver.EventContext;
 import endava.com.demoproject.cacheableObserver.Subject;
 import endava.com.demoproject.helpers.LoginHelper;
-import endava.com.demoproject.helpers.ResourcesHelper;
 import endava.com.demoproject.helpers.SharedPreferencesHelper;
 import endava.com.demoproject.presenter.LoginPresenter;
 import endava.com.demoproject.view.LoginView;
@@ -33,7 +32,6 @@ public class LoginPresenterTest {
     private LoginView loginView;
     private LoginHelper loginHelper;
     private SharedPreferencesHelper sharedPreferencesHelper;
-    private ResourcesHelper resourcesHelper;
     private EventContext eventContext;
     private Subject subject;
     private Event event;
@@ -42,7 +40,6 @@ public class LoginPresenterTest {
     public void setUp() {
         loginView = mock(LoginView.class);
         loginHelper = mock(LoginHelper.class);
-        resourcesHelper = mock(ResourcesHelper.class);
         sharedPreferencesHelper = mock(SharedPreferencesHelper.class);
         subject = mock(Subject.class);
         event = mock(Event.class);

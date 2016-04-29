@@ -7,14 +7,22 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import javax.inject.Inject;
+
+import endava.com.demoproject.DemoProjectApplication;
 import endava.com.demoproject.cacheableObserver.Subject;
 import endava.com.demoproject.events.RefreshRepoListEvent;
 
 public class NetworkStateChangedReceiver extends BroadcastReceiver {
 
     private static boolean firstConnect = true;
-    private Subject subject = Subject.newInstance();
+    @Inject
+    public Subject subject;
     private RefreshRepoListEvent refreshEvent = new RefreshRepoListEvent();
+
+    public NetworkStateChangedReceiver(){
+        DemoProjectApplication.getApplicationComponent().inject(this);
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
