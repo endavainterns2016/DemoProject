@@ -114,24 +114,17 @@ public class LoginPresenter extends BasePresenter<LoginView> implements Observer
         super.attachView(mvpView);
         loginView = mvpView;
         populateView();
-        subject.registerObserver(this);
         populateEventsMap();
     }
 
     @Override
-    public void detachView() {
-        super.detachView();
-        subject.unregisterObservers(this);
-    }
-
-    @Override
     public void onResume() {
-
+        subject.registerObserver(this);
     }
 
     @Override
     public void onPause() {
-
+        subject.unregisterObservers(this);
     }
 
     private void populateEventsMap() {

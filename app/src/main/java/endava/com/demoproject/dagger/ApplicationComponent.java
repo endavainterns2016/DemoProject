@@ -16,6 +16,7 @@ import endava.com.demoproject.helpers.LoginHelper;
 import endava.com.demoproject.helpers.SharedPreferencesHelper;
 import endava.com.demoproject.others.LoginCommand;
 import endava.com.demoproject.others.NetworkStateChangedReceiver;
+import endava.com.demoproject.presenter.LoginPresenter;
 import endava.com.demoproject.services.RefreshReposListService;
 
 @Component(modules = {ApplicationModule.class})
@@ -53,4 +54,6 @@ public interface ApplicationComponent {
     void inject(RefreshReposListService refreshReposListService);
 
     void inject(NetworkStateChangedReceiver networkStateChangedReceiver);
+
+    void inject (LoginPresenter loginPresenter);
 }

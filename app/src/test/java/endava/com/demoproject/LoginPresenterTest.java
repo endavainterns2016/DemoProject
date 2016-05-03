@@ -5,10 +5,13 @@ import android.content.res.Resources;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
+
+import javax.inject.Inject;
 
 import endava.com.demoproject.cacheableObserver.Event;
 import endava.com.demoproject.cacheableObserver.EventContext;
@@ -23,33 +26,36 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class LoginPresenterTest {
-    @InjectMocks
+    @Inject
     private LoginPresenter loginPresenter;
+    @Mock
     private LoginView loginView;
+    @Mock
     private LoginHelper loginHelper;
-    private Resources resources;
+    @Mock
+    public Resources resources;
+    @Mock
     private SharedPreferencesHelper sharedPreferencesHelper;
-    private EventContext eventContext;
+    @Spy
+    private EventContext eventContext = new EventContext("key", "");
+    @Mock
     private Subject subject;
+    @Mock
     private Event event;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        loginView = mock(LoginView.class);
-        loginHelper = mock(LoginHelper.class);
-        resources = mock(Resources.class);
-        sharedPreferencesHelper = mock(SharedPreferencesHelper.class);
-        subject = mock(Subject.class);
-        event = mock(Event.class);
-        eventContext = spy(new EventContext("key", ""));
+//        when(resources).thenReturn(ResourcesHelper.getInstance().provideResources());
+//        loginPresenter = new LoginPresenter(resources, sharedPreferencesHelper, loginHelper, subject);
+        DemoProjectApplication.getApplicationComponent().inject(loginPresenter);
+        when(sharedPreferencesHelper.getUserName()).thenReturn("");
         loginPresenter.attachView(loginView);
     }
 
@@ -111,11 +117,6 @@ public class LoginPresenterTest {
         assertFalse(loginPresenter.isMainObserverForKey(eventContext));
     }
 
-    @Test
-    public void attachViewTest() {
-        loginPresenter.attachView(loginView);
-        verify(subject).registerObserver(loginPresenter);
-    }
 
     @Test
     public void detachViewTest() {

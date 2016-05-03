@@ -76,6 +76,19 @@ public class LoginFragment extends Fragment implements LoginView, View.OnClickLi
     public void onDestroyView() {
         super.onDestroyView();
         presenter.onDestroy();
+        presenter = null;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        presenter.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.onResume();
     }
 
     @Override
